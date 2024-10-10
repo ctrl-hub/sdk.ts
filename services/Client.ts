@@ -2,16 +2,24 @@ import { ClientConfig } from "./ClientConfig";
 import { ClientInterface } from "../interfaces/ClientInterface";
 import { RequestOptions } from "../utils/RequestOptions";
 import { FormCategoryService } from "./FormCategoryService";
+import type { InternalResponse } from "../interfaces/ResponseInterface"
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
+    // public resources: any[]
     public formCategories: FormCategoryService;
 
     constructor(config: ClientConfig) {
         this.config = config;
+        // this.addResource('form-categories', 'formCategories', FormCategoryService)
         this.formCategories = new FormCategoryService(this);
     }
+
+    // addResource(key: string, accessName: string, entity: any) {
+    //     this.resources[key] = new entity(this)
+    //     this[accessName] = this.resources[key]
+    // }
 
     setOrganisationSlug(organisation: string) {
         this.config.organisationId = organisation;
@@ -31,13 +39,51 @@ export class Client {
         return endpoint;
     }
 
-    async makeGetRequest(baseEndpoint: string, param?: string | RequestOptions | null) {
+    async makeGetRequest(baseEndpoint: string, param?: string | RequestOptions | null): Promise<InternalResponse> {
         let url = this.buildRequestURL(baseEndpoint, param);
-        let response = await fetch(url);
-        return response.json();
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json().catch(() => null);
+            const headers: Record<string, string> = {};
+            response.headers.forEach((value, key) => {
+                headers[key] = value;
+            });
+
+            return {
+                ok: response.ok,
+                statusCode: response.status,
+                headers,
+                data: data.data,
+                errors: {
+                    client: [],
+                    network: [],
+                    api: [],
+                },
+                meta: data.meta,
+                links: {},
+                included: []
+            };
+        } catch (error) {
+            return {
+                ok: false,
+                statusCode: 0,
+                headers: [],
+                data: null,
+                errors: {
+                    client: [],
+                    network: [error],
+                    api: [],
+                },
+                meta: null,
+                links: {},
+                included: []
+            };
+        }
     }
 
-    hydrateResponse(json: any, model: ClientInterface) {
+    // @todo should not rely directly on model, infer from model "type"
+    hydrateResponse(json: any) {
         if (Array.isArray(json.data)) {
             json.data.forEach((j: any) => console.log(j.attributes.name));
         } else {

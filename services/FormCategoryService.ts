@@ -12,7 +12,6 @@ export class FormCategoryService {
     async get(param?: string | RequestOptions | null) {
         let model = new FormCategory();
         let baseEndpoint = this.client.finalEndpoint(model);
-        let json = await this.client.makeGetRequest(baseEndpoint, param);
-        this.client.hydrateResponse(json, model);
+        return await this.client.makeGetRequest(baseEndpoint, param);
     }
 }
