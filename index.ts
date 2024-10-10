@@ -7,7 +7,7 @@ let client = new Client({
 });
 
 (async () => {
-  await client.formCategories().get(new RequestOptions({
+  await client.formCategories.get(new RequestOptions({
     sort: [{ key: 'name', direction: 'asc' }]
   }));
 })();

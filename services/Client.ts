@@ -1,14 +1,16 @@
 import { ClientConfig } from "./ClientConfig";
 import { ClientInterface } from "../interfaces/ClientInterface";
 import { RequestOptions } from "../utils/RequestOptions";
-import { FormCategory } from "../models/FormCategory";
+import { FormCategoryService } from "./FormCategoryService";
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
+    public formCategories: FormCategoryService;
 
     constructor(config: ClientConfig) {
         this.config = config;
+        this.formCategories = new FormCategoryService(this);
     }
 
     setOrganisationSlug(organisation: string) {
@@ -33,18 +35,6 @@ export class Client {
         let url = this.buildRequestURL(baseEndpoint, param);
         let response = await fetch(url);
         return response.json();
-    }
-
-    formCategories() {
-        let model = new FormCategory();
-        let baseEndpoint = this.finalEndpoint(model);
-
-        return {
-            get: async (param?: string | RequestOptions | null) => {
-                let json = await this.makeGetRequest(baseEndpoint, param);
-                this.hydrateResponse(json, model);
-            }
-        };
     }
 
     hydrateResponse(json: any, model: ClientInterface) {
