@@ -1,4 +1,4 @@
-import { ClientInterface } from "../interfaces/ClientInterface";
+import { ModelInterface } from "../interfaces/ModelInterface";
 
 type FormCategoryAttributes = {
     name: string;
@@ -7,18 +7,36 @@ type FormCategoryAttributes = {
     }
 };
 
-export class FormCategory implements ClientInterface {
-    public id: string;
-    endpoint: string = '/v3/orgs/:orgId/data-capture/form-categories';
-    type: string = 'form-categories';
-    attributes: FormCategoryAttributes;
+export class FormCategory implements ModelInterface {
+    public id: string = '';
+    public type: string = 'form-categories';
+    public endpoint: string = '/v3/orgs/:orgId/data-capture/form-categories';
+    public attributes: FormCategoryAttributes;
+    public meta: any = {};
 
-    constructor() {
+    constructor(data?: Partial<FormCategoryAttributes>, id?: string, type?: string, meta?: any) {
         this.attributes = {
             name: '',
             location: {
                 coordinates: []
             }
         };
+
+        if (data) {
+            this.attributes.name = data.name || '';
+            this.attributes.location.coordinates = data.location?.coordinates || [];
+        }
+
+        if (id) {
+            this.id = id;
+        }
+
+        if (type) {
+            this.type = type;
+        }
+
+        if (meta) {
+            this.meta = meta;
+        }
     }
 }

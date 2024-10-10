@@ -1,10 +1,11 @@
 interface Error {
     title: String;
+    statusCode: String;
 }
 
 export interface InternalResponse {
     // possible API response body:
-    data: object|object[],
+    data: object|object[]|null,
     errors: {
         client: object[],
         network: object[],

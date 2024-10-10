@@ -7,9 +7,14 @@ let client = new Client({
 });
 
 (async () => {
-    const response = await client.formCategories.get(new RequestOptions({
-        sort: [{ key: 'name', direction: 'asc' }]
-    }));
+    // let response = await client.formCategories.get(new RequestOptions({
+    //     sort: [{ key: 'name', direction: 'asc' }]
+    // }));
 
-    console.log(response);
+    let valid = "161bd6bd-adf4-83b1-8fa3-59d1b821"
+    let invalid = "test"
+    // single
+    let response = await client.formCategories.get(valid);
+
+    console.log(JSON.stringify(response, null, 2));
 })();
