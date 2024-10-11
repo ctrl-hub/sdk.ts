@@ -39,7 +39,7 @@ export class Client {
                     return new Proxy({}, {
                         get: (_, method) => {
                             if (method === 'get') {
-                                return (param: string | RequestOptionsType | null): Promise<{ data: T[] }> => {
+                                return (param: string | RequestOptionsType | null): Promise<InternalResponse> => {
                                     const requestOptions = param ? new RequestOptions(param) : null;
                                     return client.getResource<T>(serviceInfo, requestOptions);
                                 };
