@@ -3,7 +3,7 @@ type Sort = {
     direction?: 'asc' | 'desc';
 };
 
-type RequestOptionsType = {
+export type RequestOptionsType = {
     sort?: Sort[];
 };
 

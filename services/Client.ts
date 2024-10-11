@@ -1,18 +1,19 @@
 import { ClientConfig } from "./ClientConfig";
-import { RequestOptions } from "../utils/RequestOptions";
+import {RequestOptions, RequestOptionsType} from "../utils/RequestOptions";
 import {FormCategory} from "../models/FormCategory";
-import {ModelServiceInterface} from "../interfaces/ModelServiceInterface";
+import {ServiceInterface} from "../interfaces/ServiceInterface";
 import {Requests} from "../utils/Requests";
+import {ModelConstructor} from "../interfaces/ModelConstructorInterface";
+import {InternalResponse} from "../interfaces/ResponseInterface";
 
 type Service = {
-    get: Function;
-    create: Function;
+    get: (param: string | RequestOptionsType | null) => Promise<{ data: any[] }>;
 }
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
-    public services: Record<string, any> = {};  // To hold service instances
+    public services: Record<string, any> = {};
     public formCategories: Service;
 
     constructor(config: ClientConfig) {
@@ -21,31 +22,39 @@ export class Client {
 
         this.services['formCategories'] = {
             endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
-            model: FormCategory,
+            model: FormCategory as ModelConstructor<FormCategory>,
         };
 
+        // ensure we can do (as example):
+        // client.formCategories.get() and return hydrated models based on this.services['formCategories']
+        return this.setupProxies();
+    }
+
+    private setupProxies() {
         return new Proxy(this, {
-            get: (client, service) => {
+            get: <T>(client: Client, service: string) => {
                 if (service in client.services) {
-                    // Intercept `client.formCategories` etc and return proxy
+                    const serviceInfo = client.services[service];
+
                     return new Proxy({}, {
                         get: (_, method) => {
                             if (method === 'get') {
-                                return (param: any[]) => client.getResource(client.services[service], param);
+                                return (param: string | RequestOptionsType | null): Promise<{ data: T[] }> => {
+                                    const requestOptions = param ? new RequestOptions(param) : null;
+                                    return client.getResource<T>(serviceInfo, requestOptions);
+                                };
                             }
                             return () => `Method ${method.toString()} called on service ${service}`;
                         }
                     });
                 }
 
-                // Default behavior for non-service properties
                 return Reflect.get(client, service);
             }
         });
-
     }
 
-    async getResource(service: any, param: any) {
+    async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
         let response = await this.makeGetRequest(this.finalEndpoint(service), param);
 
         if (response.data) {
@@ -61,7 +70,7 @@ export class Client {
         this.config.organisationId = organisation;
     }
 
-    finalEndpoint(service: ModelServiceInterface): string {
+    finalEndpoint(service: ServiceInterface): string {
         return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
     }
 

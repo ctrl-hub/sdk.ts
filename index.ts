@@ -1,5 +1,4 @@
 import { Client } from './services/Client';
-import { RequestOptions } from './utils/RequestOptions';
 import {FormCategory} from "./models/FormCategory";
 
 let client = new Client({
@@ -8,9 +7,9 @@ let client = new Client({
 });
 
 (async () => {
-    let { data } = await client.formCategories.get(new RequestOptions({
+    let { data } = await client.formCategories.get({
         sort: [{ key: 'name', direction: 'desc' }]
-    }));
+    });
 
     for (let d: FormCategory of data) {
         console.log(d.attributes.name);
