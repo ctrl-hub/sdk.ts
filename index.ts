@@ -1,20 +1,18 @@
 import { Client } from './services/Client';
 import { RequestOptions } from './utils/RequestOptions';
+import {FormCategory} from "./models/FormCategory";
 
 let client = new Client({
     organisationId: "ctrl-hub",
-    baseDomain: "https://api.ctrl-hub.dev1"
+    baseDomain: "https://api.ctrl-hub.dev"
 });
 
 (async () => {
-    // let response = await client.formCategories.get(new RequestOptions({
-    //     sort: [{ key: 'name', direction: 'asc' }]
-    // }));
+    let { data } = await client.formCategories.get(new RequestOptions({
+        sort: [{ key: 'name', direction: 'desc' }]
+    }));
 
-    let valid = "161bd6bd-adf4-83b1-8fa3-59d1b821"
-    let invalid = "test"
-    // single
-    let response = await client.formCategories.get(invalid);
-
-    console.log(JSON.stringify(response, null, 2));
+    for (let d: FormCategory of data) {
+        console.log(d.attributes.name);
+    }
 })();
