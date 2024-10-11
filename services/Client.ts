@@ -160,24 +160,4 @@ export class Client {
             return Requests.buildInternalErrorResponse(error);
         }
     }
-
-    // create(model: ModelInterface) {
-    //     console.log(JSON.stringify({
-    //         action: 'create',
-    //         type: model.type,
-    //         organisation: this.organisation,
-    //         endpoint: this.finalEndpoint(model),
-    //         entity: model
-    //     }, null, 2));
-    // }
-    //
-    // update(model: ModelInterface) {
-    //     console.log(JSON.stringify({
-    //         action: 'update',
-    //         type: model.type,
-    //         organisation: this.organisation,
-    //         endpoint: this.finalEndpoint(model),
-    //         entity: model
-    //     }, null, 2));
-    // }
 }
