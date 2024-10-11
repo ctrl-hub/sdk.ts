@@ -2,9 +2,6 @@ import { ModelInterface } from "../interfaces/ModelInterface";
 
 type FormCategoryAttributes = {
     name: string;
-    location: {
-        coordinates: number[];
-    }
 };
 
 export class FormCategory implements ModelInterface {
@@ -13,29 +10,21 @@ export class FormCategory implements ModelInterface {
     public attributes: FormCategoryAttributes;
     public meta: any = {};
 
-    constructor(data?: Partial<FormCategoryAttributes>, id?: string, type?: string, meta?: any) {
+    constructor() {
         this.attributes = {
             name: '',
-            location: {
-                coordinates: []
-            }
         };
+    }
+
+    static hydrate(data: any) {
+        let formCategory = new FormCategory();
 
         if (data) {
-            this.attributes.name = data.name || '';
-            this.attributes.location.coordinates = data.location?.coordinates || [];
+            formCategory.id = data.id;
+            formCategory.attributes.name = data.attributes.name || '';
+            formCategory.meta = data.meta || {};
         }
 
-        if (id) {
-            this.id = id;
-        }
-
-        if (type) {
-            this.type = type;
-        }
-
-        if (meta) {
-            this.meta = meta;
-        }
+        return formCategory;
     }
 }

@@ -5,16 +5,15 @@ import {ServiceInterface} from "../interfaces/ServiceInterface";
 import {Requests} from "../utils/Requests";
 import {ModelConstructor} from "../interfaces/ModelConstructorInterface";
 import {InternalResponse} from "../interfaces/ResponseInterface";
-
-type Service = {
-    get: (param: string | RequestOptionsType | null) => Promise<{ data: any[] }>;
-}
+import {ServiceAccount} from "../models/ServiceAccount";
+import {ServiceMethods} from "../interfaces/ServiceMethods";
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
     public services: Record<string, any> = {};
-    public formCategories: Service;
+    public formCategories: ServiceMethods;
+    public serviceAccounts: ServiceMethods;
 
     constructor(config: ClientConfig) {
         this.config = config;
@@ -23,6 +22,11 @@ export class Client {
         this.services['formCategories'] = {
             endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
             model: FormCategory as ModelConstructor<FormCategory>,
+        };
+
+        this.services['serviceAccounts'] = {
+            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
+            model: ServiceAccount as ModelConstructor<ServiceAccount>,
         };
 
         // ensure we can do (as example):
@@ -59,8 +63,12 @@ export class Client {
 
         if (response.data) {
             const ModelClass = service.model;  // Get the dynamic model class e.g. FormCategory
-            const dataArray = Array.isArray(response.data) ? response.data : [response.data];
-            response.data = dataArray.map(item => new ModelClass(item.attributes, item.id, item.type, item.meta));
+            if (Array.isArray(response.data)) {
+                response.data = response.data.map(item => ModelClass.hydrate(item));
+            } else {
+                response.data = ModelClass.hydrate(response.data);
+            }
+
         }
 
         return response;
