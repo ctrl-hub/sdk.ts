@@ -10,7 +10,6 @@ type FormCategoryAttributes = {
 export class FormCategory implements ModelInterface {
     public id: string = '';
     public type: string = 'form-categories';
-    public endpoint: string = '/v3/orgs/:orgId/data-capture/form-categories';
     public attributes: FormCategoryAttributes;
     public meta: any = {};
 

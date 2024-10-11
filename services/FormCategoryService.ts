@@ -2,10 +2,12 @@ import { RequestOptions } from "../utils/RequestOptions";
 import { FormCategory } from "../models/FormCategory";
 import { Client } from "./Client";
 import {InternalResponse} from "../interfaces/ResponseInterface";
+import {ModelServiceInterface} from "../interfaces/ModelServiceInterface";
 
-export class FormCategoryService {
+export class FormCategoryService implements ModelServiceInterface {
     private client: Client;
     id: "formCategories"
+    public endpoint: string = '/v3/orgs/:orgId/data-capture/form-categories';
 
     constructor(client: Client) {
         this.client = client;
@@ -13,7 +15,7 @@ export class FormCategoryService {
 
     async get(param?: string | RequestOptions | null): Promise<any> {
         let model = new FormCategory();
-        let baseEndpoint = this.client.finalEndpoint(model);
+        let baseEndpoint = this.client.finalEndpoint(this);
 
         try {
             // Make the request and get the full raw response
