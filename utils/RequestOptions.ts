@@ -6,11 +6,13 @@ type Sort = {
 export type RequestOptionsType = {
     sort?: Sort[];
     limit?: number;
+    offset?: number;
 };
 
 export class RequestOptions {
     sort?: Sort[];
     limit?: number;
+    offset?: number;
 
     constructor(options: RequestOptionsType) {
         if (options.sort) {
@@ -18,6 +20,9 @@ export class RequestOptions {
         }
         if (options.limit) {
             this.limit = options.limit
+        }
+        if (options.offset) {
+            this.offset = options.offset
         }
     }
 
@@ -34,6 +39,10 @@ export class RequestOptions {
 
         if (this.limit) {
             params.append('limit', this.limit.toString());
+        }
+
+        if (this.offset) {
+            params.append('offset', this.offset.toString());
         }
 
         return params;

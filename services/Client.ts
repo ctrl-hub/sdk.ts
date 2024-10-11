@@ -7,6 +7,7 @@ import {ModelConstructor} from "../interfaces/ModelConstructorInterface";
 import {InternalResponse} from "../interfaces/ResponseInterface";
 import {ServiceAccount} from "../models/ServiceAccount";
 import {ServiceMethods} from "../interfaces/ServiceMethods";
+import {ServiceAccountKey} from "../models/ServiceAccountKey";
 
 export class Client {
     readonly config: ClientConfig;
@@ -22,11 +23,19 @@ export class Client {
         this.services['formCategories'] = {
             endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
             model: FormCategory as ModelConstructor<FormCategory>,
+            type: 'form-categories',
         };
 
         this.services['serviceAccounts'] = {
             endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
             model: ServiceAccount as ModelConstructor<ServiceAccount>,
+            type: 'service-accounts'
+        };
+
+        this.services['serviceAccountKeys'] = {
+            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
+            model: ServiceAccountKey as ModelConstructor<ServiceAccountKey>,
+            type: 'service-account-keys'
         };
 
         // ensure we can do (as example):
@@ -44,6 +53,11 @@ export class Client {
                         get: (_, method) => {
                             if (method === 'get') {
                                 return (param: string | RequestOptionsType | null): Promise<InternalResponse> => {
+
+                                    // cleanup
+                                    if (typeof param === "string") {
+                                        return client.getResource<T>(serviceInfo, param);
+                                    }
                                     const requestOptions = param ? new RequestOptions(param) : null;
                                     return client.getResource<T>(serviceInfo, requestOptions);
                                 };
@@ -58,17 +72,70 @@ export class Client {
         });
     }
 
+    hydrate(json) {
+        let type = json.type;
+        let model;
+
+        Object.keys(this.services).forEach(serviceKey => {
+            if (this.services[serviceKey].type === type) {
+                let modelClass = this.services[serviceKey].model;
+                model = new modelClass();
+                model.id = json.id;
+                model.attributes = json.attributes || {};
+                model.relationships = json.relationships || [];
+                model.meta = json.meta || {};
+                model.links = json.links || [];
+            }
+        });
+
+        return model || null;
+    }
+
+    hydrateRelationships(single: any, included: any[]) {
+        if (single.relationships) {
+            let primaryKeys = Object.keys(single.relationships);
+
+            primaryKeys.forEach(key => {
+                for(let relation of single.relationships[key].data) {
+                    let {id, type} = relation;
+
+                    included.forEach((inc, index) => {
+                        if (id === inc.id && type === inc.type) {
+                            single.relationships[key].data[index] = inc;
+                        }
+                    })
+
+                }
+            });
+        }
+        return single;
+    }
+
     async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
         let response = await this.makeGetRequest(this.finalEndpoint(service), param);
+
+        // hydrate all in included
+        if (response.included) {
+            response.included.forEach((json, index) => {
+                response.included[index] = this.hydrate(json);
+            })
+        }
 
         if (response.data) {
             const ModelClass = service.model;  // Get the dynamic model class e.g. FormCategory
             if (Array.isArray(response.data)) {
-                response.data = response.data.map(item => ModelClass.hydrate(item));
+                response.data = response.data.map(item => ModelClass.hydrate(item, response));
             } else {
-                response.data = ModelClass.hydrate(response.data);
+                response.data = ModelClass.hydrate(response.data, response);
             }
 
+            if (Array.isArray(response.data)) {
+                response.data.forEach((single, index) => {
+                    response.data[index] = this.hydrateRelationships(single, response.included);
+                });
+            } else {
+                response.data = this.hydrateRelationships(response.data, response.included);
+            }
         }
 
         return response;

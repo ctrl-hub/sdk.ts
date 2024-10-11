@@ -3,5 +3,6 @@ export type ModelInterface = {
     type: String;
     attributes: Record<string, any>;
     meta: any;
-    relationships?: any
+    relationships?: any[],
+    included?: any;
 }
