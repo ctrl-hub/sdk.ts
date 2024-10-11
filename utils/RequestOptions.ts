@@ -5,14 +5,19 @@ type Sort = {
 
 export type RequestOptionsType = {
     sort?: Sort[];
+    limit?: number;
 };
 
 export class RequestOptions {
     sort?: Sort[];
+    limit?: number;
 
     constructor(options: RequestOptionsType) {
         if (options.sort) {
             this.sort = options.sort;
+        }
+        if (options.limit) {
+            this.limit = options.limit
         }
     }
 
@@ -25,6 +30,10 @@ export class RequestOptions {
             }).join(',');
 
             params.append('sort', sortString);
+        }
+
+        if (this.limit) {
+            params.append('limit', this.limit.toString());
         }
 
         return params;

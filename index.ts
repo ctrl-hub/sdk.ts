@@ -8,7 +8,8 @@ let client = new Client({
 
 (async () => {
     let { data } = await client.formCategories.get({
-        sort: [{ key: 'name', direction: 'desc' }]
+        sort: [{ key: 'name', direction: 'desc' }],
+        limit: 2
     });
 
     for (let d: FormCategory of data) {
