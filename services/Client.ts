@@ -1,60 +1,60 @@
 import { ClientConfig } from "./ClientConfig";
-import { ModelInterface } from "../interfaces/ModelInterface";
 import { RequestOptions } from "../utils/RequestOptions";
-import { FormCategoryService } from "./FormCategoryService";
-import type { InternalResponse } from "../interfaces/ResponseInterface"
-import {ServicesInterface} from "../interfaces/Services";
 import {FormCategory} from "../models/FormCategory";
 import {ModelServiceInterface} from "../interfaces/ModelServiceInterface";
 import {Requests} from "../utils/Requests";
 
+type Service = {
+    get: Function;
+    create: Function;
+}
+
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
-    public formCategories: FormCategoryService;
-    private models: Map<string, ModelInterface> = new Map();
-    public resources;
+    public services: Record<string, any> = {};  // To hold service instances
+    public formCategories: Service;
 
     constructor(config: ClientConfig) {
         this.config = config;
         this.organisation = '';
-        this.resources = {};
 
-        this.formCategories = new FormCategoryService(this);
+        this.services['formCategories'] = {
+            endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
+            model: FormCategory,
+        };
 
-        this.registerModel(new FormCategory());
-
-        return this.setupProxy({
-            formCategories: FormCategoryService
-        });
-    }
-
-    public registerModel(model: ModelInterface) {
-        this.models.set(model.type, model);
-    }
-
-    public getModel(type: string): ModelInterface | undefined {
-        return this.models.get(type);
-    }
-
-    private setupProxy(services: Record<keyof ServicesInterface, new (client: Client) => any>) {
-        // Initialize and assign services to both `resources` and `this`
-        Object.keys(services).forEach((key) => {
-            const ServiceClass = services[key as keyof ServicesInterface];
-            const instance = new ServiceClass(this);
-            this.resources[key as keyof ServicesInterface] = instance;
-            (this as any)[key] = instance; // Assign to class property for direct access
-        });
-
-        // Create a proxy that only targets services
         return new Proxy(this, {
-            get: (target, prop) => {
-                if (prop in services) {
-                    return (target as any)[prop];
+            get: (client, service) => {
+                if (service in client.services) {
+                    // Intercept `client.formCategories` etc and return proxy
+                    return new Proxy({}, {
+                        get: (_, method) => {
+                            if (method === 'get') {
+                                return (param: any[]) => client.getResource(client.services[service], param);
+                            }
+                            return () => `Method ${method.toString()} called on service ${service}`;
+                        }
+                    });
                 }
-                return Reflect.get(target, prop);
-            },
+
+                // Default behavior for non-service properties
+                return Reflect.get(client, service);
+            }
         });
+
+    }
+
+    async getResource(service: any, param: any) {
+        let response = await this.makeGetRequest(this.finalEndpoint(service), param);
+
+        if (response.data) {
+            const ModelClass = service.model;  // Get the dynamic model class e.g. FormCategory
+            const dataArray = Array.isArray(response.data) ? response.data : [response.data];
+            response.data = dataArray.map(item => new ModelClass(item.attributes, item.id, item.type, item.meta));
+        }
+
+        return response;
     }
 
     setOrganisationSlug(organisation: string) {
