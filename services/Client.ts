@@ -43,36 +43,15 @@ export class Client {
         return this.setupProxies();
     }
 
-    private setupProxies() {
-        return new Proxy(this, {
-            get: <T>(client: Client, service: string) => {
-                if (service in client.services) {
-                    const serviceInfo = client.services[service];
-
-                    return new Proxy({}, {
-                        get: (_, method) => {
-                            if (method === 'get') {
-                                return (param: string | RequestOptionsType | null): Promise<InternalResponse> => {
-
-                                    // cleanup
-                                    if (typeof param === "string") {
-                                        return client.getResource<T>(serviceInfo, param);
-                                    }
-                                    const requestOptions = param ? new RequestOptions(param) : null;
-                                    return client.getResource<T>(serviceInfo, requestOptions);
-                                };
-                            }
-                            return () => `Method ${method.toString()} called on service ${service}`;
-                        }
-                    });
-                }
-
-                return Reflect.get(client, service);
-            }
-        });
+    setOrganisationSlug(organisation: string) {
+        this.config.organisationId = organisation;
     }
 
-    hydrate(json) {
+    finalEndpoint(service: ServiceInterface): string {
+        return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
+    }
+
+    hydrateJson(json) {
         let type = json.type;
         let model;
 
@@ -111,13 +90,54 @@ export class Client {
         return single;
     }
 
+    private setupProxies() {
+        return new Proxy(this, {
+            get: <T>(client: Client, service: string) => {
+                if (service in client.services) {
+                    const serviceInfo = client.services[service];
+
+                    return new Proxy({}, {
+                        get: (_, method) => {
+                            if (method === 'get') {
+                                return (param: string | RequestOptionsType | null): Promise<InternalResponse> => {
+
+                                    // cleanup
+                                    if (typeof param === "string") {
+                                        return client.getResource<T>(serviceInfo, param);
+                                    }
+                                    const requestOptions = param ? new RequestOptions(param) : null;
+                                    return client.getResource<T>(serviceInfo, requestOptions);
+                                };
+                            }
+                            return () => `Method ${method.toString()} called on service ${service}`;
+                        }
+                    });
+                }
+
+                return Reflect.get(client, service);
+            }
+        });
+    }
+
+    async makeGetRequest(baseEndpoint: string, param?: string | RequestOptions | null): Promise<any> {
+        let url = Requests.buildRequestURL(baseEndpoint, param);
+
+        try {
+            const fetchResponse = await fetch(url);
+            let json = await fetchResponse.json();
+            return Requests.buildInternalResponse(fetchResponse, json);
+        } catch (error) {
+            return Requests.buildInternalErrorResponse(error);
+        }
+    }
+
     async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
         let response = await this.makeGetRequest(this.finalEndpoint(service), param);
 
         // hydrate all in included
         if (response.included) {
             response.included.forEach((json, index) => {
-                response.included[index] = this.hydrate(json);
+                response.included[index] = this.hydrateJson(json);
             })
         }
 
@@ -139,25 +159,5 @@ export class Client {
         }
 
         return response;
-    }
-
-    setOrganisationSlug(organisation: string) {
-        this.config.organisationId = organisation;
-    }
-
-    finalEndpoint(service: ServiceInterface): string {
-        return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
-    }
-
-    async makeGetRequest(baseEndpoint: string, param?: string | RequestOptions | null): Promise<any> {
-        let url = Requests.buildRequestURL(baseEndpoint, param);
-
-        try {
-            const fetchResponse = await fetch(url);
-            let json = await fetchResponse.json();
-            return Requests.buildInternalResponse(fetchResponse, json);
-        } catch (error) {
-            return Requests.buildInternalErrorResponse(error);
-        }
     }
 }
