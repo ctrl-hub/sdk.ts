@@ -98,22 +98,6 @@ export class Client {
 
     async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
         const response = await this.makeGetRequest(this.finalEndpoint(service), param);
-
-        if (!response.included && !response.data) return response;
-
-        // Hydrate included models
-        if (response.included) {
-            response.included = response.included.map(json => this.hydrator.hydrateJson(json));
-        }
-
-        // Normalize data into an array for easier handling
-        const data = Array.isArray(response.data) ? response.data : [response.data];
-        const ModelClass = service.model;
-        response.data = data.map(item => ModelClass.hydrate(item, response));
-
-        // Hydrate relationships for all data
-        response.data = response.data.map(single => this.hydrator.hydrateRelationships(single, response.included));
-
-        return response;
+        return this.hydrator.hydrateResponse(service, response);
     }
 }

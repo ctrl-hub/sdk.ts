@@ -12,6 +12,32 @@ interface JsonData {
 export class Hydrator {
     constructor(private services: Record<string, any>) {}
 
+    hydrateResponse(service, response) {
+
+        if (!response.included && !response.data) return response;
+
+        // Hydrate included models
+        if (response.included) {
+            response.included = response.included.map(json => this.hydrateJson(json));
+        }
+
+        const isArray = Array.isArray(response.data);
+
+        // Normalize data into an array for easier handling
+        const data = Array.isArray(response.data) ? response.data : [response.data];
+        const ModelClass = service.model;
+        response.data = data.map(item => ModelClass.hydrate(item, response));
+
+        // Hydrate relationships for all data
+        response.data = response.data.map(single => this.hydrateRelationships(single, response.included));
+
+        if (!isArray) {
+            response.data = response.data[0];
+        }
+
+        return response;
+    }
+
     hydrateJson(json: JsonData): ModelInterface | null {
         const modelClass = this.findServiceModel(json.type);
         if (!modelClass) return null;
@@ -24,8 +50,10 @@ export class Hydrator {
     hydrateRelationships(single: JsonData, included: JsonData[]): JsonData {
         if (!single.relationships) return single;
 
-        Object.keys(single.relationships).forEach(key => {
-            single.relationships[key].data = single.relationships[key].data.map(relation =>
+        let relationships = single.relationships;
+
+        Object.keys(relationships).forEach(key => {
+            relationships[key].data = relationships[key].data.map(relation =>
                 this.findMatchingIncluded(relation, included) || relation
             );
         });
