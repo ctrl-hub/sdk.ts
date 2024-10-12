@@ -8,12 +8,14 @@ import {InternalResponse} from "../interfaces/ResponseInterface";
 import {ServiceAccount} from "../models/ServiceAccount";
 import {ServiceMethods} from "../interfaces/ServiceMethods";
 import {ServiceAccountKey} from "../models/ServiceAccountKey";
+import {Hydrator} from "../utils/Hydrator";
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
     public services: Record<string, any> = {};
     public formCategories: ServiceMethods;
+    public hydrator: Hydrator;
     public serviceAccounts: ServiceMethods;
 
     constructor(config: ClientConfig) {
@@ -38,6 +40,8 @@ export class Client {
             type: 'service-account-keys'
         };
 
+        this.hydrator = new Hydrator(this.services);
+
         // ensure we can do (as example):
         // client.formCategories.get() and return hydrated models based on this.services['formCategories']
         return this.setupProxies();
@@ -49,43 +53,6 @@ export class Client {
 
     finalEndpoint(service: ServiceInterface): string {
         return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
-    }
-
-    findServiceModel(type: string) {
-        return Object.values(this.services).find(service => service.type === type)?.model;
-    }
-
-    populateModelAttributes(model: any, json: any) {
-        model.id = json.id;
-        model.attributes = json.attributes || {};
-        model.relationships = json.relationships || [];
-        model.meta = json.meta || {};
-        model.links = json.links || [];
-    }
-
-    hydrateJson(json) {
-        const modelClass = this.findServiceModel(json.type);
-        if (!modelClass) return null;
-
-        let model = new modelClass();
-        this.populateModelAttributes(model, json);
-        return model;
-    }
-
-    hydrateRelationships(single: any, included: any[]) {
-        if (!single.relationships) return single;
-
-        Object.keys(single.relationships).forEach(key => {
-            single.relationships[key].data = single.relationships[key].data.map(relation =>
-                this.findMatchingIncluded(relation, included) || relation
-            );
-        });
-
-        return single;
-    }
-
-    findMatchingIncluded(relation: any, included: any[]) {
-        return included.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 
     private setupProxies() {
@@ -135,7 +102,7 @@ export class Client {
         // hydrate all in included
         if (response.included) {
             response.included.forEach((json, index) => {
-                response.included[index] = this.hydrateJson(json);
+                response.included[index] = this.hydrator.hydrateJson(json);
             })
         }
 
@@ -149,10 +116,10 @@ export class Client {
 
             if (Array.isArray(response.data)) {
                 response.data.forEach((single, index) => {
-                    response.data[index] = this.hydrateRelationships(single, response.included);
+                    response.data[index] = this.hydrator.hydrateRelationships(single, response.included);
                 });
             } else {
-                response.data = this.hydrateRelationships(response.data, response.included);
+                response.data = this.hydrator.hydrateRelationships(response.data, response.included);
             }
         }
 

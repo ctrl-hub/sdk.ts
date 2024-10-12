@@ -5,4 +5,5 @@ export type ModelInterface = {
     meta: any;
     relationships?: any[],
     included?: any;
+    links: any;
 }

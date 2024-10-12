@@ -73,7 +73,7 @@ describe('Client Constructor', () => {
             links: ["https://api.example.com/link"],
         };
 
-        let hydratedModel = client.hydrateJson(json);
+        let hydratedModel = client.hydrator.hydrateJson(json);
 
         expect(hydratedModel).toBeDefined();
         expect(hydratedModel).toBeInstanceOf(FormCategory);
@@ -100,7 +100,7 @@ describe('Client Constructor', () => {
             { id: "4aa3ef9a-0109-4fcb-8cee-c9b7e4b955ae", type: "form-categories", attributes: { name: "Category 1" } },
         ];
 
-        const result = client.hydrateRelationships(single, included);
+        const result = client.hydrator.hydrateRelationships(single, included);
 
         expect(result.relationships.category.data[0]).toEqual({
             id: "4aa3ef9a-0109-4fcb-8cee-c9b7e4b955ae",
