@@ -51,43 +51,41 @@ export class Client {
         return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
     }
 
+    findServiceModel(type: string) {
+        return Object.values(this.services).find(service => service.type === type)?.model;
+    }
+
+    populateModelAttributes(model: any, json: any) {
+        model.id = json.id;
+        model.attributes = json.attributes || {};
+        model.relationships = json.relationships || [];
+        model.meta = json.meta || {};
+        model.links = json.links || [];
+    }
+
     hydrateJson(json) {
-        let type = json.type;
-        let model;
+        const modelClass = this.findServiceModel(json.type);
+        if (!modelClass) return null;
 
-        Object.keys(this.services).forEach(serviceKey => {
-            if (this.services[serviceKey].type === type) {
-                let modelClass = this.services[serviceKey].model;
-                model = new modelClass();
-                model.id = json.id;
-                model.attributes = json.attributes || {};
-                model.relationships = json.relationships || [];
-                model.meta = json.meta || {};
-                model.links = json.links || [];
-            }
-        });
-
-        return model || null;
+        let model = new modelClass();
+        this.populateModelAttributes(model, json);
+        return model;
     }
 
     hydrateRelationships(single: any, included: any[]) {
-        if (single.relationships) {
-            let primaryKeys = Object.keys(single.relationships);
+        if (!single.relationships) return single;
 
-            primaryKeys.forEach(key => {
-                for(let relation of single.relationships[key].data) {
-                    let {id, type} = relation;
+        Object.keys(single.relationships).forEach(key => {
+            single.relationships[key].data = single.relationships[key].data.map(relation =>
+                this.findMatchingIncluded(relation, included) || relation
+            );
+        });
 
-                    included.forEach((inc, index) => {
-                        if (id === inc.id && type === inc.type) {
-                            single.relationships[key].data[index] = inc;
-                        }
-                    })
-
-                }
-            });
-        }
         return single;
+    }
+
+    findMatchingIncluded(relation: any, included: any[]) {
+        return included.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 
     private setupProxies() {
