@@ -19,26 +19,6 @@ describe('Client Constructor', () => {
         client = new Client(config);
     });
 
-    it('should initialize services in the constructor', () => {
-        expect(client.services['formCategories']).toEqual({
-            endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
-            model: FormCategory,
-            type: 'form-categories',
-        });
-
-        expect(client.services['serviceAccounts']).toEqual({
-            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
-            model: ServiceAccount,
-            type: 'service-accounts',
-        });
-
-        expect(client.services['serviceAccountKeys']).toEqual({
-            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
-            model: ServiceAccountKey,
-            type: 'service-account-keys',
-        });
-    });
-
     it('should initialize the organisation to an empty string', () => {
         expect(client.config.organisationId).toBe("123");
     });

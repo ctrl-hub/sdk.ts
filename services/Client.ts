@@ -29,13 +29,13 @@ export class Client {
         };
 
         this.services['serviceAccounts'] = {
-            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
+            endpoint: '/v3/orgs/:orgId/admin/iam/service-accounts',
             model: ServiceAccount as ModelConstructor<ServiceAccount>,
             type: 'service-accounts'
         };
 
         this.services['serviceAccountKeys'] = {
-            endpoint: '/v3/orgs/:orgId/settings/iam/service-accounts',
+            endpoint: '/v3/orgs/:orgId/admin/iam/service-accounts',
             model: ServiceAccountKey as ModelConstructor<ServiceAccountKey>,
             type: 'service-account-keys'
         };

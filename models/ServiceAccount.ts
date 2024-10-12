@@ -33,6 +33,7 @@ export class ServiceAccount implements ModelInterface {
             serviceAccount.attributes.email = data.attributes.email || '';
             serviceAccount.attributes.enabled = data.attributes.enabled || false;
             serviceAccount.meta = data.meta || {};
+            serviceAccount.relationships = data.relationships || {};
         }
 
         return serviceAccount;
