@@ -13,7 +13,7 @@ import {Hydrator} from "../utils/Hydrator";
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
-    public services: Record<string, any> = {};
+    public services: Record<string, ServiceInterface> = {};
     public formCategories: ServiceMethods;
     public hydrator: Hydrator;
     public serviceAccounts: ServiceMethods;
