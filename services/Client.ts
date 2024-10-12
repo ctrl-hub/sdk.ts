@@ -97,31 +97,22 @@ export class Client {
     }
 
     async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
-        let response = await this.makeGetRequest(this.finalEndpoint(service), param);
+        const response = await this.makeGetRequest(this.finalEndpoint(service), param);
 
-        // hydrate all in included
+        if (!response.included && !response.data) return response;
+
+        // Hydrate included models
         if (response.included) {
-            response.included.forEach((json, index) => {
-                response.included[index] = this.hydrator.hydrateJson(json);
-            })
+            response.included = response.included.map(json => this.hydrator.hydrateJson(json));
         }
 
-        if (response.data) {
-            const ModelClass = service.model;  // Get the dynamic model class e.g. FormCategory
-            if (Array.isArray(response.data)) {
-                response.data = response.data.map(item => ModelClass.hydrate(item, response));
-            } else {
-                response.data = ModelClass.hydrate(response.data, response);
-            }
+        // Normalize data into an array for easier handling
+        const data = Array.isArray(response.data) ? response.data : [response.data];
+        const ModelClass = service.model;
+        response.data = data.map(item => ModelClass.hydrate(item, response));
 
-            if (Array.isArray(response.data)) {
-                response.data.forEach((single, index) => {
-                    response.data[index] = this.hydrator.hydrateRelationships(single, response.included);
-                });
-            } else {
-                response.data = this.hydrator.hydrateRelationships(response.data, response.included);
-            }
-        }
+        // Hydrate relationships for all data
+        response.data = response.data.map(single => this.hydrator.hydrateRelationships(single, response.included));
 
         return response;
     }
