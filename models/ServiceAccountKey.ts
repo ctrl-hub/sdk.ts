@@ -18,14 +18,15 @@ export class ServiceAccountKey implements ModelInterface {
     }
 
     static hydrate(data: any, fullResponseData: any) {
-        let ServiceAccountKey = new ServiceAccountKey();
+        let serviceAccountKey = new ServiceAccountKey();
 
         if (data) {
-            ServiceAccountKey.id = data.id;
-            ServiceAccountKey.attributes.client_id = data.name || '';
+            serviceAccountKey.id = data.id;
+            serviceAccountKey.attributes.client_id = data.attributes.client_id || '';
+            serviceAccountKey.meta = data.meta || {};
         }
 
-        return ServiceAccountKey;
+        return serviceAccountKey;
     }
 
 }
