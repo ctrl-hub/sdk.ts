@@ -10,7 +10,7 @@ describe('ServiceAccountKey', () => {
         expect(serviceAccountKey.type).toBe('service-account-keys');
         expect(serviceAccountKey.attributes.client_id).toBe('');
         expect(serviceAccountKey.meta).toEqual({});
-        expect(serviceAccountKey.relationships).toBeUndefined();
+        expect(serviceAccountKey.relationships).toEqual([]);
     });
 
     describe('hydrate', () => {

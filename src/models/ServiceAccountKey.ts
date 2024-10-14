@@ -16,6 +16,7 @@ export class ServiceAccountKey implements Model {
         this.attributes = {
             client_id: '',
         };
+        this.relationships = [];
     }
 
     static hydrate(data: any, fullResponseData: any) {
