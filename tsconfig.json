@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "System",                  // Required to use `outFile`
-    "outFile": "dist/types.d.ts",        // Single bundled .d.ts file
-    "declaration": true,                 // Generate declaration files
-    "declarationMap": false,             // Disable maps for simpler setup
-    "emitDeclarationOnly": true,         // Emit only the .d.ts file
-    "strict": true,
-    "esModuleInterop": true,
+    "target": "ESNext",                  // Your target JS version
+    "module": "ESNext",                  // Use ES modules
+    "outDir": "dist",                    // Output directory for compiled files
+    "rootDir": "src",                    // Root directory for the source files
+    "declaration": true,                 // Generate .d.ts files
+    "declarationMap": true,              // Optionally generate source maps for .d.ts files
+    "emitDeclarationOnly": true,        // Emit both .js and .d.ts files
+    "strict": true,                      // Enable strict type-checking
+    "esModuleInterop": true,             // Allow CommonJS interop
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],               // Include all .ts files
+  "include": ["src/**/*"],               // Include all .ts files in src
   "exclude": ["node_modules", "dist"]    // Exclude node_modules and dist
 }
