@@ -7,4 +7,3 @@ export declare class ClientConfig {
     baseDomain: string;
     constructor(config: ClientConfigInterface);
 }
-//# sourceMappingURL=ClientConfig.d.ts.map

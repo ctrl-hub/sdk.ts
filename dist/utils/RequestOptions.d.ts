@@ -15,4 +15,3 @@ export declare class RequestOptions {
     toURLSearchParams(): URLSearchParams;
 }
 export {};
-//# sourceMappingURL=RequestOptions.d.ts.map

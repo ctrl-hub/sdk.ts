@@ -13,4 +13,3 @@ export declare class ServiceAccountKey implements Model {
     static hydrate(data: any, fullResponseData: any): ServiceAccountKey;
 }
 export {};
-//# sourceMappingURL=ServiceAccountKey.d.ts.map

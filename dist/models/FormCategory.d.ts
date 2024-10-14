@@ -12,4 +12,3 @@ export declare class FormCategory implements Model {
     static hydrate(data: any): FormCategory;
 }
 export {};
-//# sourceMappingURL=FormCategory.d.ts.map

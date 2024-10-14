@@ -18,4 +18,3 @@ export declare class Client {
     makeGetRequest(baseEndpoint: string, param?: string | RequestOptions | null): Promise<any>;
     getResource(service: Service, param: string | RequestOptions | null): Promise<InternalResponse>;
 }
-//# sourceMappingURL=Client.d.ts.map

@@ -1,1 +1,0 @@
-{"version":3,"file":"ClientConfig.d.ts","sourceRoot":"","sources":["../../src/services/ClientConfig.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,qBAAqB,GAAG;IAChC,cAAc,EAAE,MAAM,CAAC;IACvB,UAAU,CAAC,EAAE,MAAM,CAAC;CACvB,CAAC;AAEF,qBAAa,YAAY;IACd,cAAc,EAAE,MAAM,CAAC;IACvB,UAAU,EAAE,MAAM,CAAC;gBAEd,MAAM,EAAE,qBAAqB;CAI5C"}
