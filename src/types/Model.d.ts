@@ -1,4 +1,4 @@
-export type ModelInterface = {
+export type Model = {
     id?: string;
     type: String;
     attributes: Record<string, any>;

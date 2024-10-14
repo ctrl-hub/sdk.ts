@@ -1,19 +1,19 @@
 import { ClientConfig } from "./ClientConfig";
 import {RequestOptions, RequestOptionsType} from "../utils/RequestOptions";
 import {FormCategory} from "../models/FormCategory";
-import {ServiceInterface} from "../interfaces/ServiceInterface";
 import {Requests} from "../utils/Requests";
-import {ModelConstructor} from "../interfaces/ModelConstructorInterface";
-import {InternalResponse} from "../interfaces/ResponseInterface";
 import {ServiceAccount} from "../models/ServiceAccount";
-import {ServiceMethods} from "../interfaces/ServiceMethods";
 import {ServiceAccountKey} from "../models/ServiceAccountKey";
 import {Hydrator} from "../utils/Hydrator";
+import type {Service} from "../types/Service";
+import type {ServiceMethods} from "../types/ServiceMethods";
+import type {ModelConstructor} from "../types/ModelConstructor";
+import type {InternalResponse} from "../types/Response";
 
 export class Client {
     readonly config: ClientConfig;
     public organisation: string;
-    public services: Record<string, ServiceInterface> = {};
+    public services: Record<string, Service> = {};
     public formCategories: ServiceMethods;
     public hydrator: Hydrator;
     public serviceAccounts: ServiceMethods;
@@ -51,7 +51,7 @@ export class Client {
         this.config.organisationId = organisation;
     }
 
-    finalEndpoint(service: ServiceInterface): string {
+    finalEndpoint(service: Service): string {
         return `${this.config.baseDomain}${service.endpoint.replace(':orgId', this.config.organisationId.toString())}`;
     }
 
@@ -96,7 +96,7 @@ export class Client {
         }
     }
 
-    async getResource(service: ServiceInterface, param: string | RequestOptions | null): Promise<InternalResponse> {
+    async getResource(service: Service, param: string | RequestOptions | null): Promise<InternalResponse> {
         const response = await this.makeGetRequest(this.finalEndpoint(service), param);
         return this.hydrator.hydrateResponse(service, response);
     }

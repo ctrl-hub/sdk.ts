@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "declaration": true,
     "outDir": "./dist",
-    "rootDir": "./services"
+    "rootDir": "./src"
   },
   "include": ["src/**/*"],      // Ensure TypeScript checks all source files
   "exclude": [

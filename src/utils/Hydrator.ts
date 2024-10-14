@@ -1,4 +1,4 @@
-import {ModelInterface} from "../interfaces/ModelInterface";
+import type {Model} from "../types/Model";
 
 interface JsonData {
     id: string;
@@ -38,7 +38,7 @@ export class Hydrator {
         return response;
     }
 
-    hydrateJson(json: JsonData): ModelInterface | null {
+    hydrateJson(json: JsonData): Model | null {
         const modelClass = this.findServiceModel(json.type);
         if (!modelClass) return null;
 
