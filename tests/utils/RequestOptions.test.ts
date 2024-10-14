@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { RequestOptions, RequestOptionsType } from "../../utils/RequestOptions";
+import { RequestOptions, RequestOptionsType } from "utils/RequestOptions";
 
 describe('RequestOptions', () => {
 

@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["*"],
+    },
     "target": "ES2020",
     "module": "commonjs",
     "strict": true,
@@ -10,10 +14,7 @@
     "outDir": "./dist",
     "rootDir": "./services"
   },
-  "include": [
-    "services/**/*.ts",
-    "services/**/*.d.ts"
-  ],
+  "include": ["src/**/*"],      // Ensure TypeScript checks all source files
   "exclude": [
     "node_modules"
   ]

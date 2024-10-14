@@ -1,6 +1,6 @@
 import { describe, it, expect, mock } from "bun:test";
-import { Requests } from "../../utils/Requests";
-import { RequestOptions } from "../../utils/RequestOptions";
+import { Requests } from "utils/Requests";
+import { RequestOptions } from "utils/RequestOptions";
 
 describe('Requests', () => {
     describe('buildRequestURL', () => {

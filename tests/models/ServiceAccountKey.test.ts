@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { ServiceAccountKey } from "../../models/ServiceAccountKey";
+import { ServiceAccountKey } from "models/ServiceAccountKey";
 
 describe('ServiceAccountKey', () => {
 

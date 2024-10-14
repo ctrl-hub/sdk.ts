@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "bun:test";
-import { Hydrator } from "../../utils/Hydrator";
-import { FormCategory } from "../../models/FormCategory";
-import { ServiceAccount } from "../../models/ServiceAccount";
-import { ServiceAccountKey } from "../../models/ServiceAccountKey";
+import { Hydrator } from "utils/Hydrator";
+import { FormCategory } from "models/FormCategory";
+import { ServiceAccount } from "models/ServiceAccount";
+import { ServiceAccountKey } from "models/ServiceAccountKey";
 
 describe('Hydrator', () => {
     let hydrator: Hydrator;
