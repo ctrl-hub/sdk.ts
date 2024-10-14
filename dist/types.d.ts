@@ -157,3 +157,7 @@ declare module "services/Client" {
         getResource(service: Service, param: string | RequestOptions | null): Promise<InternalResponse>;
     }
 }
+declare module "index" {
+    export { Client } from "services/Client";
+    export { ClientConfig } from "services/ClientConfig";
+}

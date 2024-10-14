@@ -1,14 +1,14 @@
 {
   "name": "chc-1",
   "version": "1.0.5",
-  "main": "dist/index.d.js",
+  "main": "dist/index.ts",
   "types": "dist/types.d.ts",
   "type": "module",
   "devDependencies": {
     "bun-types": "^1.1.30"
   },
   "scripts": {
-    "build": "tsc && bun build src/index.d.ts --outdir dist"
+    "build": "tsc && bun build src/index.ts --outdir dist"
   },
   "files": [
     "dist"
