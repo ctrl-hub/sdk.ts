@@ -38,6 +38,7 @@ class FormCategory {
   type = "form-categories";
   attributes;
   meta = {};
+  links;
   constructor() {
     this.attributes = {
       name: ""
@@ -106,6 +107,7 @@ class ServiceAccount {
   attributes;
   meta = {};
   relationships;
+  links;
   constructor() {
     this.attributes = {
       name: "",
@@ -136,10 +138,12 @@ class ServiceAccountKey {
   attributes;
   meta = {};
   relationships;
+  links;
   constructor() {
     this.attributes = {
       client_id: ""
     };
+    this.relationships = [];
   }
   static hydrate(data, fullResponseData) {
     let serviceAccountKey = new ServiceAccountKey;
@@ -211,8 +215,8 @@ class Client {
   config;
   organisation;
   services = {};
-  formCategories;
   hydrator;
+  formCategories;
   serviceAccounts;
   constructor(config) {
     this.config = config;
