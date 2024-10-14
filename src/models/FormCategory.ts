@@ -1,14 +1,15 @@
-import { ModelInterface } from "../interfaces/ModelInterface";
+import type {Model} from "../types/Model";
 
 type FormCategoryAttributes = {
     name: string;
 };
 
-export class FormCategory implements ModelInterface {
+export class FormCategory implements Model {
     public id: string = '';
     public type: string = 'form-categories';
     public attributes: FormCategoryAttributes;
     public meta: any = {};
+    links: any;
 
     constructor() {
         this.attributes = {

@@ -1,15 +1,16 @@
-import { ModelInterface } from "../interfaces/ModelInterface";
+import type { Model } from "../types/Model";
 
 type Attributes = {
     client_id: string;
 };
 
-export class ServiceAccountKey implements ModelInterface {
+export class ServiceAccountKey implements Model {
     public id: string = '';
     public type: string = 'service-account-keys';
     public attributes: Attributes;
     public meta: any = {};
     relationships: any[];
+    links: any;
 
     constructor() {
         this.attributes = {

@@ -1,4 +1,4 @@
-import { ModelInterface } from "../interfaces/ModelInterface";
+import type { Model } from "../types/Model";
 
 type ServiceAccountAttributes = {
     name: string;
@@ -7,12 +7,13 @@ type ServiceAccountAttributes = {
     enabled: boolean;
 };
 
-export class ServiceAccount implements ModelInterface {
+export class ServiceAccount implements Model {
     public id: string = '';
     public type: string = 'service-accounts';
     public attributes: ServiceAccountAttributes;
     public meta: any = {};
     public relationships? : any;
+    links: any;
 
     constructor() {
         this.attributes = {
