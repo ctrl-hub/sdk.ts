@@ -12,7 +12,7 @@ export class Requests {
         return endpoint;
     }
 
-    public static buildInternalResponse(fetchResponse, json) {
+    public static buildInternalResponse(fetchResponse: any, json: any) {
         return {
             ok: fetchResponse.ok, // @todo convert to own version
             statusCode: fetchResponse.status,
@@ -29,7 +29,7 @@ export class Requests {
         };
     }
 
-    public static buildInternalErrorResponse(error ){
+    public static buildInternalErrorResponse(error: any){
         return {
             ok: false,
             statusCode: error.statusCode || 0, // If there's no response, status code is 0

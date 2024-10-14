@@ -1,4 +1,5 @@
 import type {Model} from "../types/Model";
+import type {Service} from "../types/Service";
 
 interface JsonData {
     id: string;
@@ -12,13 +13,13 @@ interface JsonData {
 export class Hydrator {
     constructor(private services: Record<string, any>) {}
 
-    hydrateResponse(service, response) {
+    hydrateResponse(service: Service, response: any) {
 
         if (!response.included && !response.data) return response;
 
         // Hydrate included models
         if (response.included) {
-            response.included = response.included.map(json => this.hydrateJson(json));
+            response.included = response.included.map((json: any) => this.hydrateJson(json));
         }
 
         const isArray = Array.isArray(response.data);
@@ -26,10 +27,10 @@ export class Hydrator {
         // Normalize data into an array for easier handling
         const data = Array.isArray(response.data) ? response.data : [response.data];
         const ModelClass = service.model;
-        response.data = data.map(item => ModelClass.hydrate(item, response));
+        response.data = data.map((item: any) => ModelClass.hydrate(item, response));
 
         // Hydrate relationships for all data
-        response.data = response.data.map(single => this.hydrateRelationships(single, response.included));
+        response.data = response.data.map((single: any) => this.hydrateRelationships(single, response.included));
 
         if (!isArray) {
             response.data = response.data[0];

@@ -14,8 +14,11 @@ export class Client {
     readonly config: ClientConfig;
     public organisation: string;
     public services: Record<string, Service> = {};
-    public formCategories: ServiceMethods;
     public hydrator: Hydrator;
+
+    // @ts-ignore
+    public formCategories: ServiceMethods;
+    // @ts-ignore
     public serviceAccounts: ServiceMethods;
 
     constructor(config: ClientConfig) {
@@ -68,9 +71,11 @@ export class Client {
 
                                     // cleanup
                                     if (typeof param === "string") {
+                                        // @ts-ignore
                                         return client.getResource<T>(serviceInfo, param);
                                     }
                                     const requestOptions = param ? new RequestOptions(param) : null;
+                                    // @ts-ignore
                                     return client.getResource<T>(serviceInfo, requestOptions);
                                 };
                             }
