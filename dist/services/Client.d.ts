@@ -10,6 +10,7 @@ export declare class Client {
     services: Record<string, Service>;
     hydrator: Hydrator;
     formCategories: ServiceMethods;
+    roles: ServiceMethods;
     serviceAccounts: ServiceMethods;
     constructor(config: ClientConfig);
     setOrganisationSlug(organisation: string): void;

@@ -55,6 +55,60 @@ class FormCategory {
   }
 }
 
+// src/models/Role.ts
+class Role {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      custom: false,
+      name: "",
+      description: "",
+      launch_stage: "",
+      permissions: []
+    };
+  }
+  static hydrate(data) {
+    let role = new Role;
+    if (data) {
+      role.id = data.id;
+      role.attributes.custom = data.attributes.custom || false;
+      role.attributes.name = data.attributes.name || "";
+      role.attributes.description = data.attributes.description || "";
+      role.attributes.launch_stage = data.attributes.launch_stage || "";
+      role.attributes.permissions = data.attributes.permissions || [];
+      role.meta = data.meta || {};
+    }
+    return role;
+  }
+}
+
+// src/models/Permission.ts
+class Permission {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      description: ""
+    };
+  }
+  static hydrate(data) {
+    let permission = new Permission;
+    if (data) {
+      permission.id = data.id;
+      permission.attributes.description = data.attributes.description || "";
+      permission.meta = data.meta || {};
+    }
+    return permission;
+  }
+}
+
 // src/utils/Requests.ts
 class Requests {
   static buildRequestURL(baseEndpoint, param) {
@@ -217,6 +271,7 @@ class Client {
   services = {};
   hydrator;
   formCategories;
+  roles;
   serviceAccounts;
   constructor(config) {
     this.config = config;
@@ -225,6 +280,16 @@ class Client {
       endpoint: "/v3/orgs/:orgId/data-capture/form-categories",
       model: FormCategory,
       type: "form-categories"
+    };
+    this.services["permissions"] = {
+      endpoint: "/v3/admin/permissions",
+      model: Permission,
+      type: "permissions"
+    };
+    this.services["roles"] = {
+      endpoint: "/v3/admin/roles",
+      model: Role,
+      type: "roles"
     };
     this.services["serviceAccounts"] = {
       endpoint: "/v3/orgs/:orgId/admin/iam/service-accounts",
