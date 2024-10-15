@@ -1,4 +1,7 @@
-export class ServiceAccount {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ServiceAccount = void 0;
+class ServiceAccount {
     id = '';
     type = 'service-accounts';
     attributes;
@@ -27,3 +30,4 @@ export class ServiceAccount {
         return serviceAccount;
     }
 }
+exports.ServiceAccount = ServiceAccount;

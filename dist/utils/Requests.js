@@ -1,8 +1,11 @@
-import { RequestOptions } from "./RequestOptions";
-export class Requests {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Requests = void 0;
+const RequestOptions_1 = require("./RequestOptions");
+class Requests {
     static buildRequestURL(baseEndpoint, param) {
         let endpoint = baseEndpoint;
-        if (param instanceof RequestOptions) {
+        if (param instanceof RequestOptions_1.RequestOptions) {
             endpoint += `?${param.toURLSearchParams().toString()}`;
         }
         else if (typeof param === 'string') {
@@ -12,7 +15,7 @@ export class Requests {
     }
     static buildInternalResponse(fetchResponse, json) {
         return {
-            ok: fetchResponse.ok, // @todo convert to own version
+            ok: fetchResponse.ok,
             statusCode: fetchResponse.status,
             headers: fetchResponse.headers,
             meta: json?.meta || null,
@@ -29,7 +32,7 @@ export class Requests {
     static buildInternalErrorResponse(error) {
         return {
             ok: false,
-            statusCode: error.statusCode || 0, // If there's no response, status code is 0
+            statusCode: error.statusCode || 0,
             headers: error.headers,
             data: null,
             errors: {
@@ -43,3 +46,4 @@ export class Requests {
         };
     }
 }
+exports.Requests = Requests;

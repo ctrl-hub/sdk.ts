@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",                  // Target JS version
-    "module": "ESNext",                  // Use ES modules
+    "module": "CommonJS",                  // Use ES modules
     "outDir": "dist",                    // Output directory for compiled files
     "rootDir": "src",                    // Root directory for the source files
     "declaration": true,                 // Generate .d.ts files
@@ -10,7 +10,8 @@
     "strict": true,                      // Enable strict type-checking
     "esModuleInterop": true,             // Allow interop with CommonJS
     "skipLibCheck": true,                // Skip type checks on libraries
-    "forceConsistentCasingInFileNames": true // Enforce consistent casing in file names
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in file names
+    "allowJs": true
   },
   "include": ["src/**/*"],               // Include all .ts files in src
   "exclude": ["node_modules", "dist"]    // Exclude node_modules and dist

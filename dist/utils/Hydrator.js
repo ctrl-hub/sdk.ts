@@ -1,4 +1,7 @@
-export class Hydrator {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Hydrator = void 0;
+class Hydrator {
     services;
     constructor(services) {
         this.services = services;
@@ -53,3 +56,4 @@ export class Hydrator {
         return included.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 }
+exports.Hydrator = Hydrator;

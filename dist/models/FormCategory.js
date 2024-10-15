@@ -1,4 +1,7 @@
-export class FormCategory {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FormCategory = void 0;
+class FormCategory {
     id = '';
     type = 'form-categories';
     attributes;
@@ -19,3 +22,4 @@ export class FormCategory {
         return formCategory;
     }
 }
+exports.FormCategory = FormCategory;

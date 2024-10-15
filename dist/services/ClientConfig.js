@@ -1,4 +1,7 @@
-export class ClientConfig {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ClientConfig = void 0;
+class ClientConfig {
     organisationId;
     baseDomain;
     constructor(config) {
@@ -6,3 +9,4 @@ export class ClientConfig {
         this.baseDomain = config.baseDomain || 'https://app.ctrl-hub.com';
     }
 }
+exports.ClientConfig = ClientConfig;

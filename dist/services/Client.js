@@ -1,10 +1,13 @@
-import { RequestOptions } from "../utils/RequestOptions";
-import { FormCategory } from "../models/FormCategory";
-import { Requests } from "../utils/Requests";
-import { ServiceAccount } from "../models/ServiceAccount";
-import { ServiceAccountKey } from "../models/ServiceAccountKey";
-import { Hydrator } from "../utils/Hydrator";
-export class Client {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Client = void 0;
+const RequestOptions_1 = require("../utils/RequestOptions");
+const FormCategory_1 = require("../models/FormCategory");
+const Requests_1 = require("../utils/Requests");
+const ServiceAccount_1 = require("../models/ServiceAccount");
+const ServiceAccountKey_1 = require("../models/ServiceAccountKey");
+const Hydrator_1 = require("../utils/Hydrator");
+class Client {
     config;
     organisation;
     services = {};
@@ -18,20 +21,20 @@ export class Client {
         this.organisation = '';
         this.services['formCategories'] = {
             endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
-            model: FormCategory,
+            model: FormCategory_1.FormCategory,
             type: 'form-categories',
         };
         this.services['serviceAccounts'] = {
             endpoint: '/v3/orgs/:orgId/admin/iam/service-accounts',
-            model: ServiceAccount,
+            model: ServiceAccount_1.ServiceAccount,
             type: 'service-accounts'
         };
         this.services['serviceAccountKeys'] = {
             endpoint: '/v3/orgs/:orgId/admin/iam/service-accounts',
-            model: ServiceAccountKey,
+            model: ServiceAccountKey_1.ServiceAccountKey,
             type: 'service-account-keys'
         };
-        this.hydrator = new Hydrator(this.services);
+        this.hydrator = new Hydrator_1.Hydrator(this.services);
         // ensure we can do (as example):
         // client.formCategories.get() and return hydrated models based on this.services['formCategories']
         return this.setupProxies();
@@ -56,7 +59,7 @@ export class Client {
                                         // @ts-ignore
                                         return client.getResource(serviceInfo, param);
                                     }
-                                    const requestOptions = param ? new RequestOptions(param) : null;
+                                    const requestOptions = param ? new RequestOptions_1.RequestOptions(param) : null;
                                     // @ts-ignore
                                     return client.getResource(serviceInfo, requestOptions);
                                 };
@@ -70,14 +73,14 @@ export class Client {
         });
     }
     async makeGetRequest(baseEndpoint, param) {
-        let url = Requests.buildRequestURL(baseEndpoint, param);
+        let url = Requests_1.Requests.buildRequestURL(baseEndpoint, param);
         try {
             const fetchResponse = await fetch(url);
             let json = await fetchResponse.json();
-            return Requests.buildInternalResponse(fetchResponse, json);
+            return Requests_1.Requests.buildInternalResponse(fetchResponse, json);
         }
         catch (error) {
-            return Requests.buildInternalErrorResponse(error);
+            return Requests_1.Requests.buildInternalErrorResponse(error);
         }
     }
     async getResource(service, param) {
@@ -85,3 +88,4 @@ export class Client {
         return this.hydrator.hydrateResponse(service, response);
     }
 }
+exports.Client = Client;

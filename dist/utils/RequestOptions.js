@@ -1,4 +1,7 @@
-export class RequestOptions {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RequestOptions = void 0;
+class RequestOptions {
     sort;
     limit;
     offset;
@@ -30,3 +33,4 @@ export class RequestOptions {
         return params;
     }
 }
+exports.RequestOptions = RequestOptions;
