@@ -288,7 +288,7 @@ class Client {
       type: "permissions"
     };
     this.services["roles"] = {
-      endpoint: "/v3/admin/roles",
+      endpoint: "/v3/admin/iam/roles",
       model: Role,
       type: "roles"
     };

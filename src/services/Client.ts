@@ -44,7 +44,7 @@ export class Client {
     };
 
     this.services["roles"] = {
-      endpoint: "/v3/admin/roles",
+      endpoint: "/v3/admin/iam/roles",
       model: Role as ModelConstructor<Role>,
       type: "roles",
     };
