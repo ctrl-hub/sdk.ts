@@ -72,7 +72,9 @@ export class Client {
     async makeGetRequest(baseEndpoint, param) {
         let url = Requests.buildRequestURL(baseEndpoint, param);
         try {
-            const fetchResponse = await fetch(url);
+            const fetchResponse = await fetch(url, {
+                credentials: 'include',
+            });
             let json = await fetchResponse.json();
             return Requests.buildInternalResponse(fetchResponse, json);
         }
