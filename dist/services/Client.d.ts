@@ -11,6 +11,7 @@ export declare class Client {
     hydrator: Hydrator;
     formCategories: ServiceMethods;
     roles: ServiceMethods;
+    permissions: ServiceMethods;
     serviceAccounts: ServiceMethods;
     constructor(config: ClientConfig);
     setOrganisationSlug(organisation: string): void;

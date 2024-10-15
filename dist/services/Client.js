@@ -16,6 +16,8 @@ export class Client {
     // @ts-ignore
     roles;
     // @ts-ignore
+    permissions;
+    // @ts-ignore
     serviceAccounts;
     constructor(config) {
         this.config = config;

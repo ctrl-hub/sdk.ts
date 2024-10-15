@@ -272,6 +272,7 @@ class Client {
   hydrator;
   formCategories;
   roles;
+  permissions;
   serviceAccounts;
   constructor(config) {
     this.config = config;

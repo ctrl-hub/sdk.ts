@@ -23,6 +23,8 @@ export class Client {
   // @ts-ignore
   public roles: ServiceMethods;
   // @ts-ignore
+  public permissions: ServiceMethods;
+  // @ts-ignore
   public serviceAccounts: ServiceMethods;
 
   constructor(config: ClientConfig) {
