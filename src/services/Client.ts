@@ -1,4 +1,5 @@
-import { ClientConfig } from "./ClientConfig";
+import {ClientConfig} from "./ClientConfig";
+import type { ClientConfigInterface} from "./ClientConfig";
 import {RequestOptions, RequestOptionsType} from "../utils/RequestOptions";
 import {FormCategory} from "../models/FormCategory";
 import {Requests} from "../utils/Requests";
@@ -10,20 +11,50 @@ import type {ServiceMethods} from "../types/ServiceMethods";
 import type {ModelConstructor} from "../types/ModelConstructor";
 import type {InternalResponse} from "../types/Response";
 
+type Token = {
+    access_token: string;
+    token_type: string;
+    expires_in?: number;
+    scope?: string;
+};
+
 export class Client {
     readonly config: ClientConfig;
-    public organisation: string;
     public services: Record<string, Service> = {};
     public hydrator: Hydrator;
+    public token: Token;
 
     // @ts-ignore
     public formCategories: ServiceMethods;
     // @ts-ignore
     public serviceAccounts: ServiceMethods;
 
-    constructor(config: ClientConfig) {
+    public static async create(config: ClientConfig) {
+        let clientId = config.credentials.client_id || '';
+        let clientSecret = config.credentials.client_secret || '';
+        let sessionToken = config.credentials.session_token || '';
+
+        if (sessionToken) {
+            return new Client(config, {
+                access_token: sessionToken,
+                token_type: 'bearer',
+            });
+        }
+
+        if(clientId === '' || clientSecret === '') {
+            console.error('Client ID and Client Secret are required');
+            return null;
+            let token = await Client.getToken(clientId, clientSecret);
+            return new Client(config, token);
+        }
+
+        let token = await Client.getToken(clientId, clientSecret);
+        return new Client(config, token);
+    }
+
+    constructor(config: ClientConfig, token: Token) {
         this.config = config;
-        this.organisation = '';
+        this.token = token;
 
         this.services['formCategories'] = {
             endpoint: '/v3/orgs/:orgId/data-capture/form-categories',
@@ -48,6 +79,29 @@ export class Client {
         // ensure we can do (as example):
         // client.formCategories.get() and return hydrated models based on this.services['formCategories']
         return this.setupProxies();
+    }
+
+    public static async getToken(clientId: string, clientSecret: string) {
+        const urlEncodedData = new URLSearchParams();
+        urlEncodedData.append("grant_type", "client_credentials");
+        urlEncodedData.append("client_id", clientId);
+        urlEncodedData.append("client_secret", clientSecret);
+
+        try {
+            const response = await fetch('https://auth.ctrl-hub.dev/oauth2/token', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+                },
+                body: urlEncodedData.toString()
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching token:', error);
+            throw new Error('Authentication failed');
+        }
     }
 
     setOrganisationSlug(organisation: string) {
