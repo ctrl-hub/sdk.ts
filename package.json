@@ -1,5 +1,5 @@
 {
-  "name": "chc-1",
+  "name": "chsdk",
   "version": "1.0.12",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
