@@ -93,8 +93,9 @@ export class Client {
         let url = Requests.buildRequestURL(baseEndpoint, param);
 
         try {
+            // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: 'include',
+                credentials: 'include', // @todo only required for cookie based auth
             });
             let json = await fetchResponse.json();
             return Requests.buildInternalResponse(fetchResponse, json);
