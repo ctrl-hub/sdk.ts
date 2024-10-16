@@ -4,16 +4,29 @@ import { RequestOptions } from "@utils/RequestOptions";
 
 describe('Requests', () => {
     describe('buildRequestURL', () => {
-        it('should append URLSearchParams when param is RequestOptions', () => {
-            const requestOptions = new RequestOptions({
+        it('should append URLSearchParams with RequestOptions limit', () => {
+            const requestOptionsObject = {
                 sort: [{ key: "name", direction: "asc" }],
                 limit: 10,
                 offset: 20,
-            });
+                filters: [
+                    {
+                        key: "categories.id",
+                        value: "b60e2af5-6a84-0eb0-feaa-84384a94"
+                    },
+                    {
+                        key: "author.id",
+                        value: "d5fa90f5-3436-4266-8298-e00ff514ff98"
+                    }
+
+                ]
+            };
+
+            const requestOptions = new RequestOptions(requestOptionsObject);
 
             const result = Requests.buildRequestURL('/test-endpoint', requestOptions);
 
-            expect(result).toBe('/test-endpoint?sort=name&limit=10&offset=20');
+            expect(result).toBe('/test-endpoint?sort=name&filter%5Bcategories.id%5D=b60e2af5-6a84-0eb0-feaa-84384a94&filter%5Bauthor.id%5D=d5fa90f5-3436-4266-8298-e00ff514ff98&limit=10&offset=20');
         });
 
         it('should append param as a path when param is a string', () => {

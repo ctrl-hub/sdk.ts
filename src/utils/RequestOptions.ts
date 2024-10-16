@@ -3,16 +3,23 @@ type Sort = {
     direction?: 'asc' | 'desc';
 };
 
+type Filter = {
+    key: string,
+    value: string,
+}
+
 export type RequestOptionsType = {
     sort?: Sort[];
     limit?: number;
     offset?: number;
+    filters?: Filter[];
 };
 
 export class RequestOptions {
     sort?: Sort[];
     limit?: number;
     offset?: number;
+    filters?: Filter[];
 
     constructor(options: RequestOptionsType) {
         if (options.sort) {
@@ -23,6 +30,9 @@ export class RequestOptions {
         }
         if (options.offset) {
             this.offset = options.offset
+        }
+        if (options.filters) {
+            this.filters = options.filters
         }
     }
 
@@ -35,6 +45,12 @@ export class RequestOptions {
             }).join(',');
 
             params.append('sort', sortString);
+        }
+
+        if (this.filters && this.filters.length) {
+            this.filters.forEach(filter => {
+                params.append(`filter[${filter.key}]`, filter.value);
+            });
         }
 
         if (this.limit) {
