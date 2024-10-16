@@ -12,6 +12,7 @@ import type { ServiceMethods } from "../types/ServiceMethods";
 import type { ModelConstructor } from "../types/ModelConstructor";
 import type { InternalResponse } from "../types/Response";
 import {Form} from "@models/Form";
+import {Submission} from "@models/Submission";
 
 export class Client {
   readonly config: ClientConfig;
@@ -19,6 +20,8 @@ export class Client {
   public services: Record<string, Service> = {};
   public hydrator: Hydrator;
 
+  // @ts-ignore
+  public submissions: ServiceMethods;
   // @ts-ignore
   public forms: ServiceMethods;
   // @ts-ignore
@@ -44,6 +47,12 @@ export class Client {
       endpoint: "/v3/orgs/:orgId/data-capture/forms",
       model: Form as ModelConstructor<Form>,
       type: "forms",
+    };
+
+    this.services["submissions"] = {
+      endpoint: "/v3/orgs/:orgId/data-capture/submissions",
+      model: Submission as ModelConstructor<Submission>,
+      type: "submissions",
     };
 
     this.services["permissions"] = {
