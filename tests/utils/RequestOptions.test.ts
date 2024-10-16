@@ -75,7 +75,7 @@ describe('RequestOptions', () => {
 
     describe('fromUrl', () => {
         it('should parse URL with multiple filters and sort', () => {
-            const url = 'https://app.ctrl-hub.run/organisations/ctrl-hub/data-capture/forms?filter[categories.id]=1234&filter[status]=active&sort=-name&limit=15&offset=5';
+            const url = 'https://example.com/forms?filter[categories.id]=1234&filter[status]=active&sort=-name&limit=15&offset=5';
 
             const result = RequestOptions.fromUrl(url);
 
@@ -89,7 +89,7 @@ describe('RequestOptions', () => {
         });
 
         it('should apply default values when not present in the URL', () => {
-            const url = 'https://app.ctrl-hub.run/organisations/ctrl-hub/data-capture/forms';
+            const url = 'https://xample.com/organisations/ctrl-hub/data-capture/forms';
             const defaults: Partial<RequestOptionsType> = {
                 limit: 30,
                 offset: 10,
@@ -106,7 +106,7 @@ describe('RequestOptions', () => {
         });
 
         it('should override defaults when URL params are present', () => {
-            const url = 'https://app.ctrl-hub.run/organisations/ctrl-hub/data-capture/forms?filter[status]=draft&limit=5&offset=0';
+            const url = 'https://example.com/organisations/ctrl-hub/data-capture/forms?filter[status]=draft&limit=5&offset=0';
             const defaults: Partial<RequestOptionsType> = {
                 limit: 50,
                 offset: 20,
@@ -123,7 +123,7 @@ describe('RequestOptions', () => {
         });
 
         it('should handle URL without filters or sort and apply defaults', () => {
-            const url = 'https://app.ctrl-hub.run/organisations/ctrl-hub/data-capture/forms?limit=10&offset=0';
+            const url = 'https://example.run/organisations/ctrl-hub/data-capture/forms?limit=10&offset=0';
             const defaults: Partial<RequestOptionsType> = {
                 filters: [{ key: 'status', value: 'published' }],
                 sort: [{ key: 'created_at', direction: 'asc' }],

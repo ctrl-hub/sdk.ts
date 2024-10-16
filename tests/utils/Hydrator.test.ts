@@ -31,9 +31,9 @@ describe('Hydrator', () => {
                 "id":"5766f0d1-8cd5-4fd1-939d-a0f3b0fa26dd",
                 "attributes":{
                     "description":"Used to send data from devices to Ctrl Hub",
-                    "email":"smartester@cadent.iam.ctrl-hub.com",
+                    "email":"example@example.com",
                     "enabled":true,
-                    "name":"SMARTester"
+                    "name":"Tester"
                 },
                 "relationships":{
                     "keys":{
@@ -67,9 +67,9 @@ describe('Hydrator', () => {
 
         let hydrated = hydrator.hydrateResponse(services.serviceAccounts, dataToTest);
         expect(hydrated.data.id).toBe("5766f0d1-8cd5-4fd1-939d-a0f3b0fa26dd");
-        expect(hydrated.data.attributes.name).toBe("SMARTester");
+        expect(hydrated.data.attributes.name).toBe("Tester");
         expect(hydrated.data.attributes.description).toBe("Used to send data from devices to Ctrl Hub");
-        expect(hydrated.data.attributes.email).toBe("smartester@cadent.iam.ctrl-hub.com");
+        expect(hydrated.data.attributes.email).toBe("example@example.com");
         expect(hydrated.data.attributes.enabled).toBe(true);
         expect(hydrated.data.meta.created_at).toBe("2024-08-06T14:55:03Z");
 
