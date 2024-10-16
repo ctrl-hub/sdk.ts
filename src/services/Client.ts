@@ -41,7 +41,7 @@ export class Client {
     };
 
     this.services["forms"] = {
-      endpoint: "/v3/orgs/:orgId/data-capture/form",
+      endpoint: "/v3/orgs/:orgId/data-capture/forms",
       model: Form as ModelConstructor<Form>,
       type: "forms",
     };

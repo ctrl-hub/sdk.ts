@@ -315,7 +315,7 @@ class Client {
       type: "form-categories"
     };
     this.services["forms"] = {
-      endpoint: "/v3/orgs/:orgId/data-capture/form",
+      endpoint: "/v3/orgs/:orgId/data-capture/forms",
       model: Form,
       type: "forms"
     };
