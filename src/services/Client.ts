@@ -11,6 +11,7 @@ import type { Service } from "../types/Service";
 import type { ServiceMethods } from "../types/ServiceMethods";
 import type { ModelConstructor } from "../types/ModelConstructor";
 import type { InternalResponse } from "../types/Response";
+import {Form} from "@models/Form";
 
 export class Client {
   readonly config: ClientConfig;
@@ -18,6 +19,8 @@ export class Client {
   public services: Record<string, Service> = {};
   public hydrator: Hydrator;
 
+  // @ts-ignore
+  public forms: ServiceMethods;
   // @ts-ignore
   public formCategories: ServiceMethods;
   // @ts-ignore
@@ -35,6 +38,12 @@ export class Client {
       endpoint: "/v3/orgs/:orgId/data-capture/form-categories",
       model: FormCategory as ModelConstructor<FormCategory>,
       type: "form-categories",
+    };
+
+    this.services["forms"] = {
+      endpoint: "/v3/orgs/:orgId/data-capture/form",
+      model: Form as ModelConstructor<Form>,
+      type: "forms",
     };
 
     this.services["permissions"] = {
