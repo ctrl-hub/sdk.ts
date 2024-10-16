@@ -63,4 +63,42 @@ export class RequestOptions {
 
         return params;
     }
+
+    static fromUrl(url: string, defaults: Partial<RequestOptionsType> = {}): RequestOptionsType {
+        const urlObj = new URL(url);
+        const queryParams = urlObj.searchParams;
+
+        // Use defaults if query params are not present
+        const requestOptions: RequestOptionsType = {
+            filters: [],
+            limit: parseInt(queryParams.get('limit') || defaults.limit?.toString() || '20'),
+            offset: parseInt(queryParams.get('offset') || defaults.offset?.toString() || '0'),
+            sort: defaults.sort || [],
+        };
+
+        // Extract filters from query string
+        queryParams.forEach((value, key) => {
+            if (key.startsWith('filter[') && key.endsWith(']')) {
+                const filterKey = key.slice(7, -1); // Extract the part inside 'filter[]'
+                requestOptions.filters!.push({ key: filterKey, value });
+            }
+
+            // Handle sort parameter
+            if (key === 'sort') {
+                requestOptions.sort = [
+                    {
+                        key: value.startsWith('-') ? value.slice(1) : value,
+                        direction: value.startsWith('-') ? 'desc' : 'asc',
+                    },
+                ];
+            }
+        });
+
+        // Use default filters if none are provided by the URL
+        if (!requestOptions.filters || requestOptions.filters.length === 0 && defaults.filters) {
+            requestOptions.filters = defaults.filters;
+        }
+
+        return requestOptions;
+    }
 }

@@ -19,5 +19,6 @@ export declare class RequestOptions {
     filters?: Filter[];
     constructor(options: RequestOptionsType);
     toURLSearchParams(): URLSearchParams;
+    static fromUrl(url: string, defaults?: Partial<RequestOptionsType>): RequestOptionsType;
 }
 export {};

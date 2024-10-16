@@ -39,6 +39,34 @@ class RequestOptions {
     }
     return params;
   }
+  static fromUrl(url, defaults = {}) {
+    const urlObj = new URL(url);
+    const queryParams = urlObj.searchParams;
+    const requestOptions = {
+      filters: [],
+      limit: parseInt(queryParams.get("limit") || defaults.limit?.toString() || "20"),
+      offset: parseInt(queryParams.get("offset") || defaults.offset?.toString() || "0"),
+      sort: defaults.sort || []
+    };
+    queryParams.forEach((value, key) => {
+      if (key.startsWith("filter[") && key.endsWith("]")) {
+        const filterKey = key.slice(7, -1);
+        requestOptions.filters.push({ key: filterKey, value });
+      }
+      if (key === "sort") {
+        requestOptions.sort = [
+          {
+            key: value.startsWith("-") ? value.slice(1) : value,
+            direction: value.startsWith("-") ? "desc" : "asc"
+          }
+        ];
+      }
+    });
+    if (!requestOptions.filters || requestOptions.filters.length === 0 && defaults.filters) {
+      requestOptions.filters = defaults.filters;
+    }
+    return requestOptions;
+  }
 }
 
 // src/models/FormCategory.ts
@@ -445,6 +473,7 @@ class ClientConfig {
   }
 }
 export {
+  RequestOptions,
   ClientConfig,
   Client
 };
