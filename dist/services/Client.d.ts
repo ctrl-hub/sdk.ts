@@ -9,6 +9,7 @@ export declare class Client {
     organisation: string;
     services: Record<string, Service>;
     hydrator: Hydrator;
+    forms: ServiceMethods;
     formCategories: ServiceMethods;
     roles: ServiceMethods;
     permissions: ServiceMethods;

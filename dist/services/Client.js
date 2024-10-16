@@ -6,11 +6,14 @@ import { Requests } from "../utils/Requests";
 import { ServiceAccount } from "../models/ServiceAccount";
 import { ServiceAccountKey } from "../models/ServiceAccountKey";
 import { Hydrator } from "../utils/Hydrator";
+import { Form } from "@models/Form";
 export class Client {
     config;
     organisation;
     services = {};
     hydrator;
+    // @ts-ignore
+    forms;
     // @ts-ignore
     formCategories;
     // @ts-ignore
@@ -26,6 +29,11 @@ export class Client {
             endpoint: "/v3/orgs/:orgId/data-capture/form-categories",
             model: FormCategory,
             type: "form-categories",
+        };
+        this.services["forms"] = {
+            endpoint: "/v3/orgs/:orgId/data-capture/form",
+            model: Form,
+            type: "forms",
         };
         this.services["permissions"] = {
             endpoint: "/v3/admin/permissions",
