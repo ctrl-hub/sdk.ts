@@ -19,6 +19,10 @@
       "@src/*": ["src/*"]                  // Alias for src
     }
   },
-  "include": ["src/**/*"],               // Include all .ts files in src
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/types/*.d.ts",
+  ],
   "exclude": ["node_modules", "dist", "tests"],    // Exclude node_modules and dist,
 }
