@@ -8,6 +8,7 @@ type FormAttributes = {
     description: string;
     field_mappings: FieldMapping[];
     status: string;
+    type: string;
 };
 export declare class Form implements Model {
     id: string;

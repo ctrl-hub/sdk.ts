@@ -10,6 +10,7 @@ type FormAttributes = {
     description: string;
     field_mappings: FieldMapping[];
     status: string;
+    type: string;
 };
 
 export class Form implements Model {
@@ -24,7 +25,8 @@ export class Form implements Model {
             name: '',
             description: '',
             field_mappings: [],
-            status: ''
+            status: '',
+            type: '',
         };
     }
 
@@ -37,6 +39,7 @@ export class Form implements Model {
             form.attributes.name = data.attributes.name || '';
             form.attributes.description = data.attributes.description || '';
             form.attributes.field_mappings = data.attributes.field_mappings || [];
+            form.attributes.type = data.attributes.type || '';
             form.attributes.status = data.attributes.status || '';
             form.meta = data.meta || {};
             form.links = data.links || {};

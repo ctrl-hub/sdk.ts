@@ -9,7 +9,8 @@ export class Form {
             name: '',
             description: '',
             field_mappings: [],
-            status: ''
+            status: '',
+            type: '',
         };
     }
     static hydrate(data) {
@@ -20,6 +21,7 @@ export class Form {
             form.attributes.name = data.attributes.name || '';
             form.attributes.description = data.attributes.description || '';
             form.attributes.field_mappings = data.attributes.field_mappings || [];
+            form.attributes.type = data.attributes.type || '';
             form.attributes.status = data.attributes.status || '';
             form.meta = data.meta || {};
             form.links = data.links || {};
