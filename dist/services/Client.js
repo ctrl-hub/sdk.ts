@@ -7,11 +7,14 @@ import { ServiceAccount } from "../models/ServiceAccount";
 import { ServiceAccountKey } from "../models/ServiceAccountKey";
 import { Hydrator } from "../utils/Hydrator";
 import { Form } from "@models/Form";
+import { Submission } from "@models/Submission";
 export class Client {
     config;
     organisation;
     services = {};
     hydrator;
+    // @ts-ignore
+    submissions;
     // @ts-ignore
     forms;
     // @ts-ignore
@@ -34,6 +37,11 @@ export class Client {
             endpoint: "/v3/orgs/:orgId/data-capture/forms",
             model: Form,
             type: "forms",
+        };
+        this.services["submissions"] = {
+            endpoint: "/v3/orgs/:orgId/data-capture/submissions",
+            model: Submission,
+            type: "submissions",
         };
         this.services["permissions"] = {
             endpoint: "/v3/admin/permissions",

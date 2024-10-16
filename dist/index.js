@@ -297,12 +297,40 @@ class Form {
   }
 }
 
+// src/models/Submission.ts
+class Submission {
+  id = "";
+  type = "submissions";
+  attributes;
+  meta = {};
+  links = {};
+  constructor() {
+    this.attributes = {
+      reference: "",
+      status: ""
+    };
+  }
+  static hydrate(data) {
+    let submission = new Submission;
+    if (data) {
+      submission.id = data.id || "";
+      submission.type = data.type || "submissions";
+      submission.attributes.reference = data.attributes.reference || "";
+      submission.attributes.status = data.attributes.status || "";
+      submission.meta = data.meta || {};
+      submission.links = data.links || {};
+    }
+    return submission;
+  }
+}
+
 // src/services/Client.ts
 class Client {
   config;
   organisation;
   services = {};
   hydrator;
+  submissions;
   forms;
   formCategories;
   roles;
@@ -320,6 +348,11 @@ class Client {
       endpoint: "/v3/orgs/:orgId/data-capture/forms",
       model: Form,
       type: "forms"
+    };
+    this.services["submissions"] = {
+      endpoint: "/v3/orgs/:orgId/data-capture/submissions",
+      model: Submission,
+      type: "submissions"
     };
     this.services["permissions"] = {
       endpoint: "/v3/admin/permissions",
