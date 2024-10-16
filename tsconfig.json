@@ -10,8 +10,15 @@
     "strict": true,                      // Enable strict type-checking
     "esModuleInterop": true,             // Allow interop with CommonJS
     "skipLibCheck": true,                // Skip type checks on libraries
-    "forceConsistentCasingInFileNames": true // Enforce consistent casing in file names
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in file names
+    "baseUrl": "./",
+    "paths": {
+      "@models/*": ["src/models/*"],       // Alias for models
+      "@services/*": ["src/services/*"],   // Alias for services
+      "@utils/*": ["src/utils/*"],          // Alias for utils
+      "@src/*": ["src/*"]                  // Alias for src
+    }
   },
   "include": ["src/**/*"],               // Include all .ts files in src
-  "exclude": ["node_modules", "dist"]    // Exclude node_modules and dist
+  "exclude": ["node_modules", "dist"],    // Exclude node_modules and dist,
 }

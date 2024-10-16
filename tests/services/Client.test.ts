@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, mock } from "bun:test";
-import { Client } from "services/Client"
-import { ClientConfig } from 'services/ClientConfig';
-import { FormCategory } from 'models/FormCategory';
-import { ServiceAccount } from 'models/ServiceAccount';
-import { ServiceAccountKey } from 'models/ServiceAccountKey';
+import { Client } from "@services/Client"
+import { ClientConfig } from '@services/ClientConfig';
+import { FormCategory } from '@models/FormCategory';
+import { ServiceAccount } from '@models/ServiceAccount';
+import { ServiceAccountKey } from '@models/ServiceAccountKey';
 
 describe('Client Constructor', () => {
     let config: ClientConfig;

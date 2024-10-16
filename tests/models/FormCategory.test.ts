@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { FormCategory } from "models/FormCategory"
+import { FormCategory } from "@models/FormCategory"
 
 describe('FormCategory', () => {
 

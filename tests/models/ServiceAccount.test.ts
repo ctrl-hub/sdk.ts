@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { ServiceAccount } from "models/ServiceAccount";
+import { ServiceAccount } from "@models/ServiceAccount";
 
 describe('ServiceAccount', () => {
 
