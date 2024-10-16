@@ -11,6 +11,7 @@ export class Submission implements Model {
     public attributes: SubmissionAttributes;
     public meta: any = {};
     public links: any = {};
+    public relationships?: any;
 
     constructor() {
         this.attributes = {
@@ -29,6 +30,7 @@ export class Submission implements Model {
             submission.attributes.status = data.attributes.status || '';
             submission.meta = data.meta || {};
             submission.links = data.links || {};
+            submission.relationships = data.relationships || {};
         }
 
         return submission;

@@ -4,6 +4,7 @@ export class Submission {
     attributes;
     meta = {};
     links = {};
+    relationships;
     constructor() {
         this.attributes = {
             reference: '',
@@ -19,6 +20,7 @@ export class Submission {
             submission.attributes.status = data.attributes.status || '';
             submission.meta = data.meta || {};
             submission.links = data.links || {};
+            submission.relationships = data.relationships || {};
         }
         return submission;
     }

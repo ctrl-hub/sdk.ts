@@ -235,7 +235,7 @@ class Hydrator {
   hydrateJson(json) {
     const modelClass = this.findServiceModel(json.type);
     if (!modelClass)
-      return null;
+      return json;
     let model = new modelClass;
     this.populateModelAttributes(model, json);
     return model;
@@ -243,9 +243,9 @@ class Hydrator {
   hydrateRelationships(single, included) {
     if (!single.relationships)
       return single;
-    let relationships = single.relationships;
-    Object.keys(relationships).forEach((key) => {
-      relationships[key].data = relationships[key].data.map((relation) => this.findMatchingIncluded(relation, included) || relation);
+    Object.entries(single.relationships).forEach(([key, relationship]) => {
+      const { data } = relationship;
+      relationship.data = Array.isArray(data) ? data.map((relation) => this.findMatchingIncluded(relation, included) || relation) : this.findMatchingIncluded(data, included) || data;
     });
     return single;
   }
@@ -304,6 +304,7 @@ class Submission {
   attributes;
   meta = {};
   links = {};
+  relationships;
   constructor() {
     this.attributes = {
       reference: "",
@@ -319,6 +320,7 @@ class Submission {
       submission.attributes.status = data.attributes.status || "";
       submission.meta = data.meta || {};
       submission.links = data.links || {};
+      submission.relationships = data.relationships || {};
     }
     return submission;
   }

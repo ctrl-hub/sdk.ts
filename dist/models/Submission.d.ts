@@ -9,6 +9,7 @@ export declare class Submission implements Model {
     attributes: SubmissionAttributes;
     meta: any;
     links: any;
+    relationships?: any;
     constructor();
     static hydrate(data: any): Submission;
 }

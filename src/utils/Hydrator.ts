@@ -39,9 +39,9 @@ export class Hydrator {
         return response;
     }
 
-    hydrateJson(json: JsonData): Model | null {
+    hydrateJson(json: JsonData): any {
         const modelClass = this.findServiceModel(json.type);
-        if (!modelClass) return null;
+        if (!modelClass) return json;
 
         let model = new modelClass();
         this.populateModelAttributes(model, json);
@@ -51,12 +51,13 @@ export class Hydrator {
     hydrateRelationships(single: JsonData, included: JsonData[]): JsonData {
         if (!single.relationships) return single;
 
-        let relationships = single.relationships;
+        Object.entries(single.relationships).forEach(([key, relationship]) => {
+            const { data } = relationship;
 
-        Object.keys(relationships).forEach(key => {
-            relationships[key].data = relationships[key].data.map(relation =>
-                this.findMatchingIncluded(relation, included) || relation
-            );
+            // relationship[key] could be array or single object
+            relationship.data = Array.isArray(data)
+                ? data.map(relation => this.findMatchingIncluded(relation, included) || relation)
+                : this.findMatchingIncluded(data, included) || data;
         });
 
         return single;
