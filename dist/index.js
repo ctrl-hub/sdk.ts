@@ -69,83 +69,6 @@ class RequestOptions {
   }
 }
 
-// src/models/FormCategory.ts
-class FormCategory {
-  id = "";
-  type = "form-categories";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      name: ""
-    };
-  }
-  static hydrate(data) {
-    let formCategory = new FormCategory;
-    if (data) {
-      formCategory.id = data.id;
-      formCategory.attributes.name = data.attributes.name || "";
-      formCategory.meta = data.meta || {};
-    }
-    return formCategory;
-  }
-}
-
-// src/models/Role.ts
-class Role {
-  id = "";
-  type = "roles";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      custom: false,
-      name: "",
-      description: "",
-      launch_stage: "",
-      permissions: []
-    };
-  }
-  static hydrate(data) {
-    let role = new Role;
-    if (data) {
-      role.id = data.id;
-      role.attributes.custom = data.attributes.custom || false;
-      role.attributes.name = data.attributes.name || "";
-      role.attributes.description = data.attributes.description || "";
-      role.attributes.launch_stage = data.attributes.launch_stage || "";
-      role.attributes.permissions = data.attributes.permissions || [];
-      role.meta = data.meta || {};
-    }
-    return role;
-  }
-}
-
-// src/models/Permission.ts
-class Permission {
-  id = "";
-  type = "roles";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      description: ""
-    };
-  }
-  static hydrate(data) {
-    let permission = new Permission;
-    if (data) {
-      permission.id = data.id;
-      permission.attributes.description = data.attributes.description || "";
-      permission.meta = data.meta || {};
-    }
-    return permission;
-  }
-}
-
 // src/utils/Requests.ts
 class Requests {
   static buildRequestURL(baseEndpoint, param) {
@@ -188,71 +111,6 @@ class Requests {
       links: {},
       included: []
     };
-  }
-}
-
-// src/models/ServiceAccount.ts
-class ServiceAccount {
-  id = "";
-  type = "service-accounts";
-  attributes;
-  meta = {};
-  relationships;
-  links;
-  constructor() {
-    this.attributes = {
-      name: "",
-      description: "",
-      email: "",
-      enabled: false
-    };
-  }
-  async addKey(config) {
-    let client = new Client2(config);
-    let endpoint = client.finalEndpoint(client.services["serviceAccounts"]);
-    return await client.makePostRequest(endpoint + "/" + this.id + "/keys", {
-      data: {
-        type: "service-account-keys"
-      }
-    });
-  }
-  static hydrate(data, fullResponseData) {
-    let serviceAccount = new ServiceAccount;
-    if (data) {
-      serviceAccount.id = data.id;
-      serviceAccount.attributes.name = data.attributes.name || "";
-      serviceAccount.attributes.description = data.attributes.description || "";
-      serviceAccount.attributes.email = data.attributes.email || "";
-      serviceAccount.attributes.enabled = data.attributes.enabled || false;
-      serviceAccount.meta = data.meta || {};
-      serviceAccount.relationships = data.relationships || {};
-    }
-    return serviceAccount;
-  }
-}
-
-// src/models/ServiceAccountKey.ts
-class ServiceAccountKey {
-  id = "";
-  type = "service-account-keys";
-  attributes;
-  meta = {};
-  relationships;
-  links;
-  constructor() {
-    this.attributes = {
-      client_id: ""
-    };
-    this.relationships = [];
-  }
-  static hydrate(data, fullResponseData) {
-    let serviceAccountKey = new ServiceAccountKey;
-    if (data) {
-      serviceAccountKey.id = data.id;
-      serviceAccountKey.attributes.client_id = data.attributes.client_id || "";
-      serviceAccountKey.meta = data.meta || {};
-    }
-    return serviceAccountKey;
   }
 }
 
@@ -343,6 +201,118 @@ class Form {
   }
 }
 
+// src/models/FormCategory.ts
+class FormCategory {
+  id = "";
+  type = "form-categories";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      name: ""
+    };
+  }
+  static hydrate(data) {
+    let formCategory = new FormCategory;
+    if (data) {
+      formCategory.id = data.id;
+      formCategory.attributes.name = data.attributes.name || "";
+      formCategory.meta = data.meta || {};
+    }
+    return formCategory;
+  }
+}
+
+// src/models/Role.ts
+class Role {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      custom: false,
+      name: "",
+      description: "",
+      launch_stage: "",
+      permissions: []
+    };
+  }
+  static hydrate(data) {
+    let role = new Role;
+    if (data) {
+      role.id = data.id;
+      role.attributes.custom = data.attributes.custom || false;
+      role.attributes.name = data.attributes.name || "";
+      role.attributes.description = data.attributes.description || "";
+      role.attributes.launch_stage = data.attributes.launch_stage || "";
+      role.attributes.permissions = data.attributes.permissions || [];
+      role.meta = data.meta || {};
+    }
+    return role;
+  }
+}
+
+// src/models/ServiceAccount.ts
+class ServiceAccount {
+  id = "";
+  type = "service-accounts";
+  attributes;
+  meta = {};
+  relationships;
+  links;
+  constructor() {
+    this.attributes = {
+      name: "",
+      description: "",
+      email: "",
+      enabled: false
+    };
+  }
+  static hydrate(data, fullResponseData) {
+    let serviceAccount = new ServiceAccount;
+    if (data) {
+      serviceAccount.id = data.id;
+      serviceAccount.attributes.name = data.attributes.name || "";
+      serviceAccount.attributes.description = data.attributes.description || "";
+      serviceAccount.attributes.email = data.attributes.email || "";
+      serviceAccount.attributes.enabled = data.attributes.enabled || false;
+      serviceAccount.meta = data.meta || {};
+      serviceAccount.relationships = data.relationships || {};
+    }
+    return serviceAccount;
+  }
+}
+
+// src/models/ServiceAccountKey.ts
+class ServiceAccountKey {
+  id = "";
+  type = "service-account-keys";
+  attributes;
+  meta = {};
+  relationships;
+  links;
+  constructor() {
+    this.attributes = {
+      client_id: "",
+      enabled: false
+    };
+    this.relationships = [];
+  }
+  static hydrate(data, fullResponseData) {
+    let serviceAccountKey = new ServiceAccountKey;
+    if (data) {
+      serviceAccountKey.id = data.id;
+      serviceAccountKey.attributes.client_id = data.attributes.client_id || "";
+      serviceAccountKey.attributes.enabled = data.attributes.enabled;
+      serviceAccountKey.meta = data.meta || {};
+    }
+    return serviceAccountKey;
+  }
+}
+
 // src/models/Submission.ts
 class Submission {
   id = "";
@@ -372,59 +342,159 @@ class Submission {
   }
 }
 
-// src/services/Client.ts
-class Client2 {
+// src/models/Permission.ts
+class Permission {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      description: ""
+    };
+  }
+  static hydrate(data) {
+    let permission = new Permission;
+    if (data) {
+      permission.id = data.id;
+      permission.attributes.description = data.attributes.description || "";
+      permission.meta = data.meta || {};
+    }
+    return permission;
+  }
+}
+
+// src/services/BaseService.ts
+class BaseService {
+  client;
+  endpoint;
+  hydrateFunction;
+  services = {};
+  models = {};
+  constructor(client, endpoint, hydrateFunction) {
+    this.client = client;
+    this.endpoint = endpoint;
+    this.hydrateFunction = hydrateFunction;
+    this.models["form-categories"] = FormCategory;
+    this.models["forms"] = Form;
+    this.models["submissions"] = Submission;
+    this.models["permissions"] = Permission;
+    this.models["roles"] = Role;
+    this.models["service-accounts"] = ServiceAccount;
+    this.models["service-account-keys"] = ServiceAccountKey;
+  }
+  async get(param) {
+    let endpoint = this.client.finalEndpoint(this.endpoint);
+    let resp = await this.client.makeGetRequest(endpoint, param);
+    const dataIsArray = Array.isArray(resp.data);
+    if (dataIsArray) {
+      resp.data = resp.data.map((item) => this.hydrateFunction(item, null));
+    } else {
+      resp.data = this.hydrateFunction(resp.data, null);
+    }
+    if (dataIsArray) {
+      resp.data = resp.data.map((single) => this.hydrateRelationships(single, resp.included));
+    } else {
+      resp.data = this.hydrateRelationships(resp.data, resp.included);
+    }
+    return resp;
+  }
+  hydrateRelationships(single, included) {
+    if (!single.relationships)
+      return single;
+    Object.entries(single.relationships).forEach(([key, relationship]) => {
+      const { data } = relationship;
+      relationship.data = Array.isArray(data) ? data.map((relation) => this.findMatchingIncluded(relation, included) || relation) : this.findMatchingIncluded(data, included) || data;
+    });
+    return single;
+  }
+  findMatchingIncluded(relation, included) {
+    return included.find((inc) => inc.id === relation.id && inc.type === relation.type);
+  }
+}
+
+// src/services/FormCategoriesService.ts
+class FormCategoriesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/data-capture/form-categories", FormCategory.hydrate);
+  }
+}
+// src/services/RolesService.ts
+class RolesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/admin/iam/roles", Role.hydrate);
+  }
+}
+// src/services/PermissionsService.ts
+class PermissionsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/admin/permissions", Permission.hydrate);
+  }
+}
+// src/services/SubmissionsService.ts
+class SubmissionsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/data-capture/submissions", Submission.hydrate);
+  }
+}
+// src/services/FormsService.ts
+class FormsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/data-capture/forms", Form.hydrate);
+  }
+}
+// src/services/ServiceAccountService.ts
+class ServiceAccountsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccount.hydrate);
+  }
+  async createKey(serviceAccount) {
+    let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + "/" + serviceAccount.id + "/keys");
+    return await this.client.makePostRequest(createKeyEndpoint, {
+      data: {
+        type: "service-account-keys"
+      }
+    });
+  }
+}
+// src/services/ServiceAccountKeysService.ts
+class ServiceAccountKeysService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccountKey.hydrate);
+  }
+}
+// src/Client.ts
+class Client {
   config;
   organisation;
   services = {};
   hydrator;
-  submissions;
-  forms;
-  formCategories;
-  roles;
-  permissions;
-  serviceAccounts;
-  serviceAccountKeys;
   constructor(config) {
     this.config = config;
     this.organisation = "";
-    this.services["formCategories"] = {
-      endpoint: "/v3/orgs/:orgId/data-capture/form-categories",
-      model: FormCategory,
-      type: "form-categories"
-    };
-    this.services["forms"] = {
-      endpoint: "/v3/orgs/:orgId/data-capture/forms",
-      model: Form,
-      type: "forms"
-    };
-    this.services["submissions"] = {
-      endpoint: "/v3/orgs/:orgId/data-capture/submissions",
-      model: Submission,
-      type: "submissions"
-    };
-    this.services["permissions"] = {
-      endpoint: "/v3/admin/permissions",
-      model: Permission,
-      type: "permissions"
-    };
-    this.services["roles"] = {
-      endpoint: "/v3/admin/iam/roles",
-      model: Role,
-      type: "roles"
-    };
-    this.services["serviceAccounts"] = {
-      endpoint: "/v3/orgs/:orgId/admin/iam/service-accounts",
-      model: ServiceAccount,
-      type: "service-accounts"
-    };
-    this.services["serviceAccountKeys"] = {
-      endpoint: "/v3/orgs/:orgId/admin/iam/service-accounts",
-      model: ServiceAccountKey,
-      type: "service-account-keys"
-    };
     this.hydrator = new Hydrator(this.services);
-    return this.setupProxies();
+  }
+  roles() {
+    return new RolesService(this);
+  }
+  serviceAccountKeys() {
+    return new ServiceAccountKeysService(this);
+  }
+  serviceAccounts() {
+    return new ServiceAccountsService(this);
+  }
+  formCategories() {
+    return new FormCategoriesService(this);
+  }
+  forms() {
+    return new FormsService(this);
+  }
+  submissions() {
+    return new SubmissionsService(this);
+  }
+  permissions() {
+    return new PermissionsService(this);
   }
   getServiceEndpoint(serviceName) {
     return this.services[serviceName] ? this.services[serviceName].endpoint : "";
@@ -432,46 +502,8 @@ class Client2 {
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
   }
-  finalEndpoint(service) {
-    return `${this.config.baseDomain}${service.endpoint.replace(":orgId", this.config.organisationId.toString())}`;
-  }
-  async create(model) {
-    let service = Object.values(this.services).find((service2) => service2.type === model.type);
-    if (!service) {
-      throw new Error(`Service not found for model type ${model.type}`);
-    }
-    let requestBody = {
-      data: {
-        attributes: model.attributes,
-        type: model.type
-      }
-    };
-    let endpoint = this.finalEndpoint(service);
-    return await this.makePostRequest(endpoint, requestBody);
-  }
-  setupProxies() {
-    return new Proxy(this, {
-      get: (client, service) => {
-        if (service in client.services) {
-          const serviceInfo = client.services[service];
-          return new Proxy({}, {
-            get: (_, method) => {
-              if (method === "get") {
-                return (param) => {
-                  if (typeof param === "string") {
-                    return client.getResource(serviceInfo, param);
-                  }
-                  const requestOptions = param ? new RequestOptions(param) : null;
-                  return client.getResource(serviceInfo, requestOptions);
-                };
-              }
-              return () => `Method ${method.toString()} called on service ${service}`;
-            }
-          });
-        }
-        return Reflect.get(client, service);
-      }
-    });
+  finalEndpoint(url) {
+    return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
   async makePostRequest(baseEndpoint, body, param, headers) {
     let url = Requests.buildRequestURL(baseEndpoint, param);
@@ -479,8 +511,7 @@ class Client2 {
       const fetchResponse = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...headers
+          "Content-Type": "application/json"
         },
         credentials: "include",
         body: JSON.stringify(body)
@@ -495,7 +526,10 @@ class Client2 {
     let url = Requests.buildRequestURL(baseEndpoint, param);
     try {
       const fetchResponse = await fetch(url, {
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
       });
       let json = await fetchResponse.json();
       return Requests.buildInternalResponse(fetchResponse, json);
@@ -503,12 +537,8 @@ class Client2 {
       return Requests.buildInternalErrorResponse(error);
     }
   }
-  async getResource(service, param) {
-    const response = await this.makeGetRequest(this.finalEndpoint(service), param);
-    return this.hydrator.hydrateResponse(service, response);
-  }
 }
-// src/services/ClientConfig.ts
+// src/ClientConfig.ts
 class ClientConfig {
   organisationId;
   baseDomain;
@@ -518,8 +548,9 @@ class ClientConfig {
   }
 }
 export {
+  ServiceAccountKey,
   ServiceAccount,
   RequestOptions,
   ClientConfig,
-  Client2 as Client
+  Client
 };
