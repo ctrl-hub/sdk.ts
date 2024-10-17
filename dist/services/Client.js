@@ -81,7 +81,9 @@ export class Client {
         }
         let requestBody = {
             type: model.type,
-            data: model
+            data: {
+                attributes: model.attributes
+            }
         };
         let endpoint = this.finalEndpoint(service);
         return await this.makePostRequest(endpoint, requestBody);
