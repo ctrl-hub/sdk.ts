@@ -3,7 +3,7 @@ interface Error {
     statusCode: String;
 }
 
-export interface InternalResponse {
+export type InternalResponse = {
     // possible API response body:
     data: object|object[]|null,
     errors: {

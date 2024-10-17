@@ -1,32 +1,7 @@
 import { RequestOptions } from "./RequestOptions";
+import { InternalResponse } from "../types/Response";
 export declare class Requests {
     static buildRequestURL(baseEndpoint: string, param?: string | RequestOptions | null): string;
-    static buildInternalResponse(fetchResponse: any, json: any): {
-        ok: any;
-        statusCode: any;
-        headers: any;
-        meta: any;
-        links: any;
-        data: any;
-        included: any;
-        errors: {
-            client: never[];
-            network: never[];
-            api: any;
-        };
-    };
-    static buildInternalErrorResponse(error: any): {
-        ok: boolean;
-        statusCode: any;
-        headers: any;
-        data: null;
-        errors: {
-            client: never[];
-            network: any[];
-            api: never[];
-        };
-        meta: null;
-        links: {};
-        included: never[];
-    };
+    static buildInternalResponse(fetchResponse: any, json: any): InternalResponse;
+    static buildInternalErrorResponse(error: any): InternalResponse;
 }

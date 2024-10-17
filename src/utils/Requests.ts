@@ -1,4 +1,5 @@
 import {RequestOptions} from "./RequestOptions";
+import {InternalResponse} from "../types/Response";
 
 export class Requests {
 
@@ -12,7 +13,7 @@ export class Requests {
         return endpoint;
     }
 
-    public static buildInternalResponse(fetchResponse: any, json: any) {
+    public static buildInternalResponse(fetchResponse: any, json: any): InternalResponse {
         return {
             ok: fetchResponse.ok, // @todo convert to own version
             statusCode: fetchResponse.status,
@@ -29,7 +30,7 @@ export class Requests {
         };
     }
 
-    public static buildInternalErrorResponse(error: any){
+    public static buildInternalErrorResponse(error: any): InternalResponse {
         return {
             ok: false,
             statusCode: error.statusCode || 0, // If there's no response, status code is 0
