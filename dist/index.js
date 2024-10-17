@@ -427,8 +427,12 @@ class Client {
     if (!service) {
       throw new Error(`Service not found for model type ${model.type}`);
     }
+    let requestBody = {
+      type: model.type,
+      data: model
+    };
     let endpoint = this.finalEndpoint(service);
-    return await this.makePostRequest(endpoint, model);
+    return await this.makePostRequest(endpoint, requestBody);
   }
   setupProxies() {
     return new Proxy(this, {
