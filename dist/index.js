@@ -193,14 +193,19 @@ class Requests {
 
 // src/models/ServiceAccount.ts
 class ServiceAccount {
-  id;
+  id = "";
   type = "service-accounts";
   attributes;
   meta = {};
   relationships;
   links;
   constructor() {
-    this.attributes = {};
+    this.attributes = {
+      name: "",
+      description: "",
+      email: "",
+      enabled: false
+    };
   }
   static hydrate(data, fullResponseData) {
     let serviceAccount = new ServiceAccount;

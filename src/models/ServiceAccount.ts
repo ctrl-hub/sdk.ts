@@ -1,22 +1,27 @@
 import type { Model } from "../types/Model";
 
 type ServiceAccountAttributes = {
-    name?: string;
-    description?: string;
-    email?: string;
-    enabled?: boolean;
+    name: string;
+    description: string;
+    email: string;
+    enabled: boolean;
 };
 
 export class ServiceAccount implements Model {
-    public id?: string;
+    public id: string = '';
     public type: string = 'service-accounts';
     public attributes: ServiceAccountAttributes;
-    public meta?: any = {};
+    public meta: any = {};
     public relationships? : any;
     links: any;
 
     constructor() {
-        this.attributes = {}
+        this.attributes = {
+            name: '',
+            description: '',
+            email: '',
+            enabled: false,
+        }
     }
 
     static hydrate(data: any, fullResponseData: any) {
