@@ -13,6 +13,7 @@ import type { ModelConstructor } from "../types/ModelConstructor";
 import type { InternalResponse } from "../types/Response";
 import {Form} from "@models/Form";
 import {Submission} from "@models/Submission";
+import {Model} from "@src/types/Model";
 
 export class Client {
   readonly config: ClientConfig;
@@ -94,6 +95,18 @@ export class Client {
     return `${this.config.baseDomain}${service.endpoint.replace(":orgId", this.config.organisationId.toString())}`;
   }
 
+  public async create(model: Model) {
+    let service = Object.values(this.services).find(service => service.type === model.type);
+
+    if (!service) {
+      throw new Error(`Service not found for model type ${model.type}`);
+    }
+
+    let endpoint = this.finalEndpoint(service);
+
+    return await this.makePostRequest(endpoint, model)
+  }
+
   private setupProxies() {
     return new Proxy(this, {
       get: <T>(client: Client, service: string) => {
@@ -130,6 +143,32 @@ export class Client {
         return Reflect.get(client, service);
       },
     });
+  }
+
+  async makePostRequest(
+      baseEndpoint: string,
+      body?: any, // Request body (e.g., JSON object)
+      param?: string | RequestOptions | null,
+      headers?: Record<string, string>, // Optional headers
+  ): Promise<any> {
+    let url = Requests.buildRequestURL(baseEndpoint, param);
+
+    try {
+      const fetchResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+        credentials: 'include',
+        body: JSON.stringify(body), // Stringify the body if it's a JSON object
+      });
+
+      let json = await fetchResponse.json();
+      return Requests.buildInternalResponse(fetchResponse, json);
+    } catch (error) {
+      return Requests.buildInternalErrorResponse(error);
+    }
   }
 
   async makeGetRequest(

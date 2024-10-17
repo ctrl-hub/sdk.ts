@@ -422,6 +422,14 @@ class Client {
   finalEndpoint(service) {
     return `${this.config.baseDomain}${service.endpoint.replace(":orgId", this.config.organisationId.toString())}`;
   }
+  async create(model) {
+    let service = Object.values(this.services).find((service2) => service2.type === model.type);
+    if (!service) {
+      throw new Error(`Service not found for model type ${model.type}`);
+    }
+    let endpoint = this.finalEndpoint(service);
+    return await this.makePostRequest(endpoint, model);
+  }
   setupProxies() {
     return new Proxy(this, {
       get: (client, service) => {
@@ -445,6 +453,24 @@ class Client {
         return Reflect.get(client, service);
       }
     });
+  }
+  async makePostRequest(baseEndpoint, body, param, headers) {
+    let url = Requests.buildRequestURL(baseEndpoint, param);
+    try {
+      const fetchResponse = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...headers
+        },
+        credentials: "include",
+        body: JSON.stringify(body)
+      });
+      let json = await fetchResponse.json();
+      return Requests.buildInternalResponse(fetchResponse, json);
+    } catch (error) {
+      return Requests.buildInternalErrorResponse(error);
+    }
   }
   async makeGetRequest(baseEndpoint, param) {
     let url = Requests.buildRequestURL(baseEndpoint, param);
