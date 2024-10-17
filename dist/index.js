@@ -499,6 +499,7 @@ class ClientConfig {
   }
 }
 export {
+  ServiceAccount,
   RequestOptions,
   ClientConfig,
   Client
