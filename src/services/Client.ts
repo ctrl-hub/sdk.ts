@@ -103,9 +103,9 @@ export class Client {
     }
 
     let requestBody = {
-      type: model.type,
       data: {
-        attributes: model.attributes
+        attributes: model.attributes,
+        type: model.type,
       }
     }
 

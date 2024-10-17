@@ -80,9 +80,9 @@ export class Client {
             throw new Error(`Service not found for model type ${model.type}`);
         }
         let requestBody = {
-            type: model.type,
             data: {
-                attributes: model.attributes
+                attributes: model.attributes,
+                type: model.type,
             }
         };
         let endpoint = this.finalEndpoint(service);
