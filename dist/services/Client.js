@@ -25,6 +25,8 @@ export class Client {
     permissions;
     // @ts-ignore
     serviceAccounts;
+    // @ts-ignore
+    serviceAccountKeys;
     constructor(config) {
         this.config = config;
         this.organisation = "";
@@ -67,6 +69,9 @@ export class Client {
         // ensure we can do (as example):
         // client.formCategories.get() and return hydrated models based on this.services['formCategories']
         return this.setupProxies();
+    }
+    getServiceEndpoint(serviceName) {
+        return this.services[serviceName] ? this.services[serviceName].endpoint : '';
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;

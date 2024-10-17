@@ -33,6 +33,8 @@ export class Client {
   public permissions: ServiceMethods;
   // @ts-ignore
   public serviceAccounts: ServiceMethods;
+  // @ts-ignore
+  public serviceAccountKeys: ServiceMethods;
 
   constructor(config: ClientConfig) {
     this.config = config;
@@ -85,6 +87,10 @@ export class Client {
     // ensure we can do (as example):
     // client.formCategories.get() and return hydrated models based on this.services['formCategories']
     return this.setupProxies();
+  }
+
+  getServiceEndpoint(serviceName: string): String {
+    return this.services[serviceName] ? this.services[serviceName].endpoint : '';
   }
 
   setOrganisationSlug(organisation: string) {

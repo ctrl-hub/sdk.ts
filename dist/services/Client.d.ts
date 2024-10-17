@@ -16,7 +16,9 @@ export declare class Client {
     roles: ServiceMethods;
     permissions: ServiceMethods;
     serviceAccounts: ServiceMethods;
+    serviceAccountKeys: ServiceMethods;
     constructor(config: ClientConfig);
+    getServiceEndpoint(serviceName: string): String;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(service: Service): string;
     create(model: Model): Promise<any>;

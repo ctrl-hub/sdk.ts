@@ -1,4 +1,6 @@
 import type { Model } from "../types/Model";
+import {Client} from "@services/Client";
+import {ClientConfig} from "@services/ClientConfig";
 
 type ServiceAccountAttributes = {
     name: string;
@@ -22,6 +24,16 @@ export class ServiceAccount implements Model {
             email: '',
             enabled: false,
         }
+    }
+
+    async addKey(config: ClientConfig) {
+        let client = new Client(config);
+        let endpoint = client.finalEndpoint(client.services['serviceAccounts']);
+        return await client.makePostRequest(endpoint + '/' + this.id + '/keys', {
+            data: {
+                type: 'service-account-keys'
+            }
+        });
     }
 
     static hydrate(data: any, fullResponseData: any) {

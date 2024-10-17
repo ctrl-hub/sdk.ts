@@ -207,6 +207,15 @@ class ServiceAccount {
       enabled: false
     };
   }
+  async addKey(config) {
+    let client = new Client2(config);
+    let endpoint = client.finalEndpoint(client.services["serviceAccounts"]);
+    return await client.makePostRequest(endpoint + "/" + this.id + "/keys", {
+      data: {
+        type: "service-account-keys"
+      }
+    });
+  }
   static hydrate(data, fullResponseData) {
     let serviceAccount = new ServiceAccount;
     if (data) {
@@ -364,7 +373,7 @@ class Submission {
 }
 
 // src/services/Client.ts
-class Client {
+class Client2 {
   config;
   organisation;
   services = {};
@@ -375,6 +384,7 @@ class Client {
   roles;
   permissions;
   serviceAccounts;
+  serviceAccountKeys;
   constructor(config) {
     this.config = config;
     this.organisation = "";
@@ -415,6 +425,9 @@ class Client {
     };
     this.hydrator = new Hydrator(this.services);
     return this.setupProxies();
+  }
+  getServiceEndpoint(serviceName) {
+    return this.services[serviceName] ? this.services[serviceName].endpoint : "";
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
@@ -508,5 +521,5 @@ export {
   ServiceAccount,
   RequestOptions,
   ClientConfig,
-  Client
+  Client2 as Client
 };
