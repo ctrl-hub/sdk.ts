@@ -13,4 +13,16 @@ export class ServiceAccountsService extends BaseService {
         });
     }
     ;
+    async create(serviceAccount) {
+        let createKeyEndpoint = this.client.finalEndpoint(this.endpoint);
+        return await this.client.makePostRequest(createKeyEndpoint, {
+            data: {
+                type: serviceAccount.type,
+                attributes: {
+                    name: serviceAccount.attributes.name,
+                    description: serviceAccount.attributes.description
+                }
+            }
+        });
+    }
 }
