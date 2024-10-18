@@ -1,6 +1,8 @@
 import {Client} from "../Client";
 import {BaseService} from "../services/BaseService";
 import {ServiceAccount} from "../models/ServiceAccount"
+import {Log} from "../models/Log";
+import {InternalResponse} from "../types/Response";
 
 export class ServiceAccountsService extends BaseService<ServiceAccount> {
     constructor(client: Client) {
@@ -27,6 +29,13 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
                 }
             }
         });
+    }
+
+    async logs(id: string): Promise<InternalResponse<Log[]>> {
+        const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
+        const resp = await this.client.makeGetRequest(logsEndpoint);
+        resp.data = resp.data.map(log => Log.hydrate(log, null));
+        return resp;
     }
 
 }

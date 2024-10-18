@@ -1,6 +1,12 @@
 import { Requests } from "./utils/Requests";
 import { Hydrator } from "./utils/Hydrator";
-import { FormCategoriesService, RolesService, PermissionsService, SubmissionsService, FormsService, ServiceAccountsService, ServiceAccountKeysService } from '@services/index';
+import { FormCategoriesService } from "./services/FormCategoriesService";
+import { RolesService } from "./services/RolesService";
+import { PermissionsService } from "./services/PermissionsService";
+import { SubmissionsService } from "./services/SubmissionsService";
+import { FormsService } from "./services/FormsService";
+import { ServiceAccountsService } from "./services/ServiceAccountService";
+import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 export class Client {
     config;
     organisation;

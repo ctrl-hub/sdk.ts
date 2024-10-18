@@ -2,15 +2,14 @@ import { ClientConfigInterface} from "./ClientConfig";
 import { RequestOptions } from "./utils/RequestOptions";
 import { Requests } from "./utils/Requests";
 import { Hydrator } from "./utils/Hydrator";
-import {
-  FormCategoriesService,
-  RolesService,
-  PermissionsService,
-  SubmissionsService,
-  FormsService,
-  ServiceAccountsService,
-  ServiceAccountKeysService
-} from '@services/index';
+import { FormCategoriesService } from "./services/FormCategoriesService";
+import { RolesService } from "./services/RolesService";
+import { PermissionsService } from "./services/PermissionsService";
+import { SubmissionsService } from "./services/SubmissionsService";
+import { FormsService } from "./services/FormsService";
+import { ServiceAccountsService } from "./services/ServiceAccountService";
+import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
+import {InternalResponse} from "./types/Response";
 
 export class Client {
   readonly config: ClientConfigInterface;
@@ -92,7 +91,7 @@ export class Client {
   async makeGetRequest(
     baseEndpoint: string,
     param?: string | RequestOptions,
-  ): Promise<any> {
+  ): Promise<InternalResponse> {
     let url = Requests.buildRequestURL(baseEndpoint, param);
 
     try {
