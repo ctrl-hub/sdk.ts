@@ -3,9 +3,9 @@ interface Error {
     statusCode: String;
 }
 
-export type InternalResponse = {
+export interface InternalResponse<T = any> {
     // possible API response body:
-    data: object|object[]|null,
+    data: T,
     errors: {
         client: object[],
         network: object[],

@@ -1,6 +1,7 @@
 import type { Model } from "../types/Model";
 type Attributes = {
     client_id: string;
+    enabled: boolean;
 };
 export declare class ServiceAccountKey implements Model {
     id: string;

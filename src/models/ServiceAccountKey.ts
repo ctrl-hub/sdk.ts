@@ -2,6 +2,7 @@ import type { Model } from "../types/Model";
 
 type Attributes = {
     client_id: string;
+    enabled: boolean;
 };
 
 export class ServiceAccountKey implements Model {
@@ -15,6 +16,7 @@ export class ServiceAccountKey implements Model {
     constructor() {
         this.attributes = {
             client_id: '',
+            enabled: false,
         };
         this.relationships = [];
     }
@@ -25,6 +27,7 @@ export class ServiceAccountKey implements Model {
         if (data) {
             serviceAccountKey.id = data.id;
             serviceAccountKey.attributes.client_id = data.attributes.client_id || '';
+            serviceAccountKey.attributes.enabled = data.attributes.enabled;
             serviceAccountKey.meta = data.meta || {};
         }
 
