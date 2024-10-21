@@ -9,7 +9,7 @@ let client = new Client({
     baseDomain: "https://api.ctrl-hub.dev",
     clientId: 'insert-client-id-here',
     clientSecret: 'insert-client-secret-here',
-    authUrl: 'https://auth.ctrl-hub.dev/oauth2/token'
+    authDomain: 'https://auth.ctrl-hub.dev' // a request will be sent to https://auth.ctrl-hub.dev/oauth2/token
 });
 
 // Get all submissions for 'org-name-here' organisation
