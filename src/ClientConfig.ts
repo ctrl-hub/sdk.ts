@@ -18,6 +18,6 @@ export class ClientConfig {
         this.baseDomain = config.baseDomain || 'https://app.ctrl-hub.com';
         this.clientId = config.clientId || '';
         this.clientSecret = config.clientSecret || '';
-        this.authDomain = config.authDomain || '';
+        this.authDomain = config.authDomain || 'https://auth.ctrl-hub.com';
     }
 }
