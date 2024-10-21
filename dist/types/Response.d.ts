@@ -5,7 +5,7 @@ interface Error {
 
 export interface InternalResponse<T = any> {
     // possible API response body:
-    data: T | null,
+    data: T,
     errors: {
         client: object[],
         network: object[],

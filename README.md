@@ -2,22 +2,44 @@
 
 ## Development
 
+### Usage
+```typescript
+let client = new Client({
+    organisationId: "org-name-here",
+    baseDomain: "https://api.ctrl-hub.dev",
+    clientId: 'insert-client-id-here',
+    clientSecret: 'insert-client-secret-here',
+    authUrl: 'https://auth.ctrl-hub.dev/oauth2/token'
+});
+
+// Get all submissions for 'org-name-here' organisation
+let { data} = await client.submissions().get()
+console.log(data)
+```
+
+> Note in browser, any session cookies will also go up with the request, so you will not have to authenticate here manually
+
+
 ### Adding a module (for this example, shoes)
 1. Create a new model file in src/Models, `src/Models/Shoe.ts` which implements the `Model` interface
 
+2. Create a new service which extends BaseService in src/services e.g.
 
-2. In src/services/Client.ts, add 
 ```typescript
-// @ts-ignore
-public shoes: ServiceMethods;
+import {BaseService} from "../services/BaseService";
+import {Shoe} from "../models/Shoe";
+import {Client} from "Client";
+
+export class ShoeService extends BaseService<Form> {
+    constructor(client: Client) {
+        super(client, "/v3/orgs/:orgId/shoes", Shoe.hydrate);
+    }
+}
 ```
-3. Within the Client.ts `constructor` add:
+
+3. In src/services/BaseService.ts, add the model within the constructor 
 ```typescript
-this.services["shoes"] = {
-  endpoint: "/v3/orgs/:orgId/shoes",
-  model: Shoe as ModelConstructor<Shoe>,
-  type: "shoes",
-};
+        this.models["shoes"] = Shoe as ModelConstructor<Shoe>;
 ```
 
 You will then be able to do the following
@@ -25,7 +47,10 @@ You will then be able to do the following
 ```typescript
 let client = new Client({
     organisationId: "org-name-here",
-    baseDomain: "https://base-endpoint.com",
+    baseDomain: "https://api.ctrl-hub.dev",
+    clientId: 'insert-client-id-here',
+    clientSecret: 'insert-client-secret-here',
+    authUrl: 'https://auth.ctrl-hub.dev/oauth2/token'
 });
 
 // any options, sorts, filters etc.

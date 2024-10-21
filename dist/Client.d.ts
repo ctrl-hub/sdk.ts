@@ -14,7 +14,11 @@ export declare class Client {
     organisation: string;
     services: Record<string, any>;
     hydrator: Hydrator;
+    bearerToken: string;
+    private tokenPromise;
     constructor(config: ClientConfigInterface);
+    getToken(): Promise<void>;
+    ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
     serviceAccountKeys(): ServiceAccountKeysService;
     serviceAccounts(): ServiceAccountsService;
@@ -22,10 +26,8 @@ export declare class Client {
     forms(): FormsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
-    getServiceEndpoint(serviceName: string): String;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(url: string): string;
-    makePostRequest(baseEndpoint: string, body?: any, // Request body (e.g., JSON object)
-    param?: string | RequestOptions | null, headers?: Record<string, string>): Promise<any>;
+    makePostRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any>;
     makeGetRequest(baseEndpoint: string, param?: string | RequestOptions): Promise<InternalResponse>;
 }
