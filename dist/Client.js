@@ -12,10 +12,39 @@ export class Client {
     organisation;
     services = {};
     hydrator;
+    bearerToken = '';
+    tokenPromise = null;
     constructor(config) {
         this.config = config;
         this.organisation = "";
         this.hydrator = new Hydrator(this.services);
+        if (config.clientId && config.clientSecret && config.authUrl) {
+            this.tokenPromise = this.getToken();
+        }
+    }
+    async getToken() {
+        const url = this.config.authUrl || '';
+        const params = new URLSearchParams();
+        params.append("grant_type", "client_credentials");
+        params.append("client_id", this.config.clientId || '');
+        params.append("client_secret", this.config.clientSecret || '');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: params.toString()
+        });
+        let tokenJson = await response.json();
+        if (tokenJson.access_token) {
+            this.bearerToken = tokenJson.access_token;
+        }
+    }
+    async ensureAuthenticated() {
+        if (this.tokenPromise) {
+            await this.tokenPromise;
+            this.tokenPromise = null;
+        }
     }
     roles() {
         return new RolesService(this);
@@ -38,26 +67,27 @@ export class Client {
     permissions() {
         return new PermissionsService(this);
     }
-    getServiceEndpoint(serviceName) {
-        return this.services[serviceName] ? this.services[serviceName].endpoint : '';
-    }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
     }
     finalEndpoint(url) {
         return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
     }
-    async makePostRequest(baseEndpoint, body, // Request body (e.g., JSON object)
-    param, headers) {
+    async makePostRequest(baseEndpoint, body, param) {
+        await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        let headers = {
+            'Content-Type': 'application/json',
+        };
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
         try {
             const fetchResponse = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headers,
                 credentials: 'include',
-                body: JSON.stringify(body), // Stringify the body if it's a JSON object
+                body: JSON.stringify(body),
             });
             let json = await fetchResponse.json();
             return Requests.buildInternalResponse(fetchResponse, json);
@@ -67,14 +97,19 @@ export class Client {
         }
     }
     async makeGetRequest(baseEndpoint, param) {
+        await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        let headers = {
+            'Content-Type': 'application/json',
+        };
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
                 credentials: "include", // @todo only required for cookie based auth,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                headers: headers
             });
             let json = await fetchResponse.json();
             return Requests.buildInternalResponse(fetchResponse, json);
