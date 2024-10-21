@@ -386,7 +386,13 @@ class BaseService {
   }
   async get(param) {
     let endpoint = this.client.finalEndpoint(this.endpoint);
-    let resp = await this.client.makeGetRequest(endpoint, param);
+    let requestParam;
+    if (typeof param === "string") {
+      requestParam = param;
+    } else if (typeof param === "object") {
+      requestParam = new RequestOptions(param);
+    }
+    let resp = await this.client.makeGetRequest(endpoint, requestParam);
     const dataIsArray = Array.isArray(resp.data);
     if (dataIsArray) {
       resp.data = resp.data.map((item) => this.hydrateFunction(item, null));

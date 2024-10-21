@@ -1,3 +1,4 @@
+import { RequestOptions } from "../utils/RequestOptions";
 import { Form } from "../models/Form";
 import { FormCategory } from "../models/FormCategory";
 import { Role } from "../models/Role";
@@ -26,7 +27,15 @@ export class BaseService {
     async get(param) {
         // Make the request and type the response
         let endpoint = this.client.finalEndpoint(this.endpoint);
-        let resp = await this.client.makeGetRequest(endpoint, param);
+        let requestParam;
+        if (typeof param === 'string') {
+            requestParam = param;
+        }
+        else if (typeof param === 'object') {
+            // If param is an object, convert it to RequestOptions
+            requestParam = new RequestOptions(param);
+        }
+        let resp = await this.client.makeGetRequest(endpoint, requestParam);
         const dataIsArray = Array.isArray(resp.data);
         // Hydrate response based on whether it's a single item or an array
         if (dataIsArray) {

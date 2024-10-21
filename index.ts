@@ -67,28 +67,11 @@ let client = new Client({
     authDomain: 'https://auth.ctrl-hub.dev'
 });
 
+let resp = await client.submissions().get({
+    limit: 2,
+});
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-let resp = await client.submissions().get();
-console.log(resp);
-
-// await fetchSubmissionsRepeatedly(client, 10000, 70000);
-
-async function fetchSubmissionsRepeatedly(client: Client, intervalMs: number, totalDurationMs: number) {
-    const totalIterations = totalDurationMs / intervalMs; // Calculate how many times to run
-
-    for (let i = 0; i < totalIterations; i++) {
-        let resp = await client.submissions().get();
-        console.log('ok: ' + resp.ok);
-        console.log(`Request ${i + 1}, data length: ${resp.data.length}`);
-
-        if (i < totalIterations - 1) {
-            // Wait for the next iteration, except the last one
-            await delay(intervalMs);
-        }
-    }
-}
+console.log(resp.data.length);
 
 // let resp = await client.submissions().get()
 // console.log(resp.data.length);

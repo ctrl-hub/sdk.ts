@@ -1,6 +1,6 @@
 import { Client } from "../Client";
 import { InternalResponse } from "../types/Response";
-import { RequestOptions } from "../utils/RequestOptions";
+import {RequestOptions, RequestOptionsType} from "../utils/RequestOptions";
 import {ModelConstructor} from "../types/ModelConstructor";
 import { Form } from "../models/Form"
 import { FormCategory } from "../models/FormCategory";
@@ -43,11 +43,21 @@ export class BaseService<T> {
     // Overloads for get method
     async get(): Promise<InternalResponse<T[]>>;
     async get(param: string): Promise<InternalResponse<T>>;
-    async get(param: RequestOptions): Promise<InternalResponse<T[]>>;
-    async get(param?: string | RequestOptions): Promise<InternalResponse<T | T[]>> {
+    async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
+    async get(param?: string | RequestOptionsType): Promise<InternalResponse<T | T[]>> {
         // Make the request and type the response
         let endpoint = this.client.finalEndpoint(this.endpoint);
-        let resp = await this.client.makeGetRequest(endpoint, param);
+
+        let requestParam: string | RequestOptions | undefined;
+
+        if (typeof param === 'string') {
+            requestParam = param;
+        } else if (typeof param === 'object') {
+            // If param is an object, convert it to RequestOptions
+            requestParam = new RequestOptions(param);
+        }
+
+        let resp = await this.client.makeGetRequest(endpoint, requestParam);
 
         const dataIsArray = Array.isArray(resp.data);
 

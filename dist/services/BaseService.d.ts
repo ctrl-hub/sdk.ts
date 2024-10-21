@@ -1,6 +1,6 @@
 import { Client } from "../Client";
 import { InternalResponse } from "../types/Response";
-import { RequestOptions } from "../utils/RequestOptions";
+import { RequestOptionsType } from "../utils/RequestOptions";
 interface JsonData {
     id: string;
     type: string;
@@ -20,7 +20,7 @@ export declare class BaseService<T> {
     constructor(client: Client, endpoint: string, hydrateFunction: (data: any, options: any) => T);
     get(): Promise<InternalResponse<T[]>>;
     get(param: string): Promise<InternalResponse<T>>;
-    get(param: RequestOptions): Promise<InternalResponse<T[]>>;
+    get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
     hydrateRelationships(single: JsonData, included: any[]): JsonData;
     findMatchingIncluded(relation: any, included: any[]): any;
 }
