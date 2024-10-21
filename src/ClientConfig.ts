@@ -3,7 +3,7 @@ export type ClientConfigInterface = {
     baseDomain: string;
     clientId?: string;
     clientSecret?: string;
-    authUrl?: string;
+    authDomain?: string;
 };
 
 export class ClientConfig {
@@ -11,13 +11,13 @@ export class ClientConfig {
     public baseDomain: string;
     public clientId: string;
     public clientSecret: string;
-    public authUrl: string;
+    public authDomain: string;
 
     constructor(config: ClientConfigInterface) {
         this.organisationId = config.organisationId;
         this.baseDomain = config.baseDomain || 'https://app.ctrl-hub.com';
         this.clientId = config.clientId || '';
         this.clientSecret = config.clientSecret || '';
-        this.authUrl = config.authUrl || '';
+        this.authDomain = config.authDomain || 'https://auth.ctrl-hub.com';
     }
 }

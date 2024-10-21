@@ -3,12 +3,12 @@ export class ClientConfig {
     baseDomain;
     clientId;
     clientSecret;
-    authUrl;
+    authDomain;
     constructor(config) {
         this.organisationId = config.organisationId;
         this.baseDomain = config.baseDomain || 'https://app.ctrl-hub.com';
         this.clientId = config.clientId || '';
         this.clientSecret = config.clientSecret || '';
-        this.authUrl = config.authUrl || '';
+        this.authDomain = config.authDomain || '';
     }
 }

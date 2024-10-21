@@ -9,7 +9,7 @@ let client = new Client({
     baseDomain: "https://api.ctrl-hub.dev",
     clientId: 'insert-client-id-here',
     clientSecret: 'insert-client-secret-here',
-    authUrl: 'https://auth.ctrl-hub.dev/oauth2/token'
+    authDomain: 'https://auth.ctrl-hub.dev' // a request will be sent to https://auth.ctrl-hub.dev/oauth2/token
 });
 
 // Get all submissions for 'org-name-here' organisation
@@ -17,8 +17,7 @@ let { data} = await client.submissions().get()
 console.log(data)
 ```
 
-> Note in browser, any session cookies will also go up with the request, so you will not have to authenticate here manually
-
+> Note that when the SDK is ran within a browser, cookies will be forwarded with the API requests in the `Cookie` header. When authenticated, the users session token is forwarded within that header
 
 ### Adding a module (for this example, shoes)
 1. Create a new model file in src/Models, `src/Models/Shoe.ts` which implements the `Model` interface

@@ -3,13 +3,13 @@ export type ClientConfigInterface = {
     baseDomain: string;
     clientId?: string;
     clientSecret?: string;
-    authUrl?: string;
+    authDomain?: string;
 };
 export declare class ClientConfig {
     organisationId: string;
     baseDomain: string;
     clientId: string;
     clientSecret: string;
-    authUrl: string;
+    authDomain: string;
     constructor(config: ClientConfigInterface);
 }

@@ -565,17 +565,17 @@ class Client {
     this.config = config;
     this.organisation = "";
     this.hydrator = new Hydrator(this.services);
-    if (config.clientId && config.clientSecret && config.authUrl) {
+    if (config.clientId && config.clientSecret && config.authDomain) {
       this.tokenPromise = this.getToken();
     }
   }
   async getToken() {
-    const url = this.config.authUrl || "";
+    const url = this.config.authDomain || "";
     const params = new URLSearchParams;
     params.append("grant_type", "client_credentials");
     params.append("client_id", this.config.clientId || "");
     params.append("client_secret", this.config.clientSecret || "");
-    const response = await fetch(url, {
+    const response = await fetch(url + "/oauth2/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
@@ -669,13 +669,13 @@ class ClientConfig {
   baseDomain;
   clientId;
   clientSecret;
-  authUrl;
+  authDomain;
   constructor(config) {
     this.organisationId = config.organisationId;
     this.baseDomain = config.baseDomain || "https://app.ctrl-hub.com";
     this.clientId = config.clientId || "";
     this.clientSecret = config.clientSecret || "";
-    this.authUrl = config.authUrl || "";
+    this.authDomain = config.authDomain || "";
   }
 }
 export {
