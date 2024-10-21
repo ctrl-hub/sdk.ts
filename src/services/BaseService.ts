@@ -68,7 +68,7 @@ export class BaseService<T> {
         return resp;
     }
 
-    hydrateRelationships(single: JsonData, included: JsonData[]): JsonData {
+    hydrateRelationships(single: JsonData, included: any[]): JsonData {
         if (!single.relationships) return single;
 
         Object.entries(single.relationships).forEach(([key, relationship]) => {
