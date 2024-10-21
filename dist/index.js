@@ -513,7 +513,7 @@ class Log {
   }
 }
 
-// src/services/ServiceAccountService.ts
+// src/services/ServiceAccountsService.ts
 class ServiceAccountsService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccount.hydrate);

@@ -6,7 +6,7 @@ import { RolesService } from "./services/RolesService";
 import { PermissionsService } from "./services/PermissionsService";
 import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
-import { ServiceAccountsService } from "./services/ServiceAccountService";
+import { ServiceAccountsService } from "./services/ServiceAccountsService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import { InternalResponse } from "./types/Response";
 export declare class Client {
