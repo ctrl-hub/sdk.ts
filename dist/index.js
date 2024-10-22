@@ -559,6 +559,42 @@ class ServiceAccountKeysService extends BaseService {
   }
 }
 
+// src/models/Group.ts
+class Group {
+  id = "";
+  type = "groups";
+  attributes;
+  meta = {};
+  links = {};
+  constructor() {
+    this.attributes = {
+      name: "",
+      description: "",
+      bindings: []
+    };
+  }
+  static hydrate(data) {
+    let group = new Group;
+    if (data) {
+      group.id = data.id || "";
+      group.type = data.type || "groups";
+      group.attributes.name = data.attributes?.name || "";
+      group.attributes.description = data.attributes?.description || "";
+      group.attributes.bindings = data.attributes?.bindings || [];
+      group.meta = data.meta || {};
+      group.links = data.links || {};
+    }
+    return group;
+  }
+}
+
+// src/services/GroupService.ts
+class GroupsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/admin/iam/groups", Group.hydrate);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -619,6 +655,9 @@ class Client {
   }
   permissions() {
     return new PermissionsService(this);
+  }
+  groups() {
+    return new GroupsService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

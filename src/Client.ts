@@ -10,6 +10,7 @@ import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import {InternalResponse} from "./types/Response";
+import {GroupsService} from "./services/GroupService";
 
 export class Client {
   readonly config: ClientConfigInterface;
@@ -85,6 +86,10 @@ export class Client {
 
   public permissions(): PermissionsService {
     return new PermissionsService(this);
+  }
+
+  public groups(): GroupsService {
+    return new GroupsService(this);
   }
 
   setOrganisationSlug(organisation: string) {

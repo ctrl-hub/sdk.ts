@@ -9,6 +9,7 @@ import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import { InternalResponse } from "./types/Response";
+import { GroupsService } from "./services/GroupService";
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -26,6 +27,7 @@ export declare class Client {
     forms(): FormsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
+    groups(): GroupsService;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(url: string): string;
     makePostRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any>;
