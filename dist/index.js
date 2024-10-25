@@ -437,7 +437,7 @@ class RolesService extends BaseService {
 // src/services/PermissionsService.ts
 class PermissionsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/admin/permissions", Permission.hydrate);
+    super(client, "/v3/admin/iam/permissions", Permission.hydrate);
   }
 }
 
