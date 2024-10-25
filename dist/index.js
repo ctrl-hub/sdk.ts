@@ -728,6 +728,7 @@ export {
   ServiceAccount,
   RequestOptions,
   Log,
+  Group,
   ClientConfig,
   Client
 };

@@ -4,4 +4,5 @@ export { RequestOptions } from './utils/RequestOptions';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Log } from './models/Log';
+export { Group } from './models/Group';
 export type { InternalResponse } from './types/Response';
