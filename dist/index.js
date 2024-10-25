@@ -727,6 +727,7 @@ export {
   ServiceAccountKey,
   ServiceAccount,
   RequestOptions,
+  Permission,
   Log,
   Group,
   ClientConfig,
