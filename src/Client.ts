@@ -100,6 +100,35 @@ export class Client {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
 
+  async makeDeleteRequest(
+      endpoint: string,
+  ): Promise<any> {
+    await this.ensureAuthenticated();
+
+    let url = Requests.buildRequestURL(endpoint);
+
+    let headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (this.bearerToken) {
+      headers['Authorization'] = `Bearer ${this.bearerToken}`;
+    }
+
+    try {
+      const fetchResponse = await fetch(url, {
+        method: 'DELETE',
+        headers: headers,
+        credentials: 'include',
+      });
+
+      let json = await fetchResponse.json();
+      return Requests.buildInternalResponse(fetchResponse, json);
+    } catch (error) {
+      return Requests.buildInternalErrorResponse(error);
+    }
+  }
+
   async makePostRequest(
       baseEndpoint: string,
       body?: any,
