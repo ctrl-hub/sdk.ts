@@ -30,6 +30,7 @@ export declare class Client {
     groups(): GroupsService;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(url: string): string;
+    makeDeleteRequest(endpoint: string): Promise<any>;
     makePostRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any>;
     makeGetRequest(baseEndpoint: string, param?: string | RequestOptions): Promise<InternalResponse>;
 }

@@ -593,6 +593,19 @@ class GroupsService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/admin/iam/groups", Group.hydrate);
   }
+  async deleteBinding(groupId, bindingId) {
+    let deleteEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings/" + bindingId);
+    return await this.client.makeDeleteRequest(deleteEndpoint);
+  }
+  async createBinding(groupId, body) {
+    let createBindingEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings");
+    return await this.client.makePostRequest(createBindingEndpoint, {
+      data: {
+        type: "bindings",
+        attributes: JSON.parse(body)
+      }
+    });
+  }
 }
 
 // src/Client.ts
@@ -664,6 +677,27 @@ class Client {
   }
   finalEndpoint(url) {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
+  }
+  async makeDeleteRequest(endpoint) {
+    await this.ensureAuthenticated();
+    let url = Requests.buildRequestURL(endpoint);
+    let headers = {
+      "Content-Type": "application/json"
+    };
+    if (this.bearerToken) {
+      headers["Authorization"] = `Bearer ${this.bearerToken}`;
+    }
+    try {
+      const fetchResponse = await fetch(url, {
+        method: "DELETE",
+        headers,
+        credentials: "include"
+      });
+      let json = await fetchResponse.json();
+      return Requests.buildInternalResponse(fetchResponse, json);
+    } catch (error) {
+      return Requests.buildInternalErrorResponse(error);
+    }
   }
   async makePostRequest(baseEndpoint, body, param) {
     await this.ensureAuthenticated();
