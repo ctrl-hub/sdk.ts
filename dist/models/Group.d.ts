@@ -1,8 +1,9 @@
 import type { Model } from "../types/Model";
 type Binding = {
+    id: string;
     role: string;
     condition: {
-        gate: string;
+        gate: 'AND' | 'OR';
         rules: {
             type: string;
             operator: string;
