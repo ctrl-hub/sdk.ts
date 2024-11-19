@@ -1,6 +1,9 @@
 import type { Model } from "../types/Model";
 
 type SubmissionAttributes = {
+    author: string;
+    form: string;
+    form_version: string;
     reference: string;
     status: string;
 };
@@ -15,6 +18,9 @@ export class Submission implements Model {
 
     constructor() {
         this.attributes = {
+            author: '',
+            form: '',
+            form_version: '',
             reference: '',
             status: '',
         };
@@ -26,6 +32,9 @@ export class Submission implements Model {
         if (data) {
             submission.id = data.id || '';
             submission.type = data.type || 'submissions';
+            submission.attributes.author = data.attributes.author || '';
+            submission.attributes.form = data.attributes.form || '';
+            submission.attributes.form_version = data.attributes.form_version || '';
             submission.attributes.reference = data.attributes.reference || '';
             submission.attributes.status = data.attributes.status || '';
             submission.meta = data.meta || {};
