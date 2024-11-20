@@ -12,9 +12,9 @@ export class SubmissionsService extends BaseService {
         return resp;
     }
     async getVersion(submissionId, versionId) {
-        const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
-        const resp = await this.client.makeGetRequest(versionsEndpoint);
-        resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
+        const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+        const resp = await this.client.makeGetRequest(versionEndpoint);
+        resp.data = this.hydrateFunction(resp.data, null);
         return resp;
     }
 }

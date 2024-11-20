@@ -17,9 +17,9 @@ export class SubmissionsService extends BaseService<Submission> {
     }
 
     async getVersion(submissionId: string, versionId: string): Promise<InternalResponse<SubmissionVersion>> {
-        const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
-        const resp = await this.client.makeGetRequest(versionsEndpoint);
-        resp.data = resp.data.map((submissionVersion: any) => SubmissionVersion.hydrate(submissionVersion));
+        const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+        const resp = await this.client.makeGetRequest(versionEndpoint);
+        resp.data = SubmissionVersion.hydrate(resp.data);
         return resp;
     }
 }

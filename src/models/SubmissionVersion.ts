@@ -6,6 +6,7 @@ type SubmissionVersionAttributes = {
     form_version: string;
     reference: string;
     status: string;
+    content: object;
 };
 
 export class SubmissionVersion implements Model {
@@ -23,6 +24,7 @@ export class SubmissionVersion implements Model {
             form_version: '',
             reference: '',
             status: '',
+            content: {},
         };
     }
 
@@ -37,6 +39,7 @@ export class SubmissionVersion implements Model {
             submissionVersion.attributes.form_version = data.attributes.form_version || '';
             submissionVersion.attributes.reference = data.attributes.reference || '';
             submissionVersion.attributes.status = data.attributes.status || '';
+            submissionVersion.attributes.content = data.attributes.content || {};
             submissionVersion.meta = data.meta || {};
             submissionVersion.links = data.links || {};
             submissionVersion.relationships = data.relationships || {};

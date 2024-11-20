@@ -461,7 +461,8 @@ class SubmissionVersion {
       form: "",
       form_version: "",
       reference: "",
-      status: ""
+      status: "",
+      content: {}
     };
   }
   static hydrate(data) {
@@ -474,6 +475,7 @@ class SubmissionVersion {
       submissionVersion.attributes.form_version = data.attributes.form_version || "";
       submissionVersion.attributes.reference = data.attributes.reference || "";
       submissionVersion.attributes.status = data.attributes.status || "";
+      submissionVersion.attributes.content = data.attributes.content || {};
       submissionVersion.meta = data.meta || {};
       submissionVersion.links = data.links || {};
       submissionVersion.relationships = data.relationships || {};
@@ -494,9 +496,9 @@ class SubmissionsService extends BaseService {
     return resp;
   }
   async getVersion(submissionId, versionId) {
-    const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
-    const resp = await this.client.makeGetRequest(versionsEndpoint);
-    resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
+    const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+    const resp = await this.client.makeGetRequest(versionEndpoint);
+    resp.data = this.hydrateFunction(resp.data, null);
     return resp;
   }
 }

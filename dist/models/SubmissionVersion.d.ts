@@ -5,6 +5,7 @@ type SubmissionVersionAttributes = {
     form_version: string;
     reference: string;
     status: string;
+    content: object;
 };
 export declare class SubmissionVersion implements Model {
     id: string;
