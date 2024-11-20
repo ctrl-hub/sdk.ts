@@ -498,7 +498,7 @@ class SubmissionsService extends BaseService {
   async getVersion(submissionId, versionId) {
     const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
     const resp = await this.client.makeGetRequest(versionEndpoint);
-    resp.data = this.hydrateFunction(resp.data, null);
+    resp.data = SubmissionVersion.hydrate(resp.data);
     return resp;
   }
 }
