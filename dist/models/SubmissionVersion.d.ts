@@ -1,0 +1,19 @@
+import type { Model } from "../types/Model";
+type SubmissionVersionAttributes = {
+    author: string;
+    form: string;
+    form_version: string;
+    reference: string;
+    status: string;
+};
+export declare class SubmissionVersion implements Model {
+    id: string;
+    type: string;
+    attributes: SubmissionVersionAttributes;
+    meta: any;
+    links: any;
+    relationships?: any;
+    constructor();
+    static hydrate(data: any): SubmissionVersion;
+}
+export {};
