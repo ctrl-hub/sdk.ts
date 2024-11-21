@@ -447,10 +447,59 @@ class PermissionsService extends BaseService {
   }
 }
 
+// src/models/SubmissionVersion.ts
+class SubmissionVersion {
+  id = "";
+  type = "submission-versions";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      author: "",
+      form: "",
+      form_version: "",
+      reference: "",
+      status: "",
+      content: {}
+    };
+  }
+  static hydrate(data) {
+    let submissionVersion = new SubmissionVersion;
+    if (data) {
+      submissionVersion.id = data.id || "";
+      submissionVersion.type = data.type || "submissions";
+      submissionVersion.attributes.author = data.attributes.author || "";
+      submissionVersion.attributes.form = data.attributes.form || "";
+      submissionVersion.attributes.form_version = data.attributes.form_version || "";
+      submissionVersion.attributes.reference = data.attributes.reference || "";
+      submissionVersion.attributes.status = data.attributes.status || "";
+      submissionVersion.attributes.content = data.attributes.content || {};
+      submissionVersion.meta = data.meta || {};
+      submissionVersion.links = data.links || {};
+      submissionVersion.relationships = data.relationships || {};
+    }
+    return submissionVersion;
+  }
+}
+
 // src/services/SubmissionsService.ts
 class SubmissionsService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/data-capture/submissions", Submission.hydrate);
+  }
+  async getVersions(submissionId) {
+    const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions`);
+    const resp = await this.client.makeGetRequest(versionsEndpoint);
+    resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
+    return resp;
+  }
+  async getVersion(submissionId, versionId) {
+    const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+    const resp = await this.client.makeGetRequest(versionEndpoint);
+    resp.data = SubmissionVersion.hydrate(resp.data);
+    return resp;
   }
 }
 
