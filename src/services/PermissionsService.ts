@@ -4,6 +4,6 @@ import {Client} from "Client";
 
 export class PermissionsService extends BaseService<Permission> {
     constructor(client: Client) {
-        super(client, "/v3/admin/iam/permissions", Permission.hydrate);
+        super(client, "/v3/iam/permissions", Permission.hydrate);
     }
 }

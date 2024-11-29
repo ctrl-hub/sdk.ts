@@ -6,7 +6,7 @@ import {InternalResponse} from "../types/Response";
 
 export class ServiceAccountsService extends BaseService<ServiceAccount> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccount.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
     }
 
     async createKey(serviceAccount: ServiceAccount): Promise<any> {

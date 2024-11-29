@@ -430,14 +430,14 @@ class FormCategoriesService extends BaseService {
 // src/services/RolesService.ts
 class RolesService extends BaseService {
   constructor(client) {
-    super(client, "/v3/admin/iam/roles", Role.hydrate);
+    super(client, "/v3/iam/roles", Role.hydrate);
   }
 }
 
 // src/services/PermissionsService.ts
 class PermissionsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/admin/iam/permissions", Permission.hydrate);
+    super(client, "/v3/iam/permissions", Permission.hydrate);
   }
 }
 
@@ -522,7 +522,7 @@ class Log {
 // src/services/ServiceAccountService.ts
 class ServiceAccountsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccount.hydrate);
+    super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
   }
   async createKey(serviceAccount) {
     let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + "/" + serviceAccount.id + "/keys");
@@ -555,7 +555,7 @@ class ServiceAccountsService extends BaseService {
 // src/services/ServiceAccountKeysService.ts
 class ServiceAccountKeysService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccountKey.hydrate);
+    super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccountKey.hydrate);
   }
 }
 
@@ -591,7 +591,7 @@ class Group {
 // src/services/GroupService.ts
 class GroupsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/admin/iam/groups", Group.hydrate);
+    super(client, "/v3/orgs/:orgId/iam/groups", Group.hydrate);
   }
   async deleteBinding(groupId, bindingId) {
     let deleteEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings/" + bindingId);
