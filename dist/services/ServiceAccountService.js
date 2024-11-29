@@ -3,7 +3,7 @@ import { ServiceAccount } from "../models/ServiceAccount";
 import { Log } from "../models/Log";
 export class ServiceAccountsService extends BaseService {
     constructor(client) {
-        super(client, "/v3/orgs/:orgId/admin/iam/service-accounts", ServiceAccount.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
     }
     async createKey(serviceAccount) {
         let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + '/' + serviceAccount.id + '/keys');
