@@ -9,6 +9,7 @@ import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
+import { PropertiesService } from "./services/PropertiesService";
 import {InternalResponse} from "./types/Response";
 import {GroupsService} from "./services/GroupService";
 
@@ -90,6 +91,10 @@ export class Client {
 
   public groups(): GroupsService {
     return new GroupsService(this);
+  }
+
+  public properties(): PropertiesService {
+    return new PropertiesService(this);
   }
 
   setOrganisationSlug(organisation: string) {

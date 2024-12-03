@@ -8,6 +8,7 @@ import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
+import { PropertiesService } from "./services/PropertiesService";
 import { InternalResponse } from "./types/Response";
 import { GroupsService } from "./services/GroupService";
 export declare class Client {
@@ -28,6 +29,7 @@ export declare class Client {
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
     groups(): GroupsService;
+    properties(): PropertiesService;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(url: string): string;
     makeDeleteRequest(endpoint: string): Promise<any>;

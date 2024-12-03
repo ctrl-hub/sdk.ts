@@ -7,6 +7,7 @@ import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
+import { PropertiesService } from "./services/PropertiesService";
 import { GroupsService } from "./services/GroupService";
 export class Client {
     config;
@@ -70,6 +71,9 @@ export class Client {
     }
     groups() {
         return new GroupsService(this);
+    }
+    properties() {
+        return new PropertiesService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
