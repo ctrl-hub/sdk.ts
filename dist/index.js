@@ -659,6 +659,78 @@ class GroupsService extends BaseService {
   }
 }
 
+// src/models/Vehicle.ts
+class Vehicle {
+  id = "";
+  type = "vehicles";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      registration: "",
+      vin: "",
+      description: ""
+    };
+  }
+  static hydrate(data) {
+    let vehicle = new Vehicle;
+    if (data) {
+      vehicle.id = data.id || "";
+      vehicle.type = data.type || "vehicles";
+      vehicle.relationships = data.relationships || {};
+      vehicle.attributes.registration = vehicle.relationships.author?.data?.id || "";
+      vehicle.attributes.vin = vehicle.relationships.form?.data?.id || "";
+      vehicle.attributes.description = vehicle.relationships.form_version?.data?.id || "";
+      vehicle.meta = data.meta || {};
+      vehicle.links = data.links || {};
+    }
+    return vehicle;
+  }
+}
+
+// src/services/VehiclesService.ts
+class VehiclesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/vehicles", Vehicle.hydrate);
+  }
+}
+
+// src/models/Equipment.ts
+class Equipment {
+  id = "";
+  type = "equipment-items";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      serial: ""
+    };
+  }
+  static hydrate(data) {
+    let equipment = new Equipment;
+    if (data) {
+      equipment.id = data.id || "";
+      equipment.type = data.type || "equipment-items";
+      equipment.relationships = data.relationships || {};
+      equipment.attributes.serial = data.attributes.serial || "";
+      equipment.meta = data.meta || {};
+      equipment.links = data.links || {};
+    }
+    return equipment;
+  }
+}
+
+// src/services/EquipmentService.ts
+class EquipmentService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/equipment", Equipment.hydrate);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -722,6 +794,12 @@ class Client {
   }
   groups() {
     return new GroupsService(this);
+  }
+  vehicles() {
+    return new VehiclesService(this);
+  }
+  equipment() {
+    return new EquipmentService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

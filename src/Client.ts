@@ -11,6 +11,8 @@ import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import {InternalResponse} from "./types/Response";
 import {GroupsService} from "./services/GroupService";
+import { VehiclesService } from "@services/VehiclesService";
+import { EquipmentService } from "@services/EquipmentService";
 
 export class Client {
   readonly config: ClientConfigInterface;
@@ -90,6 +92,14 @@ export class Client {
 
   public groups(): GroupsService {
     return new GroupsService(this);
+  }
+
+  public vehicles(): VehiclesService {
+    return new VehiclesService(this);
+  }
+
+  public equipment(): EquipmentService {
+    return new EquipmentService(this);
   }
 
   setOrganisationSlug(organisation: string) {

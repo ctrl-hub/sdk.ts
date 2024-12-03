@@ -8,6 +8,8 @@ import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import { GroupsService } from "./services/GroupService";
+import { VehiclesService } from "@services/VehiclesService";
+import { EquipmentService } from "@services/EquipmentService";
 export class Client {
     config;
     organisation;
@@ -70,6 +72,12 @@ export class Client {
     }
     groups() {
         return new GroupsService(this);
+    }
+    vehicles() {
+        return new VehiclesService(this);
+    }
+    equipment() {
+        return new EquipmentService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
