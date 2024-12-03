@@ -335,14 +335,14 @@ class Submission {
     if (data) {
       submission.id = data.id || "";
       submission.type = data.type || "submissions";
-      submission.attributes.author = data.attributes.author || "";
-      submission.attributes.form = data.attributes.form || "";
-      submission.attributes.form_version = data.attributes.form_version || "";
+      submission.relationships = data.relationships || {};
+      submission.attributes.author = submission.relationships.author?.data?.id || "";
+      submission.attributes.form = submission.relationships.form?.data?.id || "";
+      submission.attributes.form_version = submission.relationships.form_version?.data?.id || "";
       submission.attributes.reference = data.attributes.reference || "";
       submission.attributes.status = data.attributes.status || "";
       submission.meta = data.meta || {};
       submission.links = data.links || {};
-      submission.relationships = data.relationships || {};
     }
     return submission;
   }
