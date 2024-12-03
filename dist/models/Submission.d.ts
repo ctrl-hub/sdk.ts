@@ -1,8 +1,5 @@
 import type { Model } from "../types/Model";
 type SubmissionAttributes = {
-    author: string;
-    form: string;
-    form_version: string;
     reference: string;
     status: string;
 };

@@ -7,9 +7,6 @@ export class Submission {
     relationships;
     constructor() {
         this.attributes = {
-            author: '',
-            form: '',
-            form_version: '',
             reference: '',
             status: '',
         };
