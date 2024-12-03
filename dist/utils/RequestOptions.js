@@ -3,6 +3,7 @@ export class RequestOptions {
     limit;
     offset;
     filters;
+    include = [];
     constructor(options) {
         if (options.sort) {
             this.sort = options.sort;
@@ -15,6 +16,9 @@ export class RequestOptions {
         }
         if (options.filters) {
             this.filters = options.filters;
+        }
+        if (options.include) {
+            this.include = options.include;
         }
     }
     toURLSearchParams() {
@@ -29,6 +33,9 @@ export class RequestOptions {
             this.filters.forEach(filter => {
                 params.append(`filter[${filter.key}]`, filter.value);
             });
+        }
+        if (this.include && this.include.length) {
+            params.append('include', this.include.join(','));
         }
         if (this.limit) {
             params.append('limit', this.limit.toString());
@@ -47,6 +54,7 @@ export class RequestOptions {
             limit: parseInt(queryParams.get('limit') || defaults.limit?.toString() || '20'),
             offset: parseInt(queryParams.get('offset') || defaults.offset?.toString() || '0'),
             sort: defaults.sort || [],
+            include: defaults.include || [],
         };
         // Extract filters from query string
         queryParams.forEach((value, key) => {
