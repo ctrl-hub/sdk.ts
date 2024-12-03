@@ -19,6 +19,7 @@ export class Form implements Model {
     public attributes: FormAttributes;
     public meta: any = {};
     public links: any = {};
+    public relationships?: any;
 
     constructor() {
         this.attributes = {
@@ -36,6 +37,7 @@ export class Form implements Model {
         if (data) {
             form.id = data.id || '';
             form.type = data.type || 'forms';
+            form.relationships = data.relationships || {};
             form.attributes.name = data.attributes.name || '';
             form.attributes.description = data.attributes.description || '';
             form.attributes.field_mappings = data.attributes.field_mappings || [];

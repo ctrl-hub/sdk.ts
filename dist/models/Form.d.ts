@@ -16,6 +16,7 @@ export declare class Form implements Model {
     attributes: FormAttributes;
     meta: any;
     links: any;
+    relationships?: any;
     constructor();
     static hydrate(data: any): Form;
 }
