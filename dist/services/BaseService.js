@@ -36,29 +36,31 @@ export class BaseService {
             requestParam = new RequestOptions(param);
         }
         let resp = await this.client.makeGetRequest(endpoint, requestParam);
-        const dataIsArray = Array.isArray(resp.data);
-        // Hydrate response based on whether it's a single item or an array
-        if (dataIsArray) {
-            resp.data = resp.data.map((item) => this.hydrateFunction(item, null));
-        }
-        else {
-            resp.data = this.hydrateFunction(resp.data, null);
-        }
-        // Hydrate relationships
-        if (dataIsArray) {
-            resp.data = resp.data.map((single) => this.hydrateRelationships(single, resp.included));
-        }
-        else {
-            resp.data = this.hydrateRelationships(resp.data, resp.included);
-        }
+        // hydrate the model(s) in resp.data
+        // hydrate model relationships from the data in resp.includes
+        resp.data = Array.isArray(resp.data)
+            ? this.hydrateDataArray(resp.data, resp.included)
+            : this.hydrateSingleItem(resp.data, resp.included);
         return resp;
     }
+    hydrateModel(item) {
+        return this.hydrateFunction(item, null);
+    }
+    hydrateDataArray(items, included) {
+        return items
+            .map(item => this.hydrateModel(item))
+            .map(item => this.hydrateRelationships(item, included));
+    }
+    hydrateSingleItem(item, included) {
+        const hydrated = this.hydrateModel(item);
+        return this.hydrateRelationships(hydrated, included);
+    }
     hydrateRelationships(single, included) {
-        if (!single.relationships)
+        if (!single.relationships || !included)
             return single;
         Object.entries(single.relationships).forEach(([key, relationship]) => {
             const { data } = relationship;
-            // relationship[key] could be array or single object
+            // Hydrate arrays or single items from included data
             relationship.data = Array.isArray(data)
                 ? data.map(relation => this.findMatchingIncluded(relation, included) || relation)
                 : this.findMatchingIncluded(data, included) || data;

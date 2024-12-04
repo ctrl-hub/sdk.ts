@@ -10,8 +10,8 @@ import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import { InternalResponse } from "./types/Response";
 import { GroupsService } from "./services/GroupService";
-import { VehiclesService } from "@services/VehiclesService";
-import { EquipmentService } from "@services/EquipmentService";
+import { VehiclesService } from "./services/VehiclesService";
+import { EquipmentService } from "./services/EquipmentService";
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;

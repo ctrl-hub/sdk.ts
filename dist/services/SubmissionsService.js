@@ -1,6 +1,6 @@
 import { BaseService } from "../services/BaseService";
 import { Submission } from "../models/Submission";
-import { SubmissionVersion } from "@models/SubmissionVersion";
+import { SubmissionVersion } from "../models/SubmissionVersion";
 export class SubmissionsService extends BaseService {
     constructor(client) {
         super(client, "/v3/orgs/:orgId/data-capture/submissions", Submission.hydrate);

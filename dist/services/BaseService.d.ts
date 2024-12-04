@@ -21,6 +21,9 @@ export declare class BaseService<T> {
     get(): Promise<InternalResponse<T[]>>;
     get(param: string): Promise<InternalResponse<T>>;
     get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
+    private hydrateModel;
+    private hydrateDataArray;
+    private hydrateSingleItem;
     hydrateRelationships(single: JsonData, included: any[]): JsonData;
     findMatchingIncluded(relation: any, included: any[]): any;
 }
