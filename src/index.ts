@@ -1,5 +1,6 @@
 export { Client } from './Client'
 export { ClientConfig } from './ClientConfig'
+export { Equipment } from './models/Equipment'
 export { RequestOptions } from './utils/RequestOptions'
 export type { InternalResponse } from './types/Response'
 

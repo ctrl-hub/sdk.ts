@@ -1,9 +1,11 @@
 import { Client } from './src';
+import { Equipment } from './src/models/Equipment';
 import {FormCategory} from "./src/models/FormCategory";
 import {ClientConfig} from "./dist";
 import {Form} from "./src/models/Form";
 import { RequestOptions } from './dist/utils/RequestOptions';
 import { ServiceAccount } from './src/models/ServiceAccount';
+import { Vehicle } from './src/models/Vehicle';
 
 
 // let config = new ClientConfig()

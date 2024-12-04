@@ -1,5 +1,6 @@
 export { Client } from './Client';
 export { ClientConfig } from './ClientConfig';
+export { Equipment } from './models/Equipment';
 export { RequestOptions } from './utils/RequestOptions';
 export type { InternalResponse } from './types/Response';
 /**
@@ -14,6 +15,14 @@ export { Permission } from './models/Permission';
 export { Role } from './models/Role';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
+<<<<<<< HEAD
 export { Submission } from './models/Submission';
 export { SubmissionVersion } from './models/SubmissionVersion';
 export { Vehicle } from './models/Vehicle';
+=======
+export { Log } from './models/Log';
+export { Group } from './models/Group';
+export { Permission } from './models/Permission';
+export { Vehicle } from './models/Vehicle';
+export type { InternalResponse } from './types/Response';
+>>>>>>> main
