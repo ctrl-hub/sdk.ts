@@ -11,14 +11,14 @@ export type RequestOptionsType = {
     limit?: number;
     offset?: number;
     filters?: Filter[];
-    include: String[];
+    include?: String[];
 };
 export declare class RequestOptions {
     sort?: Sort[];
     limit?: number;
     offset?: number;
     filters?: Filter[];
-    include: String[];
+    include?: String[];
     constructor(options: RequestOptionsType);
     toURLSearchParams(): URLSearchParams;
     static fromUrl(url: string, defaults?: Partial<RequestOptionsType>): RequestOptionsType;

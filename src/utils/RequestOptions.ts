@@ -13,7 +13,7 @@ export type RequestOptionsType = {
     limit?: number;
     offset?: number;
     filters?: Filter[];
-    include: String[]
+    include?: String[]
 };
 
 export class RequestOptions {
@@ -21,7 +21,7 @@ export class RequestOptions {
     limit?: number;
     offset?: number;
     filters?: Filter[];
-    include: String[] = [];
+    include?: String[];
 
     constructor(options: RequestOptionsType) {
         if (options.sort) {

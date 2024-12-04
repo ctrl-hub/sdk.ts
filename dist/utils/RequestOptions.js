@@ -3,7 +3,7 @@ export class RequestOptions {
     limit;
     offset;
     filters;
-    include = [];
+    include;
     constructor(options) {
         if (options.sort) {
             this.sort = options.sort;
