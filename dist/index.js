@@ -895,12 +895,14 @@ class ClientConfig {
   }
 }
 export {
+  Vehicle,
   ServiceAccountKey,
   ServiceAccount,
   RequestOptions,
   Permission,
   Log,
   Group,
+  Equipment,
   ClientConfig,
   Client
 };

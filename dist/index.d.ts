@@ -1,9 +1,11 @@
 export { Client } from './Client';
 export { ClientConfig } from './ClientConfig';
+export { Equipment } from './models/Equipment';
 export { RequestOptions } from './utils/RequestOptions';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Log } from './models/Log';
 export { Group } from './models/Group';
 export { Permission } from './models/Permission';
+export { Vehicle } from './models/Vehicle';
 export type { InternalResponse } from './types/Response';
