@@ -907,11 +907,8 @@ Vehicle = __legacyDecorateClassTS([
 ], Vehicle);
 export {
   Vehicle,
-<<<<<<< HEAD
   SubmissionVersion,
   Submission,
-=======
->>>>>>> main
   ServiceAccountKey,
   ServiceAccount,
   Role,
@@ -919,11 +916,8 @@ export {
   Permission,
   Log,
   Group,
-<<<<<<< HEAD
   FormCategory,
   Form,
-=======
->>>>>>> main
   Equipment,
   ClientConfig,
   Client

@@ -7,7 +7,6 @@ export type { InternalResponse } from './types/Response'
 /**
  * Models
  */
-export { Equipment } from './models/Equipment'
 export { Form } from './models/Form'
 export { FormCategory } from './models/FormCategory'
 export { Group } from './models/Group'
