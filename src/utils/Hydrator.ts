@@ -46,11 +46,20 @@ export class Hydrator {
             const { data } = relationship;
             if (!data) return;
 
-            const hydratedData = Array.isArray(data)
-                ? data.map(relation => this.findMatchingIncluded(relation, included) || relation)
-                : this.findMatchingIncluded(data, included) || data;
+            const hydrateRelation = (relation: RelationData) => {
+                const includedData = this.findMatchingIncluded(relation, included);
 
-            relationship.data = hydratedData;
+                try {
+                    const ModelClass = this.modelRegistry.models[relation.type];
+                    return ModelClass ? ModelClass.hydrate(includedData) : includedData;
+                } catch (e) {
+                    return includedData;
+                }
+            };
+
+            relationship.data = Array.isArray(data)
+                ? data.map(hydrateRelation)
+                : hydrateRelation(data);
         });
 
         return item as T;
