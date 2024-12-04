@@ -1,9 +1,8 @@
 import { BaseService } from "../services/BaseService";
-import { ServiceAccount } from "../models/ServiceAccount";
 import { Log } from "../models/Log";
 export class ServiceAccountsService extends BaseService {
     constructor(client) {
-        super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/service-accounts");
     }
     async createKey(serviceAccount) {
         let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + '/' + serviceAccount.id + '/keys');
@@ -29,7 +28,7 @@ export class ServiceAccountsService extends BaseService {
     async logs(id) {
         const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
         const resp = await this.client.makeGetRequest(logsEndpoint);
-        resp.data = resp.data.map((log) => Log.hydrate(log, null));
+        resp.data = resp.data.map((log) => Log.hydrate(log));
         return resp;
     }
 }

@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type FieldMapping = {
     from: string;
@@ -13,6 +14,7 @@ type FormAttributes = {
     type: string;
 };
 
+@RegisterModel
 export class Form implements Model {
     public id: string = '';
     public type: string = 'forms';

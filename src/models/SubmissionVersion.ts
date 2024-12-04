@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type SubmissionVersionAttributes = {
     author: string;
@@ -9,6 +10,7 @@ type SubmissionVersionAttributes = {
     content: object;
 };
 
+@RegisterModel
 export class SubmissionVersion implements Model {
     public id: string = '';
     public type: string = 'submission-versions';

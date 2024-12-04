@@ -1,58 +1,39 @@
 export class Hydrator {
-    services;
-    constructor(services) {
-        this.services = services;
+    modelRegistry;
+    constructor(modelRegistry) {
+        this.modelRegistry = modelRegistry;
     }
-    hydrateResponse(service, response) {
-        if (!response.included && !response.data)
-            return response;
-        // Hydrate included models
-        if (response.included) {
-            response.included = response.included.map((json) => this.hydrateJson(json));
+    hydrateResponse(data, included) {
+        return Array.isArray(data)
+            ? this.hydrateArray(data, included)
+            : this.hydrateSingle(data, included);
+    }
+    hydrateArray(items, included) {
+        return items.map(item => this.hydrateSingle(item, included));
+    }
+    hydrateSingle(item, included) {
+        const ModelClass = this.modelRegistry.models[item.type];
+        if (!ModelClass) {
+            throw new Error(`No model found for type: ${item.type}`);
         }
-        const isArray = Array.isArray(response.data);
-        // Normalize data into an array for easier handling
-        const data = Array.isArray(response.data) ? response.data : [response.data];
-        const ModelClass = service.model;
-        response.data = data.map((item) => ModelClass.hydrate(item, response));
-        // Hydrate relationships for all data
-        response.data = response.data.map((single) => this.hydrateRelationships(single, response.included));
-        if (!isArray) {
-            response.data = response.data[0];
-        }
-        return response;
+        const hydratedItem = ModelClass.hydrate(item);
+        return this.hydrateRelationships(hydratedItem, included);
     }
-    hydrateJson(json) {
-        const modelClass = this.findServiceModel(json.type);
-        if (!modelClass)
-            return json;
-        let model = new modelClass();
-        this.populateModelAttributes(model, json);
-        return model;
-    }
-    hydrateRelationships(single, included) {
-        if (!single.relationships)
-            return single;
-        Object.entries(single.relationships).forEach(([key, relationship]) => {
+    hydrateRelationships(item, included) {
+        if (!item.relationships || !included)
+            return item;
+        Object.entries(item.relationships).forEach(([key, relationship]) => {
             const { data } = relationship;
-            // relationship[key] could be array or single object
-            relationship.data = Array.isArray(data)
+            if (!data)
+                return;
+            const hydratedData = Array.isArray(data)
                 ? data.map(relation => this.findMatchingIncluded(relation, included) || relation)
                 : this.findMatchingIncluded(data, included) || data;
+            relationship.data = hydratedData;
         });
-        return single;
-    }
-    populateModelAttributes(model, json) {
-        model.id = json.id;
-        model.attributes = json.attributes || {};
-        model.relationships = json.relationships || [];
-        model.meta = json.meta || {};
-        model.links = json.links || [];
-    }
-    findServiceModel(type) {
-        return Object.values(this.services).find(service => service.type === type)?.model;
+        return item;
     }
     findMatchingIncluded(relation, included) {
-        return included.find(inc => inc.id === relation.id && inc.type === relation.type);
+        return included?.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 }

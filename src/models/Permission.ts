@@ -1,9 +1,11 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type PermissionAttributes = {
   description: string;
 };
 
+@RegisterModel
 export class Permission implements Model {
   public id: string = "";
   public type: string = "roles";

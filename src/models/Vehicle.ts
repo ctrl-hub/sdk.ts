@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type VehicleAttributes = {
     registration: string;
@@ -6,6 +7,7 @@ type VehicleAttributes = {
     description: string;
 };
 
+@RegisterModel
 export class Vehicle implements Model {
     public id: string = '';
     public type: string = 'vehicles';

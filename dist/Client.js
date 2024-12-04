@@ -1,5 +1,4 @@
 import { Requests } from "./utils/Requests";
-import { Hydrator } from "./utils/Hydrator";
 import { FormCategoriesService } from "./services/FormCategoriesService";
 import { RolesService } from "./services/RolesService";
 import { PermissionsService } from "./services/PermissionsService";
@@ -8,19 +7,17 @@ import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
 import { GroupsService } from "./services/GroupService";
-import { VehiclesService } from "@services/VehiclesService";
-import { EquipmentService } from "@services/EquipmentService";
+import { VehiclesService } from "./services/VehiclesService";
+import { EquipmentService } from "./services/EquipmentService";
 export class Client {
     config;
     organisation;
     services = {};
-    hydrator;
     bearerToken = '';
     tokenPromise = null;
     constructor(config) {
         this.config = config;
         this.organisation = "";
-        this.hydrator = new Hydrator(this.services);
         if (config.clientId && config.clientSecret && config.authDomain) {
             this.tokenPromise = this.getToken();
         }

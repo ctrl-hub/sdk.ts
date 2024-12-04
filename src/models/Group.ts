@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type Binding = {
     id: string;
@@ -19,6 +20,7 @@ type GroupAttributes = {
     bindings: Binding[];
 };
 
+@RegisterModel
 export class Group implements Model {
     public id: string = '';
     public type: string = 'groups';

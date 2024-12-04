@@ -4,6 +4,6 @@ import {Client} from "Client";
 
 export class FormsService extends BaseService<Form> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/data-capture/forms", Form.hydrate);
+        super(client, "/v3/orgs/:orgId/data-capture/forms");
     }
 }

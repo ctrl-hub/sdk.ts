@@ -1,9 +1,11 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type EquipmentAttributes = {
     serial: string;
 };
 
+@RegisterModel
 export class Equipment implements Model {
     public id: string = '';
     public type: string = 'equipment-items';

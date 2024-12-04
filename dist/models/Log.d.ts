@@ -35,6 +35,6 @@ export declare class Log implements Model {
     relationships: any[];
     links: any;
     constructor();
-    static hydrate(data: any, fullResponseData: any): Log;
+    static hydrate(data: any): Log;
 }
 export {};

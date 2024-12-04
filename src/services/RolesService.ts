@@ -4,6 +4,6 @@ import {Role} from "../models/Role";
 
 export class RolesService extends BaseService<Role> {
     constructor(client: Client) {
-        super(client, "/v3/iam/roles", Role.hydrate);
+        super(client, "/v3/iam/roles");
     }
 }

@@ -2,11 +2,11 @@ import {Client} from "Client";
 import {BaseService} from "../services/BaseService";
 import {Submission} from "../models/Submission";
 import { InternalResponse } from "types/Response";
-import { SubmissionVersion } from "@models/SubmissionVersion";
+import { SubmissionVersion } from "../models/SubmissionVersion";
 
 export class SubmissionsService extends BaseService<Submission> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/data-capture/submissions", Submission.hydrate);
+        super(client, "/v3/orgs/:orgId/data-capture/submissions");
     }
 
     async getVersions(submissionId: string): Promise<InternalResponse<SubmissionVersion[]>> {

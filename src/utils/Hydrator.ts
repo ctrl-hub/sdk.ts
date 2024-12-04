@@ -1,5 +1,5 @@
-import type {Model} from "../types/Model";
-import type {Service} from "../types/Service";
+import { ModelRegistry } from './ModelRegistry';
+import type { Model } from '../types/Model';
 
 interface JsonData {
     id: string;
@@ -10,72 +10,53 @@ interface JsonData {
     links?: string[];
 }
 
+interface RelationData {
+    id: string;
+    type: string;
+    [key: string]: any;
+}
+
 export class Hydrator {
-    constructor(private services: Record<string, any>) {}
+    constructor(private modelRegistry: ModelRegistry) {}
 
-    hydrateResponse(service: Service, response: any) {
-
-        if (!response.included && !response.data) return response;
-
-        // Hydrate included models
-        if (response.included) {
-            response.included = response.included.map((json: any) => this.hydrateJson(json));
-        }
-
-        const isArray = Array.isArray(response.data);
-
-        // Normalize data into an array for easier handling
-        const data = Array.isArray(response.data) ? response.data : [response.data];
-        const ModelClass = service.model;
-        response.data = data.map((item: any) => ModelClass.hydrate(item, response));
-
-        // Hydrate relationships for all data
-        response.data = response.data.map((single: any) => this.hydrateRelationships(single, response.included));
-
-        if (!isArray) {
-            response.data = response.data[0];
-        }
-
-        return response;
+    hydrateResponse<T>(data: JsonData | JsonData[], included: any[]): T | T[] {
+        return Array.isArray(data)
+            ? this.hydrateArray<T>(data, included)
+            : this.hydrateSingle<T>(data, included);
     }
 
-    hydrateJson(json: JsonData): any {
-        const modelClass = this.findServiceModel(json.type);
-        if (!modelClass) return json;
-
-        let model = new modelClass();
-        this.populateModelAttributes(model, json);
-        return model;
+    private hydrateArray<T>(items: JsonData[], included: any[]): T[] {
+        return items.map(item => this.hydrateSingle<T>(item, included));
     }
 
-    hydrateRelationships(single: JsonData, included: JsonData[]): JsonData {
-        if (!single.relationships) return single;
+    private hydrateSingle<T>(item: JsonData, included: any[]): T {
+        const ModelClass = this.modelRegistry.models[item.type];
+        if (!ModelClass) {
+            throw new Error(`No model found for type: ${item.type}`);
+        }
 
-        Object.entries(single.relationships).forEach(([key, relationship]) => {
+        const hydratedItem = ModelClass.hydrate(item);
+        return this.hydrateRelationships(hydratedItem as JsonData, included);
+    }
+
+    private hydrateRelationships<T>(item: JsonData, included: any[]): T {
+        if (!item.relationships || !included) return item as T;
+
+        Object.entries(item.relationships).forEach(([key, relationship]) => {
             const { data } = relationship;
+            if (!data) return;
 
-            // relationship[key] could be array or single object
-            relationship.data = Array.isArray(data)
+            const hydratedData = Array.isArray(data)
                 ? data.map(relation => this.findMatchingIncluded(relation, included) || relation)
                 : this.findMatchingIncluded(data, included) || data;
+
+            relationship.data = hydratedData;
         });
 
-        return single;
+        return item as T;
     }
 
-    populateModelAttributes(model: any, json: any) {
-        model.id = json.id;
-        model.attributes = json.attributes || {};
-        model.relationships = json.relationships || [];
-        model.meta = json.meta || {};
-        model.links = json.links || [];
-    }
-
-    findServiceModel(type: string) {
-        return Object.values(this.services).find(service => service.type === type)?.model;
-    }
-
-    findMatchingIncluded(relation: any, included: any[]) {
-        return included.find(inc => inc.id === relation.id && inc.type === relation.type);
+    private findMatchingIncluded(relation: RelationData, included: any[]) {
+        return included?.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 }

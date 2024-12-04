@@ -1,10 +1,12 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type SubmissionAttributes = {
     reference: string;
     status: string;
 };
 
+@RegisterModel
 export class Submission implements Model {
     public id: string = '';
     public type: string = 'submissions';

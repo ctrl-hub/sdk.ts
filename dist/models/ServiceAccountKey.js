@@ -1,3 +1,5 @@
+import { RegisterModel } from '../utils/ModelRegistry';
+@RegisterModel
 export class ServiceAccountKey {
     id = '';
     type = 'service-account-keys';
@@ -12,7 +14,7 @@ export class ServiceAccountKey {
         };
         this.relationships = [];
     }
-    static hydrate(data, fullResponseData) {
+    static hydrate(data) {
         let serviceAccountKey = new ServiceAccountKey();
         if (data) {
             serviceAccountKey.id = data.id;
