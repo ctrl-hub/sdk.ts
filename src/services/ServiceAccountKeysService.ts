@@ -4,6 +4,6 @@ import {Client} from "Client";
 
 export class ServiceAccountKeysService extends BaseService<ServiceAccountKey> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccountKey.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/service-accounts");
     }
 }

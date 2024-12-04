@@ -1,3 +1,5 @@
+import { RegisterModel } from '../utils/ModelRegistry';
+@RegisterModel
 export class Log {
     id = '';
     type = 'logs';
@@ -34,7 +36,7 @@ export class Log {
         this.links = {};
     }
     // Static method to "hydrate" the Log object with data
-    static hydrate(data, fullResponseData) {
+    static hydrate(data) {
         let log = new Log();
         if (data) {
             log.id = data.id;

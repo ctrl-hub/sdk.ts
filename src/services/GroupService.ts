@@ -4,7 +4,7 @@ import {Group} from "../models/Group";
 
 export class GroupsService extends BaseService<Group> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/iam/groups", Group.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/groups");
     }
 
     async deleteBinding(groupId: string, bindingId: string) {

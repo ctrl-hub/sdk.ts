@@ -1,10 +1,12 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type Attributes = {
     client_id: string;
     enabled: boolean;
 };
 
+@RegisterModel
 export class ServiceAccountKey implements Model {
     public id: string = '';
     public type: string = 'service-account-keys';
@@ -21,7 +23,7 @@ export class ServiceAccountKey implements Model {
         this.relationships = [];
     }
 
-    static hydrate(data: any, fullResponseData: any) {
+    static hydrate(data: any) {
         let serviceAccountKey = new ServiceAccountKey();
 
         if (data) {

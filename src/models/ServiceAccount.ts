@@ -1,6 +1,5 @@
 import type { Model } from "../types/Model";
-import {Client} from "../Client";
-import {ClientConfig} from "../ClientConfig";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type ServiceAccountAttributes = {
     name: string;
@@ -9,6 +8,7 @@ type ServiceAccountAttributes = {
     enabled: boolean;
 };
 
+@RegisterModel
 export class ServiceAccount implements Model {
     public id: string = '';
     public type: string = 'service-accounts';
@@ -26,7 +26,7 @@ export class ServiceAccount implements Model {
         }
     }
 
-    static hydrate(data: any, fullResponseData: any) {
+    static hydrate(data: any) {
         let serviceAccount = new ServiceAccount();
 
         if (data) {

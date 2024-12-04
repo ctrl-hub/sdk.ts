@@ -1,12 +1,14 @@
 import type {Model} from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type FormCategoryAttributes = {
     name: string;
 };
 
+@RegisterModel
 export class FormCategory implements Model {
     public id: string = '';
-    public type: string = 'form-categories';
+    public type: string = 'form_categories';
     public attributes: FormCategoryAttributes;
     public meta: any = {};
     links: any;

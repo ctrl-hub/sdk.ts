@@ -1,3 +1,5 @@
+import { RegisterModel } from '../utils/ModelRegistry';
+@RegisterModel
 export class ServiceAccount {
     id = '';
     type = 'service-accounts';
@@ -13,7 +15,7 @@ export class ServiceAccount {
             enabled: false,
         };
     }
-    static hydrate(data, fullResponseData) {
+    static hydrate(data) {
         let serviceAccount = new ServiceAccount();
         if (data) {
             serviceAccount.id = data.id;

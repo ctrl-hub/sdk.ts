@@ -1,8 +1,7 @@
 import { BaseService } from "../services/BaseService";
-import { Group } from "../models/Group";
 export class GroupsService extends BaseService {
     constructor(client) {
-        super(client, "/v3/orgs/:orgId/iam/groups", Group.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/groups");
     }
     async deleteBinding(groupId, bindingId) {
         let deleteEndpoint = this.client.finalEndpoint(this.endpoint + '/' + groupId + '/bindings/' + bindingId);

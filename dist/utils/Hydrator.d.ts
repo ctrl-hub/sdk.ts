@@ -1,4 +1,4 @@
-import type { Service } from "../types/Service";
+import { ModelRegistry } from './ModelRegistry';
 interface JsonData {
     id: string;
     type: string;
@@ -10,13 +10,12 @@ interface JsonData {
     links?: string[];
 }
 export declare class Hydrator {
-    private services;
-    constructor(services: Record<string, any>);
-    hydrateResponse(service: Service, response: any): any;
-    hydrateJson(json: JsonData): any;
-    hydrateRelationships(single: JsonData, included: JsonData[]): JsonData;
-    populateModelAttributes(model: any, json: any): void;
-    findServiceModel(type: string): any;
-    findMatchingIncluded(relation: any, included: any[]): any;
+    private modelRegistry;
+    constructor(modelRegistry: ModelRegistry);
+    hydrateResponse<T>(data: JsonData | JsonData[], included: any[]): T | T[];
+    private hydrateArray;
+    private hydrateSingle;
+    private hydrateRelationships;
+    private findMatchingIncluded;
 }
 export {};

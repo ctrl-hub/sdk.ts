@@ -1,6 +1,8 @@
+import { RegisterModel } from '../utils/ModelRegistry';
+@RegisterModel
 export class FormCategory {
     id = '';
-    type = 'form-categories';
+    type = 'form_categories';
     attributes;
     meta = {};
     links;

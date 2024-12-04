@@ -1,3 +1,14 @@
+var __legacyDecorateClassTS = function(decorators, target, key, desc) {
+  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+    r = Reflect.decorate(decorators, target, key, desc);
+  else
+    for (var i = decorators.length - 1;i >= 0; i--)
+      if (d = decorators[i])
+        r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
 // src/utils/RequestOptions.ts
 class RequestOptions {
   sort;
@@ -122,256 +133,62 @@ class Requests {
   }
 }
 
+// src/utils/ModelRegistry.ts
+class ModelRegistry {
+  static instance;
+  models = {};
+  static getInstance() {
+    if (!ModelRegistry.instance) {
+      ModelRegistry.instance = new ModelRegistry;
+    }
+    return ModelRegistry.instance;
+  }
+  static register(modelClass) {
+    const instance = new modelClass;
+    if (instance.type) {
+      ModelRegistry.getInstance().models[instance.type] = modelClass;
+    }
+    return modelClass;
+  }
+}
+function RegisterModel(target) {
+  return ModelRegistry.register(target);
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
-  services;
-  constructor(services) {
-    this.services = services;
+  modelRegistry;
+  constructor(modelRegistry) {
+    this.modelRegistry = modelRegistry;
   }
-  hydrateResponse(service, response) {
-    if (!response.included && !response.data)
-      return response;
-    if (response.included) {
-      response.included = response.included.map((json) => this.hydrateJson(json));
+  hydrateResponse(data, included) {
+    return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
+  }
+  hydrateArray(items, included) {
+    return items.map((item) => this.hydrateSingle(item, included));
+  }
+  hydrateSingle(item, included) {
+    const ModelClass = this.modelRegistry.models[item.type];
+    if (!ModelClass) {
+      throw new Error(`No model found for type: ${item.type}`);
     }
-    const isArray = Array.isArray(response.data);
-    const data = Array.isArray(response.data) ? response.data : [response.data];
-    const ModelClass = service.model;
-    response.data = data.map((item) => ModelClass.hydrate(item, response));
-    response.data = response.data.map((single) => this.hydrateRelationships(single, response.included));
-    if (!isArray) {
-      response.data = response.data[0];
-    }
-    return response;
+    const hydratedItem = ModelClass.hydrate(item);
+    return this.hydrateRelationships(hydratedItem, included);
   }
-  hydrateJson(json) {
-    const modelClass = this.findServiceModel(json.type);
-    if (!modelClass)
-      return json;
-    let model = new modelClass;
-    this.populateModelAttributes(model, json);
-    return model;
-  }
-  hydrateRelationships(single, included) {
-    if (!single.relationships)
-      return single;
-    Object.entries(single.relationships).forEach(([key, relationship]) => {
+  hydrateRelationships(item, included) {
+    if (!item.relationships || !included)
+      return item;
+    Object.entries(item.relationships).forEach(([key, relationship]) => {
       const { data } = relationship;
-      relationship.data = Array.isArray(data) ? data.map((relation) => this.findMatchingIncluded(relation, included) || relation) : this.findMatchingIncluded(data, included) || data;
+      if (!data)
+        return;
+      const hydratedData = Array.isArray(data) ? data.map((relation) => this.findMatchingIncluded(relation, included) || relation) : this.findMatchingIncluded(data, included) || data;
+      relationship.data = hydratedData;
     });
-    return single;
-  }
-  populateModelAttributes(model, json) {
-    model.id = json.id;
-    model.attributes = json.attributes || {};
-    model.relationships = json.relationships || [];
-    model.meta = json.meta || {};
-    model.links = json.links || [];
-  }
-  findServiceModel(type) {
-    return Object.values(this.services).find((service) => service.type === type)?.model;
+    return item;
   }
   findMatchingIncluded(relation, included) {
-    return included.find((inc) => inc.id === relation.id && inc.type === relation.type);
-  }
-}
-
-// src/models/Form.ts
-class Form {
-  id = "";
-  type = "forms";
-  attributes;
-  meta = {};
-  links = {};
-  relationships;
-  constructor() {
-    this.attributes = {
-      name: "",
-      description: "",
-      field_mappings: [],
-      status: "",
-      type: ""
-    };
-  }
-  static hydrate(data) {
-    let form = new Form;
-    if (data) {
-      form.id = data.id || "";
-      form.type = data.type || "forms";
-      form.relationships = data.relationships || {};
-      form.attributes.name = data.attributes.name || "";
-      form.attributes.description = data.attributes.description || "";
-      form.attributes.field_mappings = data.attributes.field_mappings || [];
-      form.attributes.type = data.attributes.type || "";
-      form.attributes.status = data.attributes.status || "";
-      form.meta = data.meta || {};
-      form.links = data.links || {};
-    }
-    return form;
-  }
-}
-
-// src/models/FormCategory.ts
-class FormCategory {
-  id = "";
-  type = "form-categories";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      name: ""
-    };
-  }
-  static hydrate(data) {
-    let formCategory = new FormCategory;
-    if (data) {
-      formCategory.id = data.id;
-      formCategory.attributes.name = data.attributes.name || "";
-      formCategory.meta = data.meta || {};
-    }
-    return formCategory;
-  }
-}
-
-// src/models/Role.ts
-class Role {
-  id = "";
-  type = "roles";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      custom: false,
-      name: "",
-      description: "",
-      launch_stage: "",
-      permissions: []
-    };
-  }
-  static hydrate(data) {
-    let role = new Role;
-    if (data) {
-      role.id = data.id;
-      role.attributes.custom = data.attributes.custom || false;
-      role.attributes.name = data.attributes.name || "";
-      role.attributes.description = data.attributes.description || "";
-      role.attributes.launch_stage = data.attributes.launch_stage || "";
-      role.attributes.permissions = data.attributes.permissions || [];
-      role.meta = data.meta || {};
-    }
-    return role;
-  }
-}
-
-// src/models/ServiceAccount.ts
-class ServiceAccount {
-  id = "";
-  type = "service-accounts";
-  attributes;
-  meta = {};
-  relationships;
-  links;
-  constructor() {
-    this.attributes = {
-      name: "",
-      description: "",
-      email: "",
-      enabled: false
-    };
-  }
-  static hydrate(data, fullResponseData) {
-    let serviceAccount = new ServiceAccount;
-    if (data) {
-      serviceAccount.id = data.id;
-      serviceAccount.attributes.name = data.attributes.name || "";
-      serviceAccount.attributes.description = data.attributes.description || "";
-      serviceAccount.attributes.email = data.attributes.email || "";
-      serviceAccount.attributes.enabled = data.attributes.enabled || false;
-      serviceAccount.meta = data.meta || {};
-      serviceAccount.relationships = data.relationships || {};
-    }
-    return serviceAccount;
-  }
-}
-
-// src/models/ServiceAccountKey.ts
-class ServiceAccountKey {
-  id = "";
-  type = "service-account-keys";
-  attributes;
-  meta = {};
-  relationships;
-  links;
-  constructor() {
-    this.attributes = {
-      client_id: "",
-      enabled: false
-    };
-    this.relationships = [];
-  }
-  static hydrate(data, fullResponseData) {
-    let serviceAccountKey = new ServiceAccountKey;
-    if (data) {
-      serviceAccountKey.id = data.id;
-      serviceAccountKey.attributes.client_id = data.attributes.client_id || "";
-      serviceAccountKey.attributes.enabled = data.attributes.enabled;
-      serviceAccountKey.meta = data.meta || {};
-    }
-    return serviceAccountKey;
-  }
-}
-
-// src/models/Submission.ts
-class Submission {
-  id = "";
-  type = "submissions";
-  attributes;
-  meta = {};
-  links = {};
-  relationships;
-  constructor() {
-    this.attributes = {
-      reference: "",
-      status: ""
-    };
-  }
-  static hydrate(data) {
-    let submission = new Submission;
-    if (data) {
-      submission.id = data.id || "";
-      submission.type = data.type || "submissions";
-      submission.relationships = data.relationships || {};
-      submission.attributes.reference = data.attributes.reference || "";
-      submission.attributes.status = data.attributes.status || "";
-      submission.meta = data.meta || {};
-      submission.links = data.links || {};
-    }
-    return submission;
-  }
-}
-
-// src/models/Permission.ts
-class Permission {
-  id = "";
-  type = "roles";
-  attributes;
-  meta = {};
-  links;
-  constructor() {
-    this.attributes = {
-      description: ""
-    };
-  }
-  static hydrate(data) {
-    let permission = new Permission;
-    if (data) {
-      permission.id = data.id;
-      permission.attributes.description = data.attributes.description || "";
-      permission.meta = data.meta || {};
-    }
-    return permission;
+    return included?.find((inc) => inc.id === relation.id && inc.type === relation.type);
   }
 }
 
@@ -379,20 +196,13 @@ class Permission {
 class BaseService {
   client;
   endpoint;
-  hydrateFunction;
-  services = {};
-  models = {};
-  constructor(client, endpoint, hydrateFunction) {
+  modelRegistry;
+  hydrator;
+  constructor(client, endpoint) {
     this.client = client;
     this.endpoint = endpoint;
-    this.hydrateFunction = hydrateFunction;
-    this.models["form-categories"] = FormCategory;
-    this.models["forms"] = Form;
-    this.models["submissions"] = Submission;
-    this.models["permissions"] = Permission;
-    this.models["roles"] = Role;
-    this.models["service-accounts"] = ServiceAccount;
-    this.models["service-account-keys"] = ServiceAccountKey;
+    this.modelRegistry = ModelRegistry.getInstance();
+    this.hydrator = new Hydrator(this.modelRegistry);
   }
   async get(param) {
     let endpoint = this.client.finalEndpoint(this.endpoint);
@@ -403,51 +213,29 @@ class BaseService {
       requestParam = new RequestOptions(param);
     }
     let resp = await this.client.makeGetRequest(endpoint, requestParam);
-    resp.data = Array.isArray(resp.data) ? this.hydrateDataArray(resp.data, resp.included) : this.hydrateSingleItem(resp.data, resp.included);
+    resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
     return resp;
-  }
-  hydrateModel(item) {
-    return this.hydrateFunction(item, null);
-  }
-  hydrateDataArray(items, included) {
-    return items.map((item) => this.hydrateModel(item)).map((item) => this.hydrateRelationships(item, included));
-  }
-  hydrateSingleItem(item, included) {
-    const hydrated = this.hydrateModel(item);
-    return this.hydrateRelationships(hydrated, included);
-  }
-  hydrateRelationships(single, included) {
-    if (!single.relationships || !included)
-      return single;
-    Object.entries(single.relationships).forEach(([key, relationship]) => {
-      const { data } = relationship;
-      relationship.data = Array.isArray(data) ? data.map((relation) => this.findMatchingIncluded(relation, included) || relation) : this.findMatchingIncluded(data, included) || data;
-    });
-    return single;
-  }
-  findMatchingIncluded(relation, included) {
-    return included?.find((inc) => inc.id === relation.id && inc.type === relation.type);
   }
 }
 
 // src/services/FormCategoriesService.ts
 class FormCategoriesService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/data-capture/form-categories", FormCategory.hydrate);
+    super(client, "/v3/orgs/:orgId/data-capture/form-categories");
   }
 }
 
 // src/services/RolesService.ts
 class RolesService extends BaseService {
   constructor(client) {
-    super(client, "/v3/iam/roles", Role.hydrate);
+    super(client, "/v3/iam/roles");
   }
 }
 
 // src/services/PermissionsService.ts
 class PermissionsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/iam/permissions", Permission.hydrate);
+    super(client, "/v3/iam/permissions");
   }
 }
 
@@ -487,11 +275,14 @@ class SubmissionVersion {
     return submissionVersion;
   }
 }
+SubmissionVersion = __legacyDecorateClassTS([
+  RegisterModel
+], SubmissionVersion);
 
 // src/services/SubmissionsService.ts
 class SubmissionsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/data-capture/submissions", Submission.hydrate);
+    super(client, "/v3/orgs/:orgId/data-capture/submissions");
   }
   async getVersions(submissionId) {
     const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions`);
@@ -510,7 +301,7 @@ class SubmissionsService extends BaseService {
 // src/services/FormsService.ts
 class FormsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/data-capture/forms", Form.hydrate);
+    super(client, "/v3/orgs/:orgId/data-capture/forms");
   }
 }
 
@@ -549,7 +340,7 @@ class Log {
     this.relationships = [];
     this.links = {};
   }
-  static hydrate(data, fullResponseData) {
+  static hydrate(data) {
     let log = new Log;
     if (data) {
       log.id = data.id;
@@ -577,11 +368,14 @@ class Log {
     return log;
   }
 }
+Log = __legacyDecorateClassTS([
+  RegisterModel
+], Log);
 
 // src/services/ServiceAccountService.ts
 class ServiceAccountsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
+    super(client, "/v3/orgs/:orgId/iam/service-accounts");
   }
   async createKey(serviceAccount) {
     let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + "/" + serviceAccount.id + "/keys");
@@ -606,7 +400,7 @@ class ServiceAccountsService extends BaseService {
   async logs(id) {
     const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
     const resp = await this.client.makeGetRequest(logsEndpoint);
-    resp.data = resp.data.map((log) => Log.hydrate(log, null));
+    resp.data = resp.data.map((log) => Log.hydrate(log));
     return resp;
   }
 }
@@ -614,43 +408,14 @@ class ServiceAccountsService extends BaseService {
 // src/services/ServiceAccountKeysService.ts
 class ServiceAccountKeysService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccountKey.hydrate);
-  }
-}
-
-// src/models/Group.ts
-class Group {
-  id = "";
-  type = "groups";
-  attributes;
-  meta = {};
-  links = {};
-  constructor() {
-    this.attributes = {
-      name: "",
-      description: "",
-      bindings: []
-    };
-  }
-  static hydrate(data) {
-    let group = new Group;
-    if (data) {
-      group.id = data.id || "";
-      group.type = data.type || "groups";
-      group.attributes.name = data.attributes?.name || "";
-      group.attributes.description = data.attributes?.description || "";
-      group.attributes.bindings = data.attributes?.bindings || [];
-      group.meta = data.meta || {};
-      group.links = data.links || {};
-    }
-    return group;
+    super(client, "/v3/orgs/:orgId/iam/service-accounts");
   }
 }
 
 // src/services/GroupService.ts
 class GroupsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/iam/groups", Group.hydrate);
+    super(client, "/v3/orgs/:orgId/iam/groups");
   }
   async deleteBinding(groupId, bindingId) {
     let deleteEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings/" + bindingId);
@@ -667,75 +432,17 @@ class GroupsService extends BaseService {
   }
 }
 
-// src/models/Vehicle.ts
-class Vehicle {
-  id = "";
-  type = "vehicles";
-  attributes;
-  meta = {};
-  links = {};
-  relationships;
-  constructor() {
-    this.attributes = {
-      registration: "",
-      vin: "",
-      description: ""
-    };
-  }
-  static hydrate(data) {
-    let vehicle = new Vehicle;
-    if (data) {
-      vehicle.id = data.id || "";
-      vehicle.type = data.type || "vehicles";
-      vehicle.relationships = data.relationships || {};
-      vehicle.attributes.registration = data.attributes.registration || "";
-      vehicle.attributes.vin = data.attributes.vin || "";
-      vehicle.attributes.description = data.attributes.description || "";
-      vehicle.meta = data.meta || {};
-      vehicle.links = data.links || {};
-    }
-    return vehicle;
-  }
-}
-
 // src/services/VehiclesService.ts
 class VehiclesService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/vehicles", Vehicle.hydrate);
-  }
-}
-
-// src/models/Equipment.ts
-class Equipment {
-  id = "";
-  type = "equipment-items";
-  attributes;
-  meta = {};
-  links = {};
-  relationships;
-  constructor() {
-    this.attributes = {
-      serial: ""
-    };
-  }
-  static hydrate(data) {
-    let equipment = new Equipment;
-    if (data) {
-      equipment.id = data.id || "";
-      equipment.type = data.type || "equipment-items";
-      equipment.relationships = data.relationships || {};
-      equipment.attributes.serial = data.attributes.serial || "";
-      equipment.meta = data.meta || {};
-      equipment.links = data.links || {};
-    }
-    return equipment;
+    super(client, "/v3/orgs/:orgId/assets/vehicles");
   }
 }
 
 // src/services/EquipmentService.ts
 class EquipmentService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/equipment", Equipment.hydrate);
+    super(client, "/v3/orgs/:orgId/assets/equipment");
   }
 }
 
@@ -744,13 +451,11 @@ class Client {
   config;
   organisation;
   services = {};
-  hydrator;
   bearerToken = "";
   tokenPromise = null;
   constructor(config) {
     this.config = config;
     this.organisation = "";
-    this.hydrator = new Hydrator(this.services);
     if (config.clientId && config.clientSecret && config.authDomain) {
       this.tokenPromise = this.getToken();
     }
@@ -894,14 +599,326 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
+// src/models/Equipment.ts
+class Equipment {
+  id = "";
+  type = "equipment-items";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      serial: ""
+    };
+  }
+  static hydrate(data) {
+    let equipment = new Equipment;
+    if (data) {
+      equipment.id = data.id || "";
+      equipment.type = data.type || "equipment-items";
+      equipment.relationships = data.relationships || {};
+      equipment.attributes.serial = data.attributes.serial || "";
+      equipment.meta = data.meta || {};
+      equipment.links = data.links || {};
+    }
+    return equipment;
+  }
+}
+Equipment = __legacyDecorateClassTS([
+  RegisterModel
+], Equipment);
+// src/models/Form.ts
+class Form {
+  id = "";
+  type = "forms";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: "",
+      description: "",
+      field_mappings: [],
+      status: "",
+      type: ""
+    };
+  }
+  static hydrate(data) {
+    let form = new Form;
+    if (data) {
+      form.id = data.id || "";
+      form.type = data.type || "forms";
+      form.relationships = data.relationships || {};
+      form.attributes.name = data.attributes.name || "";
+      form.attributes.description = data.attributes.description || "";
+      form.attributes.field_mappings = data.attributes.field_mappings || [];
+      form.attributes.type = data.attributes.type || "";
+      form.attributes.status = data.attributes.status || "";
+      form.meta = data.meta || {};
+      form.links = data.links || {};
+    }
+    return form;
+  }
+}
+Form = __legacyDecorateClassTS([
+  RegisterModel
+], Form);
+// src/models/FormCategory.ts
+class FormCategory {
+  id = "";
+  type = "form_categories";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      name: ""
+    };
+  }
+  static hydrate(data) {
+    let formCategory = new FormCategory;
+    if (data) {
+      formCategory.id = data.id;
+      formCategory.attributes.name = data.attributes.name || "";
+      formCategory.meta = data.meta || {};
+    }
+    return formCategory;
+  }
+}
+FormCategory = __legacyDecorateClassTS([
+  RegisterModel
+], FormCategory);
+// src/models/Group.ts
+class Group {
+  id = "";
+  type = "groups";
+  attributes;
+  meta = {};
+  links = {};
+  constructor() {
+    this.attributes = {
+      name: "",
+      description: "",
+      bindings: []
+    };
+  }
+  static hydrate(data) {
+    let group = new Group;
+    if (data) {
+      group.id = data.id || "";
+      group.type = data.type || "groups";
+      group.attributes.name = data.attributes?.name || "";
+      group.attributes.description = data.attributes?.description || "";
+      group.attributes.bindings = data.attributes?.bindings || [];
+      group.meta = data.meta || {};
+      group.links = data.links || {};
+    }
+    return group;
+  }
+}
+Group = __legacyDecorateClassTS([
+  RegisterModel
+], Group);
+// src/models/Permission.ts
+class Permission {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      description: ""
+    };
+  }
+  static hydrate(data) {
+    let permission = new Permission;
+    if (data) {
+      permission.id = data.id;
+      permission.attributes.description = data.attributes.description || "";
+      permission.meta = data.meta || {};
+    }
+    return permission;
+  }
+}
+Permission = __legacyDecorateClassTS([
+  RegisterModel
+], Permission);
+// src/models/Role.ts
+class Role {
+  id = "";
+  type = "roles";
+  attributes;
+  meta = {};
+  links;
+  constructor() {
+    this.attributes = {
+      custom: false,
+      name: "",
+      description: "",
+      launch_stage: "",
+      permissions: []
+    };
+  }
+  static hydrate(data) {
+    let role = new Role;
+    if (data) {
+      role.id = data.id;
+      role.attributes.custom = data.attributes.custom || false;
+      role.attributes.name = data.attributes.name || "";
+      role.attributes.description = data.attributes.description || "";
+      role.attributes.launch_stage = data.attributes.launch_stage || "";
+      role.attributes.permissions = data.attributes.permissions || [];
+      role.meta = data.meta || {};
+    }
+    return role;
+  }
+}
+Role = __legacyDecorateClassTS([
+  RegisterModel
+], Role);
+// src/models/ServiceAccount.ts
+class ServiceAccount {
+  id = "";
+  type = "service-accounts";
+  attributes;
+  meta = {};
+  relationships;
+  links;
+  constructor() {
+    this.attributes = {
+      name: "",
+      description: "",
+      email: "",
+      enabled: false
+    };
+  }
+  static hydrate(data) {
+    let serviceAccount = new ServiceAccount;
+    if (data) {
+      serviceAccount.id = data.id;
+      serviceAccount.attributes.name = data.attributes.name || "";
+      serviceAccount.attributes.description = data.attributes.description || "";
+      serviceAccount.attributes.email = data.attributes.email || "";
+      serviceAccount.attributes.enabled = data.attributes.enabled || false;
+      serviceAccount.meta = data.meta || {};
+      serviceAccount.relationships = data.relationships || {};
+    }
+    return serviceAccount;
+  }
+}
+ServiceAccount = __legacyDecorateClassTS([
+  RegisterModel
+], ServiceAccount);
+// src/models/ServiceAccountKey.ts
+class ServiceAccountKey {
+  id = "";
+  type = "service-account-keys";
+  attributes;
+  meta = {};
+  relationships;
+  links;
+  constructor() {
+    this.attributes = {
+      client_id: "",
+      enabled: false
+    };
+    this.relationships = [];
+  }
+  static hydrate(data) {
+    let serviceAccountKey = new ServiceAccountKey;
+    if (data) {
+      serviceAccountKey.id = data.id;
+      serviceAccountKey.attributes.client_id = data.attributes.client_id || "";
+      serviceAccountKey.attributes.enabled = data.attributes.enabled;
+      serviceAccountKey.meta = data.meta || {};
+    }
+    return serviceAccountKey;
+  }
+}
+ServiceAccountKey = __legacyDecorateClassTS([
+  RegisterModel
+], ServiceAccountKey);
+// src/models/Submission.ts
+class Submission {
+  id = "";
+  type = "submissions";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      reference: "",
+      status: ""
+    };
+  }
+  static hydrate(data) {
+    let submission = new Submission;
+    if (data) {
+      submission.id = data.id || "";
+      submission.type = data.type || "submissions";
+      submission.relationships = data.relationships || {};
+      submission.attributes.reference = data.attributes.reference || "";
+      submission.attributes.status = data.attributes.status || "";
+      submission.meta = data.meta || {};
+      submission.links = data.links || {};
+    }
+    return submission;
+  }
+}
+Submission = __legacyDecorateClassTS([
+  RegisterModel
+], Submission);
+// src/models/Vehicle.ts
+class Vehicle {
+  id = "";
+  type = "vehicles";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      registration: "",
+      vin: "",
+      description: ""
+    };
+  }
+  static hydrate(data) {
+    let vehicle = new Vehicle;
+    if (data) {
+      vehicle.id = data.id || "";
+      vehicle.type = data.type || "vehicles";
+      vehicle.relationships = data.relationships || {};
+      vehicle.attributes.registration = data.attributes.registration || "";
+      vehicle.attributes.vin = data.attributes.vin || "";
+      vehicle.attributes.description = data.attributes.description || "";
+      vehicle.meta = data.meta || {};
+      vehicle.links = data.links || {};
+    }
+    return vehicle;
+  }
+}
+Vehicle = __legacyDecorateClassTS([
+  RegisterModel
+], Vehicle);
 export {
   Vehicle,
+  SubmissionVersion,
+  Submission,
   ServiceAccountKey,
   ServiceAccount,
+  Role,
   RequestOptions,
   Permission,
   Log,
   Group,
+  FormCategory,
+  Form,
+  Equipment,
   ClientConfig,
   Client
 };

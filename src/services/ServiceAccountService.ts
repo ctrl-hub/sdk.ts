@@ -6,7 +6,7 @@ import {InternalResponse} from "../types/Response";
 
 export class ServiceAccountsService extends BaseService<ServiceAccount> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/iam/service-accounts", ServiceAccount.hydrate);
+        super(client, "/v3/orgs/:orgId/iam/service-accounts");
     }
 
     async createKey(serviceAccount: ServiceAccount): Promise<any> {
@@ -34,7 +34,7 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
     async logs(id: string): Promise<InternalResponse<Log[]>> {
         const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
         const resp = await this.client.makeGetRequest(logsEndpoint);
-        resp.data = resp.data.map((log: any) => Log.hydrate(log, null));
+        resp.data = resp.data.map((log: any) => Log.hydrate(log));
         return resp;
     }
 

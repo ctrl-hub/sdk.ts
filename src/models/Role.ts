@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 type RoleAttributes = {
   custom: boolean;
@@ -8,6 +9,7 @@ type RoleAttributes = {
   permissions: string[];
 };
 
+@RegisterModel
 export class Role implements Model {
   public id: string = "";
   public type: string = "roles";

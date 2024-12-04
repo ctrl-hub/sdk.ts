@@ -1,5 +1,4 @@
 import { Requests } from "./utils/Requests";
-import { Hydrator } from "./utils/Hydrator";
 import { FormCategoriesService } from "./services/FormCategoriesService";
 import { RolesService } from "./services/RolesService";
 import { PermissionsService } from "./services/PermissionsService";
@@ -14,13 +13,11 @@ export class Client {
     config;
     organisation;
     services = {};
-    hydrator;
     bearerToken = '';
     tokenPromise = null;
     constructor(config) {
         this.config = config;
         this.organisation = "";
-        this.hydrator = new Hydrator(this.services);
         if (config.clientId && config.clientSecret && config.authDomain) {
             this.tokenPromise = this.getToken();
         }

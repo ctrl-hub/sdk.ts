@@ -4,6 +4,6 @@ import {Equipment} from "../models/Equipment";
 
 export class EquipmentService extends BaseService<Equipment> {
     constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/assets/equipment", Equipment.hydrate);
+        super(client, "/v3/orgs/:orgId/assets/equipment");
     }
 }

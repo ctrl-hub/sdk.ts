@@ -1,4 +1,5 @@
 import type { Model } from "../types/Model";
+import { RegisterModel } from '../utils/ModelRegistry';
 
 // Update Attributes type to match the JSON structure
 type Actor = {
@@ -35,6 +36,7 @@ type Attributes = {
     response: Response;
 };
 
+@RegisterModel
 export class Log implements Model {
     public id: string = '';
     public type: string = 'logs';
@@ -73,7 +75,7 @@ export class Log implements Model {
     }
 
     // Static method to "hydrate" the Log object with data
-    static hydrate(data: any, fullResponseData: any) {
+    static hydrate(data: any) {
         let log = new Log();
 
         if (data) {

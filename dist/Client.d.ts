@@ -1,6 +1,5 @@
 import { ClientConfigInterface } from "./ClientConfig";
 import { RequestOptions } from "./utils/RequestOptions";
-import { Hydrator } from "./utils/Hydrator";
 import { FormCategoriesService } from "./services/FormCategoriesService";
 import { RolesService } from "./services/RolesService";
 import { PermissionsService } from "./services/PermissionsService";
@@ -16,7 +15,6 @@ export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
     services: Record<string, any>;
-    hydrator: Hydrator;
     bearerToken: string;
     private tokenPromise;
     constructor(config: ClientConfigInterface);

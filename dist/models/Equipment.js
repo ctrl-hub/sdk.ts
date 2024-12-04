@@ -1,3 +1,5 @@
+import { RegisterModel } from '../utils/ModelRegistry';
+@RegisterModel
 export class Equipment {
     id = '';
     type = 'equipment-items';
