@@ -68,6 +68,9 @@ let options = {
             value: "be780a63-6944-4305-943c-e715e9177371",
         },
     ],
+    include: [
+        "related-model-1", "related-model-2"
+    ]
 } 
 
 let shoesResponse = client.shoes.get();

@@ -4,6 +4,7 @@ class RequestOptions {
   limit;
   offset;
   filters;
+  include = [];
   constructor(options) {
     if (options.sort) {
       this.sort = options.sort;
@@ -16,6 +17,9 @@ class RequestOptions {
     }
     if (options.filters) {
       this.filters = options.filters;
+    }
+    if (options.include) {
+      this.include = options.include;
     }
   }
   toURLSearchParams() {
@@ -30,6 +34,9 @@ class RequestOptions {
       this.filters.forEach((filter) => {
         params.append(`filter[${filter.key}]`, filter.value);
       });
+    }
+    if (this.include && this.include.length) {
+      params.append("include", this.include.join(","));
     }
     if (this.limit) {
       params.append("limit", this.limit.toString());
@@ -46,7 +53,8 @@ class RequestOptions {
       filters: [],
       limit: parseInt(queryParams.get("limit") || defaults.limit?.toString() || "20"),
       offset: parseInt(queryParams.get("offset") || defaults.offset?.toString() || "0"),
-      sort: defaults.sort || []
+      sort: defaults.sort || [],
+      include: defaults.include || []
     };
     queryParams.forEach((value, key) => {
       if (key.startsWith("filter[") && key.endsWith("]")) {
@@ -418,7 +426,7 @@ class BaseService {
     return single;
   }
   findMatchingIncluded(relation, included) {
-    return included.find((inc) => inc.id === relation.id && inc.type === relation.type);
+    return included?.find((inc) => inc.id === relation.id && inc.type === relation.type);
   }
 }
 

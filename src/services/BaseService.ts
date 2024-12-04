@@ -94,6 +94,6 @@ export class BaseService<T> {
     }
 
     findMatchingIncluded(relation: any, included: any[]) {
-        return included.find(inc => inc.id === relation.id && inc.type === relation.type);
+        return included?.find(inc => inc.id === relation.id && inc.type === relation.type);
     }
 }

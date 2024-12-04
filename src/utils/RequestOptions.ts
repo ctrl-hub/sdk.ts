@@ -13,6 +13,7 @@ export type RequestOptionsType = {
     limit?: number;
     offset?: number;
     filters?: Filter[];
+    include: String[]
 };
 
 export class RequestOptions {
@@ -20,6 +21,7 @@ export class RequestOptions {
     limit?: number;
     offset?: number;
     filters?: Filter[];
+    include: String[] = [];
 
     constructor(options: RequestOptionsType) {
         if (options.sort) {
@@ -33,6 +35,9 @@ export class RequestOptions {
         }
         if (options.filters) {
             this.filters = options.filters
+        }
+        if (options.include) {
+            this.include = options.include
         }
     }
 
@@ -51,6 +56,10 @@ export class RequestOptions {
             this.filters.forEach(filter => {
                 params.append(`filter[${filter.key}]`, filter.value);
             });
+        }
+
+        if (this.include && this.include.length) {
+            params.append('include', this.include.join(','));
         }
 
         if (this.limit) {
@@ -74,6 +83,7 @@ export class RequestOptions {
             limit: parseInt(queryParams.get('limit') || defaults.limit?.toString() || '20'),
             offset: parseInt(queryParams.get('offset') || defaults.offset?.toString() || '0'),
             sort: defaults.sort || [],
+            include: defaults.include || [],
         };
 
         // Extract filters from query string
