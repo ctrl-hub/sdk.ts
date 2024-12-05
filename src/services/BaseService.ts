@@ -1,8 +1,9 @@
 import { Client } from "../Client";
 import { InternalResponse } from "../types/Response";
-import {RequestOptions, RequestOptionsType} from "../utils/RequestOptions";
-import {ModelRegistry} from "../utils/ModelRegistry";
+import { RequestOptions, RequestOptionsType } from "../utils/RequestOptions";
+import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
+import { Model } from "types/Model";
 
 interface JsonData {
     id: string;
@@ -46,6 +47,16 @@ export class BaseService<T> {
         let resp = await this.client.makeGetRequest(endpoint, requestParam);
         resp.data = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
         return resp;
+    }
+
+    async create(model: Model) {
+        let createEndpoint = this.client.finalEndpoint(this.endpoint);
+        return await this.client.makePostRequest(createEndpoint, {
+            data: {
+                type: model.type,
+                attributes: model.attributes,
+            }
+        });
     }
 
 }

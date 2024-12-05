@@ -1,8 +1,8 @@
-import {Client} from "../Client";
-import {BaseService} from "../services/BaseService";
-import {ServiceAccount} from "../models/ServiceAccount"
-import {Log} from "../models/Log";
-import {InternalResponse} from "../types/Response";
+import { Client } from "../Client";
+import { BaseService } from "../services/BaseService";
+import { ServiceAccount } from "../models/ServiceAccount"
+import { Log } from "../models/Log";
+import { InternalResponse } from "../types/Response";
 
 export class ServiceAccountsService extends BaseService<ServiceAccount> {
     constructor(client: Client) {
@@ -17,19 +17,6 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
             }
         });
     };
-
-    async create(serviceAccount: ServiceAccount) {
-        let createKeyEndpoint = this.client.finalEndpoint(this.endpoint);
-        return await this.client.makePostRequest(createKeyEndpoint, {
-            data: {
-                type: serviceAccount.type,
-                attributes: {
-                    name: serviceAccount.attributes.name,
-                    description: serviceAccount.attributes.description
-                }
-            }
-        });
-    }
 
     async logs(id: string): Promise<InternalResponse<Log[]>> {
         const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);

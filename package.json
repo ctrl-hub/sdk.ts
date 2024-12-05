@@ -1,20 +1,20 @@
 {
-  "name": "chsdk",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ctrl-hub/sdk.ts"
-  },
-  "version": "0.1.55",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "devDependencies": {
-    "bun-types": "^1.1.30"
-  },
-  "scripts": {
-    "build": "tsc && bun build src/index.ts --outdir dist && mkdir -p dist/types && cp -r src/types/* dist/types/"
-  },
-  "files": [
-    "dist"
-  ]
+    "name": "chsdk",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ctrl-hub/sdk.ts"
+    },
+    "version": "0.1.56",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "devDependencies": {
+        "bun-types": "^1.1.30"
+    },
+    "scripts": {
+        "build": "tsc && bun build src/index.ts --outdir dist && mkdir -p dist/types && cp -r src/types/* dist/types/"
+    },
+    "files": [
+        "dist"
+    ]
 }

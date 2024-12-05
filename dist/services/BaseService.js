@@ -27,4 +27,13 @@ export class BaseService {
         resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
         return resp;
     }
+    async create(model) {
+        let createEndpoint = this.client.finalEndpoint(this.endpoint);
+        return await this.client.makePostRequest(createEndpoint, {
+            data: {
+                type: model.type,
+                attributes: model.attributes,
+            }
+        });
+    }
 }
