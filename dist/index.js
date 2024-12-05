@@ -961,19 +961,13 @@ class Vehicle {
       manufacturer: {
         data: {
           id: "",
-          type: "vehicle-manufacturers",
-          attributes: {
-            name: ""
-          }
+          type: "vehicle-manufacturers"
         }
       },
       model: {
         data: {
           id: "",
-          type: "vehicle-models",
-          attributes: {
-            name: ""
-          }
+          type: "vehicle-models"
         }
       }
     };
@@ -983,13 +977,12 @@ class Vehicle {
     if (data) {
       vehicle.id = data.id || "";
       vehicle.type = data.type || "vehicles";
-      vehicle.relationships = data.relationships || {};
       vehicle.attributes.registration = data.attributes.registration || "";
       vehicle.attributes.vin = data.attributes.vin || "";
       vehicle.attributes.description = data.attributes.description || "";
       vehicle.attributes.colour = data.attributes.colour || "";
-      vehicle.relationships.manufacturer = data.relationships.manufacturer || "";
-      vehicle.relationships.model = data.relationships.model || "";
+      vehicle.relationships.manufacturer.data.id = data.relationships.manufacturer?.data?.id || "";
+      vehicle.relationships.model.data.id = data.relationships.model.data.id || "";
       vehicle.meta = data.meta || {};
       vehicle.links = data.links || {};
     }
