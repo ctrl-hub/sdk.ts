@@ -10,6 +10,11 @@ export class VehicleModel {
     constructor() {
         this.attributes = {
             name: '',
+            specification: {
+                emissions: '',
+                transmission: ''
+            },
+            documentation: [],
         };
     }
     static hydrate(data) {
@@ -19,6 +24,9 @@ export class VehicleModel {
             vehicleModel.type = data.type || 'vehicle-models';
             vehicleModel.relationships = data.relationships || {};
             vehicleModel.attributes.name = data.attributes.name || '';
+            vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || '';
+            vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || '';
+            vehicleModel.attributes.documentation = data.attributes.documentation || [];
             vehicleModel.meta = data.meta || {};
             vehicleModel.links = data.links || {};
         }

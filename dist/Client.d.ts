@@ -11,6 +11,8 @@ import { InternalResponse } from "./types/Response";
 import { GroupsService } from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";
+import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
+import { VehicleModelsService } from "@services/VehicleModelsService";
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -29,6 +31,8 @@ export declare class Client {
     permissions(): PermissionsService;
     groups(): GroupsService;
     vehicles(): VehiclesService;
+    vehicleManufacturers(): VehicleManufacturersService;
+    vehicleModels(): VehicleModelsService;
     equipment(): EquipmentService;
     setOrganisationSlug(organisation: string): void;
     finalEndpoint(url: string): string;

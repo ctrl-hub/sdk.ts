@@ -12,6 +12,21 @@ export class Vehicle {
             registration: '',
             vin: '',
             description: '',
+            colour: '',
+            manufacturer: {
+                id: '',
+                type: '',
+                attributes: {
+                    name: ''
+                },
+            },
+            model: {
+                id: '',
+                type: '',
+                attributes: {
+                    name: ''
+                },
+            }
         };
     }
     static hydrate(data) {
@@ -23,6 +38,9 @@ export class Vehicle {
             vehicle.attributes.registration = data.attributes.registration || '';
             vehicle.attributes.vin = data.attributes.vin || '';
             vehicle.attributes.description = data.attributes.description || '';
+            vehicle.attributes.colour = data.attributes.colour || '';
+            vehicle.attributes.manufacturer = data.attributes.manufacturer || '';
+            vehicle.attributes.model = data.attributes.model || '';
             vehicle.meta = data.meta || {};
             vehicle.links = data.links || {};
         }

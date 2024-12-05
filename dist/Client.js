@@ -9,6 +9,8 @@ import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService"
 import { GroupsService } from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";
+import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
+import { VehicleModelsService } from "@services/VehicleModelsService";
 export class Client {
     config;
     organisation;
@@ -72,6 +74,12 @@ export class Client {
     }
     vehicles() {
         return new VehiclesService(this);
+    }
+    vehicleManufacturers() {
+        return new VehicleManufacturersService(this);
+    }
+    vehicleModels() {
+        return new VehicleModelsService(this);
     }
     equipment() {
         return new EquipmentService(this);

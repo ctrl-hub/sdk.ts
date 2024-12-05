@@ -17,3 +17,5 @@ export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Submission } from './models/Submission';
 export { SubmissionVersion } from './models/SubmissionVersion';
 export { Vehicle } from './models/Vehicle';
+export { VehicleModel } from './models/VehicleModel';
+export { VehicleManufacturer } from './models/VehicleManufacturer';
