@@ -14,6 +14,7 @@ export class Vehicle {
             description: '',
             colour: '',
         };
+        this.relationships = {};
     }
     static hydrate(data) {
         let vehicle = new Vehicle();

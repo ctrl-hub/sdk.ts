@@ -24,10 +24,12 @@ export class Vehicle implements Model {
             description: '',
             colour: '',
         }
+        this.relationships = {};
     }
 
     static hydrate(data: any) {
         let vehicle = new Vehicle();
+
         if (data) {
             vehicle.id = data.id || '';
             vehicle.type = data.type || 'vehicles';
