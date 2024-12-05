@@ -451,10 +451,54 @@ class EquipmentService extends BaseService {
   }
 }
 
+// src/models/VehicleModel.ts
+class VehicleModel {
+  id = "";
+  type = "vehicle-models";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: "",
+      specification: {
+        emissions: "",
+        transmission: ""
+      },
+      documentation: []
+    };
+  }
+  static hydrate(data) {
+    let vehicleModel = new VehicleModel;
+    if (data) {
+      vehicleModel.id = data.id || "";
+      vehicleModel.type = data.type || "vehicle-models";
+      vehicleModel.relationships = data.relationships || {};
+      vehicleModel.attributes.name = data.attributes.name || "";
+      vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || "";
+      vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || "";
+      vehicleModel.attributes.documentation = data.attributes.documentation || [];
+      vehicleModel.meta = data.meta || {};
+      vehicleModel.links = data.links || {};
+    }
+    return vehicleModel;
+  }
+}
+VehicleModel = __legacyDecorateClassTS([
+  RegisterModel
+], VehicleModel);
+
 // src/services/VehicleManufacturersService.ts
 class VehicleManufacturersService extends BaseService {
   constructor(client) {
-    super(client, "/v3/vehicles/manufacturers");
+    super(client, "/v3/assets/vehicles/manufacturers");
+  }
+  async models(id) {
+    const modelsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/models`);
+    const resp = await this.client.makeGetRequest(modelsEndpoint);
+    resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
+    return resp;
   }
 }
 
@@ -948,43 +992,6 @@ class Vehicle {
 Vehicle = __legacyDecorateClassTS([
   RegisterModel
 ], Vehicle);
-// src/models/VehicleModel.ts
-class VehicleModel {
-  id = "";
-  type = "vehicle-models";
-  attributes;
-  meta = {};
-  links = {};
-  relationships;
-  constructor() {
-    this.attributes = {
-      name: "",
-      specification: {
-        emissions: "",
-        transmission: ""
-      },
-      documentation: []
-    };
-  }
-  static hydrate(data) {
-    let vehicleModel = new VehicleModel;
-    if (data) {
-      vehicleModel.id = data.id || "";
-      vehicleModel.type = data.type || "vehicle-models";
-      vehicleModel.relationships = data.relationships || {};
-      vehicleModel.attributes.name = data.attributes.name || "";
-      vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || "";
-      vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || "";
-      vehicleModel.attributes.documentation = data.attributes.documentation || [];
-      vehicleModel.meta = data.meta || {};
-      vehicleModel.links = data.links || {};
-    }
-    return vehicleModel;
-  }
-}
-VehicleModel = __legacyDecorateClassTS([
-  RegisterModel
-], VehicleModel);
 // src/models/VehicleManufacturer.ts
 class VehicleManufacturer {
   id = "";
