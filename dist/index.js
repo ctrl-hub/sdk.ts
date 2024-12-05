@@ -184,6 +184,9 @@ class Hydrator {
         return;
       const hydrateRelation = (relation) => {
         const includedData = this.findMatchingIncluded(relation, included);
+        if (!includedData) {
+          return relation;
+        }
         try {
           const ModelClass = this.modelRegistry.models[relation.type];
           return ModelClass ? ModelClass.hydrate(includedData) : includedData;
@@ -957,6 +960,7 @@ class Vehicle {
       description: "",
       colour: ""
     };
+    this.relationships = {};
   }
   static hydrate(data) {
     let vehicle = new Vehicle;

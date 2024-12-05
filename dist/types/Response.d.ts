@@ -12,7 +12,7 @@ export interface InternalResponse<T = any> {
         api: Error[],
     },
     meta: any,
-    links: Record<string, string|object>,
+    links: Record<string, string | object>,
     included: object[]
     // inferred response status:
     ok: boolean,
