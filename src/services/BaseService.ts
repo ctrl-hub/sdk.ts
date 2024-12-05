@@ -49,7 +49,7 @@ export class BaseService<T> {
         return resp;
     }
 
-    async create(model: Model) {
+    async create(model: Model): Promise<InternalResponse<T>> {
         let createEndpoint = this.client.finalEndpoint(this.endpoint);
         return await this.client.makePostRequest(createEndpoint, {
             data: {
