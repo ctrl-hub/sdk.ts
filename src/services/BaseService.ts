@@ -1,9 +1,10 @@
 import { Client } from "../Client";
 import { InternalResponse } from "../types/Response";
-import { RequestOptions, RequestOptionsType } from "../utils/RequestOptions";
+import { RequestOptionsType, SingleGetRequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
 import { Model } from "types/Model";
+import {GetRequestParamHandler} from "../utils/GetRequestParamHandler";
 
 interface JsonData {
     id: string;
@@ -30,18 +31,13 @@ export class BaseService<T> {
     // Overloads for get method
     async get(): Promise<InternalResponse<T[]>>;
     async get(param: string): Promise<InternalResponse<T>>;
+    async get(param: string, singleGetRequestOptions?: RequestOptionsType): Promise<InternalResponse<T>>;
     async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
-    async get(param?: string | RequestOptionsType): Promise<InternalResponse<T | T[]>> {
-        // Make the request and type the response
-        let requestParam: string | RequestOptions | undefined;
-
-        if (typeof param === 'string') {
-            requestParam = param;
-        } else if (typeof param === 'object') {
-            // If param is an object, convert it to RequestOptions
-            requestParam = new RequestOptions(param);
-        }
-
+    async get(
+        param?: string | RequestOptionsType,
+        singleGetRequestOptions?: SingleGetRequestOptionsType
+    ): Promise<InternalResponse<T | T[]>> {
+        const { requestParam, endpoint } = GetRequestParamHandler.handle(this.endpoint, param, singleGetRequestOptions);
         let resp = await this.client.makeGetRequest(this.endpoint, requestParam);
         resp.data = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
         return resp;
