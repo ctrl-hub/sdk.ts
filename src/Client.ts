@@ -103,7 +103,7 @@ export class Client {
     this.config.organisationId = organisation;
   }
 
-  finalEndpoint(url: string): string {
+  substituteOrganisation(url: string): string {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
 

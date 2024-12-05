@@ -33,7 +33,7 @@ export class BaseService<T> {
     async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
     async get(param?: string | RequestOptionsType): Promise<InternalResponse<T | T[]>> {
         // Make the request and type the response
-        let endpoint = this.client.finalEndpoint(this.endpoint);
+        let endpoint = this.client.substituteOrganisation(this.endpoint);
 
         let requestParam: string | RequestOptions | undefined;
 
@@ -50,7 +50,7 @@ export class BaseService<T> {
     }
 
     async create(model: Model): Promise<InternalResponse<T>> {
-        let createEndpoint = this.client.finalEndpoint(this.endpoint);
+        let createEndpoint = this.client.substituteOrganisation(this.endpoint);
         return await this.client.makePostRequest(createEndpoint, {
             data: {
                 type: model.type,
