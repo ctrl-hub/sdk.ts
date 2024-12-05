@@ -33,8 +33,6 @@ export class BaseService<T> {
     async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
     async get(param?: string | RequestOptionsType): Promise<InternalResponse<T | T[]>> {
         // Make the request and type the response
-        let endpoint = this.client.substituteOrganisation(this.endpoint);
-
         let requestParam: string | RequestOptions | undefined;
 
         if (typeof param === 'string') {
@@ -44,14 +42,13 @@ export class BaseService<T> {
             requestParam = new RequestOptions(param);
         }
 
-        let resp = await this.client.makeGetRequest(endpoint, requestParam);
+        let resp = await this.client.makeGetRequest(this.endpoint, requestParam);
         resp.data = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
         return resp;
     }
 
     async create(model: Model): Promise<InternalResponse<T>> {
-        let createEndpoint = this.client.substituteOrganisation(this.endpoint);
-        return await this.client.makePostRequest(createEndpoint, {
+        return await this.client.makePostRequest(this.endpoint, {
             data: {
                 type: model.type,
                 attributes: model.attributes,

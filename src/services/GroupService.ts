@@ -8,12 +8,12 @@ export class GroupsService extends BaseService<Group> {
     }
 
     async deleteBinding(groupId: string, bindingId: string) {
-        let deleteEndpoint = this.client.substituteOrganisation(this.endpoint + '/' + groupId + '/bindings/' + bindingId);
+        let deleteEndpoint = this.endpoint + '/' + groupId + '/bindings/' + bindingId;
         return await this.client.makeDeleteRequest(deleteEndpoint);
     }
 
     async createBinding(groupId: string, body: string) {
-        let createBindingEndpoint = this.client.substituteOrganisation(this.endpoint + '/' + groupId + '/bindings');
+        let createBindingEndpoint = this.endpoint + '/' + groupId + '/bindings';
         return await this.client.makePostRequest(createBindingEndpoint, {
             data: {
                 type: 'bindings',
