@@ -55,6 +55,7 @@ export class BaseService<T> {
             data: {
                 type: model.type,
                 attributes: model.attributes,
+                relationships: model.relationships,
             }
         });
     }

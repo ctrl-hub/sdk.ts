@@ -8,9 +8,18 @@ type VehicleAttributes = {
     vin: string;
     description: string;
     colour: string;
-    manufacturer: object;
-    model: object;
 };
+
+type VehicleRelationships = {
+    model: {
+        id: string;
+        type: string;
+    },
+    manufacturer: {
+        id: string;
+        type: string;
+    },
+}
 
 @RegisterModel
 export class Vehicle implements Model {
@@ -27,20 +36,26 @@ export class Vehicle implements Model {
             vin: '',
             description: '',
             colour: '',
+        }
+        this.relationships = {
             manufacturer: {
-                id: '',
-                type: '',
-                attributes: {
-                    name: ''
-                },
+                data: {
+                    id: '',
+                    type: 'vehicle-manufacturers',
+                    attributes: {
+                        name: ''
+                    },
+                }
             },
             model: {
-                id: '',
-                type: '',
-                attributes: {
-                    name: ''
-                },
-            }
+                data: {
+                    id: '',
+                    type: 'vehicle-models',
+                    attributes: {
+                        name: ''
+                    },
+                }
+            },
         };
     }
 
@@ -55,8 +70,8 @@ export class Vehicle implements Model {
             vehicle.attributes.vin = data.attributes.vin || '';
             vehicle.attributes.description = data.attributes.description || '';
             vehicle.attributes.colour = data.attributes.colour || '';
-            vehicle.attributes.manufacturer = data.attributes.manufacturer || '';
-            vehicle.attributes.model = data.attributes.model || '';
+            vehicle.relationships.manufacturer = data.relationships.manufacturer || '';
+            vehicle.relationships.model = data.relationships.model || '';
             vehicle.meta = data.meta || {};
             vehicle.links = data.links || {};
         }

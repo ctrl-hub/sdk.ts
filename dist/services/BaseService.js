@@ -33,6 +33,7 @@ export class BaseService {
             data: {
                 type: model.type,
                 attributes: model.attributes,
+                relationships: model.relationships,
             }
         });
     }

@@ -4,8 +4,6 @@ type VehicleAttributes = {
     vin: string;
     description: string;
     colour: string;
-    manufacturer: object;
-    model: object;
 };
 export declare class Vehicle implements Model {
     id: string;
