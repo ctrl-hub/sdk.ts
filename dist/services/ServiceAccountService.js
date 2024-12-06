@@ -1,4 +1,6 @@
+import { Client } from "../Client";
 import { BaseService } from "../services/BaseService";
+import { ServiceAccount } from "../models/ServiceAccount";
 import { Log } from "../models/Log";
 export class ServiceAccountsService extends BaseService {
     constructor(client) {
