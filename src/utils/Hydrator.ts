@@ -1,5 +1,4 @@
 import { ModelRegistry } from './ModelRegistry';
-import type { Model } from '../types/Model';
 
 interface JsonData {
     id: string;
@@ -42,7 +41,7 @@ export class Hydrator {
     private hydrateRelationships<T>(item: JsonData, included: any[]): T {
         if (!item.relationships || !included) return item as T;
 
-        Object.entries(item.relationships).forEach(([key, relationship]) => {
+        Object.entries(item.relationships).forEach(([_, relationship]) => {
             const { data } = relationship;
             if (!data) return;
 
