@@ -1,19 +1,10 @@
 import { Client } from "../Client";
-import { InternalResponse } from "../types/Response";
+import { InternalResponse, JsonData } from '../types/Response';
 import { RequestOptionsType, SingleGetRequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
 import { Model } from "types/Model";
 import {GetRequestParamHandler} from "../utils/GetRequestParamHandler";
-
-interface JsonData {
-    id: string;
-    type: string;
-    attributes?: Record<string, any>;
-    relationships?: Record<string, { data: any[] }>;
-    meta?: Record<string, any>;
-    links?: string[];
-}
 
 export class BaseService<T> {
     protected client: Client;

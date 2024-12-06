@@ -1,14 +1,5 @@
 import { ModelRegistry } from './ModelRegistry';
-import type { Model } from '../types/Model';
-
-interface JsonData {
-    id: string;
-    type: string;
-    attributes?: Record<string, any>;
-    relationships?: Record<string, { data: any[] }>;
-    meta?: Record<string, any>;
-    links?: string[];
-}
+import { JsonData } from '../types/Response';
 
 interface RelationData {
     id: string;
