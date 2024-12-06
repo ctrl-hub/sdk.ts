@@ -40,6 +40,10 @@ export class Hydrator {
             const hydrateRelation = (relation: RelationData) => {
                 const includedData = this.findMatchingIncluded(relation, included);
 
+                if (!includedData) {
+                    return relation;
+                }
+
                 try {
                     const ModelClass = this.modelRegistry.models[relation.type];
                     return ModelClass ? ModelClass.hydrate(includedData) : includedData;

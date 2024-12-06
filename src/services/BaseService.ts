@@ -1,18 +1,19 @@
 import { Client } from "../Client";
 import { InternalResponse, JsonData } from '../types/Response';
-import { RequestOptionsType, SingleGetRequestOptionsType } from "../utils/RequestOptions";
+import { RequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
 import { Model } from "types/Model";
-import {GetRequestParamHandler} from "../utils/GetRequestParamHandler";
+import { RequestBuilder } from '../utils/RequestBuilder';
 
-export class BaseService<T> {
+export class BaseService<T> extends RequestBuilder {
     protected client: Client;
     protected endpoint: string;
     protected modelRegistry: ModelRegistry;
     protected hydrator: Hydrator;
 
     constructor(client: Client, endpoint: string) {
+        super();
         this.client = client;
         this.endpoint = endpoint;
         this.modelRegistry = ModelRegistry.getInstance();
@@ -22,15 +23,16 @@ export class BaseService<T> {
     // Overloads for get method
     async get(): Promise<InternalResponse<T[]>>;
     async get(param: string): Promise<InternalResponse<T>>;
-    async get(param: string, singleGetRequestOptions?: RequestOptionsType): Promise<InternalResponse<T>>;
+    async get(param: string, options?: RequestOptionsType): Promise<InternalResponse<T>>;
     async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
     async get(
-        param?: string | RequestOptionsType,
-        singleGetRequestOptions?: SingleGetRequestOptionsType
+      param?: string | RequestOptionsType,
+      options?: RequestOptionsType
     ): Promise<InternalResponse<T | T[]>> {
-        const { requestParam, endpoint } = GetRequestParamHandler.handle(this.endpoint, param, singleGetRequestOptions);
-        let resp = await this.client.makeGetRequest(this.endpoint, requestParam);
+        const {endpoint, requestOptions} = this.buildRequestParams(this.endpoint, param, options);
+        let resp = await this.client.makeGetRequest(endpoint, requestOptions);
         resp.data = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
+        this.clearRequestOptions();
         return resp;
     }
 
