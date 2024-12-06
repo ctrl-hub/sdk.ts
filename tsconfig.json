@@ -16,7 +16,10 @@
       "@models/*": ["models/*"],
       "@utils/*": ["utils/*"],
       "@services/*": ["services/*"]
-    }
+    },
+	"verbatimModuleSyntax": true, // prevents importing types without using `import type`
+	"noUnusedLocals": true,
+	"noUnusedParameters": true,
   },
   "include": [
     "src/**/*.ts",
