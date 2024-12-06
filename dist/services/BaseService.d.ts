@@ -13,5 +13,5 @@ export declare class BaseService<T> {
     get(): Promise<InternalResponse<T[]>>;
     get(param: string): Promise<InternalResponse<T>>;
     get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
-    create(model: Model): Promise<any>;
+    create(model: Model): Promise<InternalResponse<T>>;
 }
