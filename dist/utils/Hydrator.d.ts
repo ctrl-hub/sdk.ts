@@ -1,14 +1,5 @@
 import { ModelRegistry } from './ModelRegistry';
-interface JsonData {
-    id: string;
-    type: string;
-    attributes?: Record<string, any>;
-    relationships?: Record<string, {
-        data: any[];
-    }>;
-    meta?: Record<string, any>;
-    links?: string[];
-}
+import type { JsonData } from '../types/Response';
 export declare class Hydrator {
     private modelRegistry;
     constructor(modelRegistry: ModelRegistry);
@@ -18,4 +9,3 @@ export declare class Hydrator {
     private hydrateRelationships;
     private findMatchingIncluded;
 }
-export {};

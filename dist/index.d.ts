@@ -1,11 +1,13 @@
 export { Client } from './Client';
 export { ClientConfig } from './ClientConfig';
-export { Equipment } from './models/Equipment';
 export { RequestOptions } from './utils/RequestOptions';
 export type { InternalResponse } from './types/Response';
 /**
  * Models
  */
+export { Equipment } from './models/Equipment';
+export { EquipmentModel } from './models/EquipmentModel';
+export { EquipmentManufacturer } from './models/EquipmentManufacturer';
 export { Form } from './models/Form';
 export { FormCategory } from './models/FormCategory';
 export { Group } from './models/Group';
@@ -17,3 +19,5 @@ export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Submission } from './models/Submission';
 export { SubmissionVersion } from './models/SubmissionVersion';
 export { Vehicle } from './models/Vehicle';
+export { VehicleModel } from './models/VehicleModel';
+export { VehicleManufacturer } from './models/VehicleManufacturer';

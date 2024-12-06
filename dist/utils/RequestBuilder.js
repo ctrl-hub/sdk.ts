@@ -1,75 +1,59 @@
-import {RequestOptions} from "../utils/RequestOptions";
-import type {RequestOptionsType} from "../utils/RequestOptions";
-
+import { RequestOptions } from "../utils/RequestOptions";
 export class RequestBuilder {
-    protected requestOptions: RequestOptionsType = {};
-
-    withIncludes(includes: string[]): this {
+    requestOptions = {};
+    withIncludes(includes) {
         this.requestOptions.include = includes;
         return this;
     }
-
-    withSort(sort: Array<{ key: string, direction?: 'asc' | 'desc' }>): this {
+    withSort(sort) {
         this.requestOptions.sort = sort.map(sortOption => ({
             key: sortOption.key,
             direction: sortOption.direction || 'asc'
         }));
         return this;
     }
-
-    withFilters(filters: Array<{ key: string, value: string }>): this {
+    withFilters(filters) {
         this.requestOptions.filters = filters;
         return this;
     }
-
-    withPagination(limit: number, offset: number = 0): this {
+    withPagination(limit, offset = 0) {
         this.requestOptions.limit = limit;
         this.requestOptions.offset = offset;
         return this;
     }
-
-    withLimit(limit: number): this {
+    withLimit(limit) {
         this.requestOptions.limit = limit;
         return this;
     }
-
-    withOffset(offset: number): this {
+    withOffset(offset) {
         this.requestOptions.offset = offset;
         return this;
     }
-
-    protected buildRequestParams(
-        endpoint: string,
-        param?: string | RequestOptionsType,
-        options?: RequestOptionsType
-    ): { endpoint: string; requestOptions?: RequestOptions } {
+    buildRequestParams(endpoint, param, options) {
         let finalEndpoint = endpoint;
-        let requestOptions: RequestOptions | undefined;
-
+        let requestOptions;
         if (typeof param === 'string') {
             finalEndpoint = `${endpoint}/${param}`;
             requestOptions = new RequestOptions({
                 ...this.requestOptions,
                 ...options
             });
-        } else if (typeof param === 'object' && param !== null) {
+        }
+        else if (typeof param === 'object' && param !== null) {
             requestOptions = new RequestOptions({
                 ...this.requestOptions,
                 ...param
             });
-        } else if (Object.keys(this.requestOptions).length > 0) {
+        }
+        else if (Object.keys(this.requestOptions).length > 0) {
             requestOptions = new RequestOptions(this.requestOptions);
         }
-
-        return {endpoint: finalEndpoint, requestOptions};
+        return { endpoint: finalEndpoint, requestOptions };
     }
-
-    protected clearRequestOptions(): void {
+    clearRequestOptions() {
         this.requestOptions = {};
     }
-
-    protected getRequestOptions(): RequestOptionsType {
+    getRequestOptions() {
         return this.requestOptions;
     }
-
 }

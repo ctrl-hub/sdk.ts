@@ -7,7 +7,7 @@ export class ServiceAccountsService extends BaseService {
         super(client, "/v3/orgs/:orgId/iam/service-accounts");
     }
     async createKey(serviceAccount) {
-        let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + '/' + serviceAccount.id + '/keys');
+        let createKeyEndpoint = this.endpoint + '/' + serviceAccount.id + '/keys';
         return await this.client.makePostRequest(createKeyEndpoint, {
             data: {
                 type: 'service-account-keys'
@@ -16,7 +16,7 @@ export class ServiceAccountsService extends BaseService {
     }
     ;
     async logs(id) {
-        const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
+        const logsEndpoint = `${this.endpoint}/${id}/logs`;
         const resp = await this.client.makeGetRequest(logsEndpoint);
         resp.data = resp.data.map((log) => Log.hydrate(log));
         return resp;

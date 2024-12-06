@@ -7,13 +7,13 @@ export class SubmissionsService extends BaseService {
         super(client, "/v3/orgs/:orgId/data-capture/submissions");
     }
     async getVersions(submissionId) {
-        const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions`);
+        const versionsEndpoint = `${this.endpoint}/${submissionId}/relationships/versions`;
         const resp = await this.client.makeGetRequest(versionsEndpoint);
         resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
         return resp;
     }
     async getVersion(submissionId, versionId) {
-        const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+        const versionEndpoint = `${this.endpoint}/${submissionId}/relationships/versions/${versionId}`;
         const resp = await this.client.makeGetRequest(versionEndpoint);
         resp.data = SubmissionVersion.hydrate(resp.data);
         return resp;

@@ -5,6 +5,7 @@ type VehicleAttributes = {
     registration: string;
     vin: string;
     description: string;
+    colour: string;
 };
 
 @RegisterModel
@@ -21,7 +22,9 @@ export class Vehicle implements Model {
             registration: '',
             vin: '',
             description: '',
-        };
+            colour: '',
+        }
+        this.relationships = {};
     }
 
     static hydrate(data: any) {
@@ -34,6 +37,7 @@ export class Vehicle implements Model {
             vehicle.attributes.registration = data.attributes.registration || '';
             vehicle.attributes.vin = data.attributes.vin || '';
             vehicle.attributes.description = data.attributes.description || '';
+            vehicle.attributes.colour = data.attributes.colour || '';
             vehicle.meta = data.meta || {};
             vehicle.links = data.links || {};
         }

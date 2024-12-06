@@ -10,6 +10,10 @@ import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService"
 import { GroupsService } from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";
+import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
+import { VehicleModelsService } from "@services/VehicleModelsService";
+import { EquipmentManufacturersService } from "@services/EquipmentManufacturersService";
+import { EquipmentModelsService } from "@services/EquipmentModelsService";
 export class Client {
     config;
     organisation;
@@ -74,18 +78,31 @@ export class Client {
     vehicles() {
         return new VehiclesService(this);
     }
+    vehicleManufacturers() {
+        return new VehicleManufacturersService(this);
+    }
+    vehicleModels() {
+        return new VehicleModelsService(this);
+    }
     equipment() {
         return new EquipmentService(this);
+    }
+    equipmentManufacturers() {
+        return new EquipmentManufacturersService(this);
+    }
+    equipmentModels() {
+        return new EquipmentModelsService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
     }
-    finalEndpoint(url) {
+    substituteOrganisation(url) {
         return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
     }
     async makeDeleteRequest(endpoint) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(endpoint);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };
@@ -108,6 +125,7 @@ export class Client {
     async makePostRequest(baseEndpoint, body, param) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };
@@ -131,6 +149,7 @@ export class Client {
     async makeGetRequest(baseEndpoint, param) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };
