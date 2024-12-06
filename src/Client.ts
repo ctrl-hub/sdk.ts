@@ -1,4 +1,4 @@
-import { ClientConfigInterface } from "./ClientConfig";
+import type { ClientConfigInterface} from "./ClientConfig";
 import { RequestOptions } from "./utils/RequestOptions";
 import { Requests } from "./utils/Requests";
 import { FormCategoriesService } from "./services/FormCategoriesService";
@@ -8,8 +8,8 @@ import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
-import { InternalResponse } from "./types/Response";
-import { GroupsService } from "./services/GroupService";
+import type {InternalResponse} from "./types/Response";
+import {GroupsService} from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";
 import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
@@ -123,16 +123,17 @@ export class Client {
         this.config.organisationId = organisation;
     }
 
-    finalEndpoint(url: string): string {
-        return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
-    }
+  substituteOrganisation(url: string): string {
+    return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
+  }
 
     async makeDeleteRequest(
         endpoint: string,
     ): Promise<any> {
         await this.ensureAuthenticated();
 
-        let url = Requests.buildRequestURL(endpoint);
+    let url = Requests.buildRequestURL(endpoint);
+    url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -163,7 +164,8 @@ export class Client {
     ): Promise<any> {
         await this.ensureAuthenticated();
 
-        let url = Requests.buildRequestURL(baseEndpoint, param);
+    let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -194,7 +196,8 @@ export class Client {
     ): Promise<InternalResponse> {
         await this.ensureAuthenticated();
 
-        let url = Requests.buildRequestURL(baseEndpoint, param);
+    let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',

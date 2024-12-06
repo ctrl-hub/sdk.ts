@@ -1,3 +1,4 @@
+import { ModelRegistry } from './ModelRegistry';
 export class Hydrator {
     modelRegistry;
     constructor(modelRegistry) {
@@ -22,7 +23,7 @@ export class Hydrator {
     hydrateRelationships(item, included) {
         if (!item.relationships || !included)
             return item;
-        Object.entries(item.relationships).forEach(([key, relationship]) => {
+        Object.entries(item.relationships).forEach(([_, relationship]) => {
             const { data } = relationship;
             if (!data)
                 return;

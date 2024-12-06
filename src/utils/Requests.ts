@@ -1,5 +1,5 @@
-import { RequestOptions } from "./RequestOptions";
-import { InternalResponse } from "../types/Response";
+import {RequestOptions} from "./RequestOptions";
+import type {InternalResponse} from "../types/Response";
 
 export class Requests {
 

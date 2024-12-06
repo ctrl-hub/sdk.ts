@@ -1,4 +1,4 @@
-import { ClientConfigInterface } from "./ClientConfig";
+import type { ClientConfigInterface } from "./ClientConfig";
 import { RequestOptions } from "./utils/RequestOptions";
 import { FormCategoriesService } from "./services/FormCategoriesService";
 import { RolesService } from "./services/RolesService";
@@ -7,7 +7,7 @@ import { SubmissionsService } from "./services/SubmissionsService";
 import { FormsService } from "./services/FormsService";
 import { ServiceAccountsService } from "./services/ServiceAccountService";
 import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
-import { InternalResponse } from "./types/Response";
+import type { InternalResponse } from "./types/Response";
 import { GroupsService } from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";

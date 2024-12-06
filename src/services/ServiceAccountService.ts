@@ -2,7 +2,7 @@ import { Client } from "../Client";
 import { BaseService } from "../services/BaseService";
 import { ServiceAccount } from "../models/ServiceAccount"
 import { Log } from "../models/Log";
-import { InternalResponse } from "../types/Response";
+import type { InternalResponse } from "../types/Response";
 
 export class ServiceAccountsService extends BaseService<ServiceAccount> {
     constructor(client: Client) {
@@ -10,7 +10,7 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
     }
 
     async createKey(serviceAccount: ServiceAccount): Promise<any> {
-        let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + '/' + serviceAccount.id + '/keys');
+        let createKeyEndpoint = this.endpoint + '/' + serviceAccount.id + '/keys';
         return await this.client.makePostRequest(createKeyEndpoint, {
             data: {
                 type: 'service-account-keys'
@@ -19,7 +19,7 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
     };
 
     async logs(id: string): Promise<InternalResponse<Log[]>> {
-        const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
+        const logsEndpoint = `${this.endpoint}/${id}/logs`;
         const resp = await this.client.makeGetRequest(logsEndpoint);
         resp.data = resp.data.map((log: any) => Log.hydrate(log));
         return resp;

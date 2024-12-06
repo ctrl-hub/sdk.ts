@@ -15,7 +15,7 @@ export declare class Client {
   serviceAccounts: ServiceMethods;
   constructor(config: ClientConfig);
   setOrganisationSlug(organisation: string): void;
-  finalEndpoint(service: Service): string;
+  substituteOrganisation(service: Service): string;
   private setupProxies;
   makeGetRequest(
     baseEndpoint: string,

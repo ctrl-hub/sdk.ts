@@ -1,3 +1,4 @@
+import { Client } from "../Client";
 import { RequestOptions } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
