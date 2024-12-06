@@ -103,7 +103,7 @@ export class Client {
     this.config.organisationId = organisation;
   }
 
-  finalEndpoint(url: string): string {
+  substituteOrganisation(url: string): string {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
 
@@ -113,6 +113,7 @@ export class Client {
     await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(endpoint);
+    url = this.substituteOrganisation(url);
 
     let headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -144,6 +145,7 @@ export class Client {
     await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
 
     let headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -175,6 +177,7 @@ export class Client {
     await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
 
     let headers: Record<string, string> = {
       'Content-Type': 'application/json',

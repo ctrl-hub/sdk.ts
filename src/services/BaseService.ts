@@ -1,27 +1,19 @@
 import { Client } from "../Client";
-import type { InternalResponse } from "../types/Response";
-import { RequestOptions } from "../utils/RequestOptions";
-import type { RequestOptionsType } from "../utils/RequestOptions";
+import { InternalResponse, JsonData } from '../types/Response';
+import { RequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
+import { RequestBuilder } from '../utils/RequestBuilder';
 import type { Model } from "types/Model";
 
-interface JsonData {
-    id: string;
-    type: string;
-    attributes?: Record<string, any>;
-    relationships?: Record<string, { data: any[] }>;
-    meta?: Record<string, any>;
-    links?: string[];
-}
-
-export class BaseService<T> {
+export class BaseService<T> extends RequestBuilder {
     protected client: Client;
     protected endpoint: string;
     protected modelRegistry: ModelRegistry;
     protected hydrator: Hydrator;
 
     constructor(client: Client, endpoint: string) {
+        super();
         this.client = client;
         this.endpoint = endpoint;
         this.modelRegistry = ModelRegistry.getInstance();
@@ -31,28 +23,21 @@ export class BaseService<T> {
     // Overloads for get method
     async get(): Promise<InternalResponse<T[]>>;
     async get(param: string): Promise<InternalResponse<T>>;
+    async get(param: string, options?: RequestOptionsType): Promise<InternalResponse<T>>;
     async get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
-    async get(param?: string | RequestOptionsType): Promise<InternalResponse<T | T[]>> {
-        // Make the request and type the response
-        let endpoint = this.client.finalEndpoint(this.endpoint);
-
-        let requestParam: string | RequestOptions | undefined;
-
-        if (typeof param === 'string') {
-            requestParam = param;
-        } else if (typeof param === 'object') {
-            // If param is an object, convert it to RequestOptions
-            requestParam = new RequestOptions(param);
-        }
-
-        let resp = await this.client.makeGetRequest(endpoint, requestParam);
+    async get(
+      param?: string | RequestOptionsType,
+      options?: RequestOptionsType
+    ): Promise<InternalResponse<T | T[]>> {
+        const {endpoint, requestOptions} = this.buildRequestParams(this.endpoint, param, options);
+        let resp = await this.client.makeGetRequest(endpoint, requestOptions);
         resp.data = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
+        this.clearRequestOptions();
         return resp;
     }
 
     async create(model: Model): Promise<InternalResponse<T>> {
-        let createEndpoint = this.client.finalEndpoint(this.endpoint);
-        return await this.client.makePostRequest(createEndpoint, {
+        return await this.client.makePostRequest(this.endpoint, {
             data: {
                 type: model.type,
                 attributes: model.attributes,

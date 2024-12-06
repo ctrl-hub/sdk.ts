@@ -1,13 +1,5 @@
 import { ModelRegistry } from './ModelRegistry';
-
-interface JsonData {
-    id: string;
-    type: string;
-    attributes?: Record<string, any>;
-    relationships?: Record<string, { data: any[] }>;
-    meta?: Record<string, any>;
-    links?: string[];
-}
+import { JsonData } from '../types/Response';
 
 interface RelationData {
     id: string;
@@ -47,6 +39,10 @@ export class Hydrator {
 
             const hydrateRelation = (relation: RelationData) => {
                 const includedData = this.findMatchingIncluded(relation, included);
+
+                if (!includedData) {
+                    return relation;
+                }
 
                 try {
                     const ModelClass = this.modelRegistry.models[relation.type];
