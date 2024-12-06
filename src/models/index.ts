@@ -1,4 +1,6 @@
 export { Equipment } from "./Equipment";
+export { EquipmentModel } from "./EquipmentModel";
+export { EquipmentManufacturer } from "./EquipmentManufacturer";
 export { Form } from "./Form";
 export { FormCategory } from "./FormCategory";
 export { Submission } from "./Submission";

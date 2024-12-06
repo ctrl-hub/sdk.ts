@@ -134,6 +134,10 @@ class Requests {
 }
 
 // src/utils/ModelRegistry.ts
+function RegisterModel(target) {
+  return ModelRegistry.register(target);
+}
+
 class ModelRegistry {
   static instance;
   models = {};
@@ -150,9 +154,6 @@ class ModelRegistry {
     }
     return modelClass;
   }
-}
-function RegisterModel(target) {
-  return ModelRegistry.register(target);
 }
 
 // src/utils/Hydrator.ts
@@ -513,6 +514,58 @@ class VehicleModelsService extends BaseService {
   }
 }
 
+// src/models/EquipmentModel.ts
+class EquipmentModel {
+  id = "";
+  type = "equipment-models";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: "",
+      documentation: []
+    };
+  }
+  static hydrate(data) {
+    let equipmentModel = new EquipmentModel;
+    if (data) {
+      equipmentModel.id = data.id || "";
+      equipmentModel.type = data.type || "equipment-models";
+      equipmentModel.relationships = data.relationships || {};
+      equipmentModel.attributes.name = data.attributes.name || "";
+      equipmentModel.attributes.documentation = data.attributes.documentation || [];
+      equipmentModel.meta = data.meta || {};
+      equipmentModel.links = data.links || {};
+    }
+    return equipmentModel;
+  }
+}
+EquipmentModel = __legacyDecorateClassTS([
+  RegisterModel
+], EquipmentModel);
+
+// src/services/EquipmentManufacturersService.ts
+class EquipmentManufacturersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/equipment/manufacturers");
+  }
+  async models(id) {
+    const modelsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/models`);
+    const resp = await this.client.makeGetRequest(modelsEndpoint);
+    resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
+    return resp;
+  }
+}
+
+// src/services/EquipmentModelsService.ts
+class EquipmentModelsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/equipment/models");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -586,6 +639,12 @@ class Client {
   }
   equipment() {
     return new EquipmentService(this);
+  }
+  equipmentManufacturers() {
+    return new EquipmentManufacturersService(this);
+  }
+  equipmentModels() {
+    return new EquipmentModelsService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
@@ -701,6 +760,35 @@ class Equipment {
 Equipment = __legacyDecorateClassTS([
   RegisterModel
 ], Equipment);
+// src/models/EquipmentManufacturer.ts
+class EquipmentManufacturer {
+  id = "";
+  type = "equipment-manufacturers";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: ""
+    };
+  }
+  static hydrate(data) {
+    let equipmentManufacturer = new EquipmentManufacturer;
+    if (data) {
+      equipmentManufacturer.id = data.id || "";
+      equipmentManufacturer.type = data.type || "equipment-manufacturers";
+      equipmentManufacturer.relationships = data.relationships || {};
+      equipmentManufacturer.attributes.name = data.attributes.name || "";
+      equipmentManufacturer.meta = data.meta || {};
+      equipmentManufacturer.links = data.links || {};
+    }
+    return equipmentManufacturer;
+  }
+}
+EquipmentManufacturer = __legacyDecorateClassTS([
+  RegisterModel
+], EquipmentManufacturer);
 // src/models/Form.ts
 class Form {
   id = "";
@@ -1025,6 +1113,8 @@ export {
   Group,
   FormCategory,
   Form,
+  EquipmentModel,
+  EquipmentManufacturer,
   Equipment,
   ClientConfig,
   Client
