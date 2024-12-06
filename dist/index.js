@@ -553,7 +553,7 @@ class VehicleManufacturersService extends BaseService {
     super(client, "/v3/assets/vehicles/manufacturers");
   }
   async models(id) {
-    const modelsEndpoint = this.client.substituteOrganisation(`${this.endpoint}/${id}/models`);
+    const modelsEndpoint = `${this.endpoint}/${id}/models`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
     return resp;
@@ -605,7 +605,7 @@ class EquipmentManufacturersService extends BaseService {
     super(client, "/v3/assets/equipment/manufacturers");
   }
   async models(id) {
-    const modelsEndpoint = this.client.substituteOrganisation(`${this.endpoint}/${id}/models`);
+    const modelsEndpoint = `${this.endpoint}/${id}/models`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
     return resp;
