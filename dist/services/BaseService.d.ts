@@ -1,9 +1,9 @@
 import { Client } from "../Client";
-import { InternalResponse } from "../types/Response";
-import { RequestOptionsType } from "../utils/RequestOptions";
+import type { InternalResponse } from "../types/Response";
+import type { RequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
-import { Model } from "types/Model";
+import type { Model } from "types/Model";
 export declare class BaseService<T> {
     protected client: Client;
     protected endpoint: string;

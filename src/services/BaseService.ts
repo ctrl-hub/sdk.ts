@@ -3,8 +3,8 @@ import { InternalResponse, JsonData } from '../types/Response';
 import { RequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
-import { Model } from "types/Model";
 import { RequestBuilder } from '../utils/RequestBuilder';
+import type { Model } from "types/Model";
 
 export class BaseService<T> extends RequestBuilder {
     protected client: Client;
