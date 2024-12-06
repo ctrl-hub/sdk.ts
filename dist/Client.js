@@ -96,12 +96,13 @@ export class Client {
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
     }
-    finalEndpoint(url) {
+    substituteOrganisation(url) {
         return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
     }
     async makeDeleteRequest(endpoint) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(endpoint);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };
@@ -124,6 +125,7 @@ export class Client {
     async makePostRequest(baseEndpoint, body, param) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };
@@ -147,6 +149,7 @@ export class Client {
     async makeGetRequest(baseEndpoint, param) {
         await this.ensureAuthenticated();
         let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
         let headers = {
             'Content-Type': 'application/json',
         };

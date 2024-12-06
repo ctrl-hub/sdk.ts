@@ -1,7 +1,7 @@
 import { Client } from "Client";
 import { BaseService } from "./BaseService";
 import { VehicleManufacturer } from "../models/VehicleManufacturer";
-import { InternalResponse } from "types/Response";
+import type { InternalResponse } from "types/Response";
 import { VehicleModel } from "@models/VehicleModel";
 
 export class VehicleManufacturersService extends BaseService<VehicleManufacturer> {
@@ -10,7 +10,7 @@ export class VehicleManufacturersService extends BaseService<VehicleManufacturer
     }
 
     async models(id: string): Promise<InternalResponse<VehicleModel[]>> {
-        const modelsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/models`);
+        const modelsEndpoint = this.client.substituteOrganisation(`${this.endpoint}/${id}/models`);
         const resp = await this.client.makeGetRequest(modelsEndpoint);
         resp.data = resp.data.map((model: any) => VehicleModel.hydrate(model));
         return resp;

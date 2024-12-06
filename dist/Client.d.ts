@@ -39,7 +39,7 @@ export declare class Client {
     equipmentManufacturers(): EquipmentManufacturersService;
     equipmentModels(): EquipmentModelsService;
     setOrganisationSlug(organisation: string): void;
-    finalEndpoint(url: string): string;
+    substituteOrganisation(url: string): string;
     makeDeleteRequest(endpoint: string): Promise<any>;
     makePostRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any>;
     makeGetRequest(baseEndpoint: string, param?: string | RequestOptions): Promise<InternalResponse>;

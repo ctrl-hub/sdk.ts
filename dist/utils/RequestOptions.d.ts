@@ -6,6 +6,9 @@ type Filter = {
     key: string;
     value: string;
 };
+export type SingleGetRequestOptionsType = {
+    include?: String[];
+};
 export type RequestOptionsType = {
     sort?: Sort[];
     limit?: number;

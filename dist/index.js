@@ -204,33 +204,86 @@ class Hydrator {
   }
 }
 
+// src/utils/RequestBuilder.ts
+class RequestBuilder {
+  requestOptions = {};
+  withIncludes(includes) {
+    this.requestOptions.include = includes;
+    return this;
+  }
+  withSort(sort) {
+    this.requestOptions.sort = sort.map((sortOption) => ({
+      key: sortOption.key,
+      direction: sortOption.direction || "asc"
+    }));
+    return this;
+  }
+  withFilters(filters) {
+    this.requestOptions.filters = filters;
+    return this;
+  }
+  withPagination(limit, offset = 0) {
+    this.requestOptions.limit = limit;
+    this.requestOptions.offset = offset;
+    return this;
+  }
+  withLimit(limit) {
+    this.requestOptions.limit = limit;
+    return this;
+  }
+  withOffset(offset) {
+    this.requestOptions.offset = offset;
+    return this;
+  }
+  buildRequestParams(endpoint, param, options) {
+    let finalEndpoint = endpoint;
+    let requestOptions;
+    if (typeof param === "string") {
+      finalEndpoint = `${endpoint}/${param}`;
+      requestOptions = new RequestOptions({
+        ...this.requestOptions,
+        ...options
+      });
+    } else if (typeof param === "object" && param !== null) {
+      requestOptions = new RequestOptions({
+        ...this.requestOptions,
+        ...param
+      });
+    } else if (Object.keys(this.requestOptions).length > 0) {
+      requestOptions = new RequestOptions(this.requestOptions);
+    }
+    return { endpoint: finalEndpoint, requestOptions };
+  }
+  clearRequestOptions() {
+    this.requestOptions = {};
+  }
+  getRequestOptions() {
+    return this.requestOptions;
+  }
+}
+
 // src/services/BaseService.ts
-class BaseService {
+class BaseService extends RequestBuilder {
   client;
   endpoint;
   modelRegistry;
   hydrator;
   constructor(client, endpoint) {
+    super();
     this.client = client;
     this.endpoint = endpoint;
     this.modelRegistry = ModelRegistry.getInstance();
     this.hydrator = new Hydrator(this.modelRegistry);
   }
-  async get(param) {
-    let endpoint = this.client.finalEndpoint(this.endpoint);
-    let requestParam;
-    if (typeof param === "string") {
-      requestParam = param;
-    } else if (typeof param === "object") {
-      requestParam = new RequestOptions(param);
-    }
-    let resp = await this.client.makeGetRequest(endpoint, requestParam);
+  async get(param, options) {
+    const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
+    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
     resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    this.clearRequestOptions();
     return resp;
   }
   async create(model) {
-    let createEndpoint = this.client.finalEndpoint(this.endpoint);
-    return await this.client.makePostRequest(createEndpoint, {
+    return await this.client.makePostRequest(this.endpoint, {
       data: {
         type: model.type,
         attributes: model.attributes,
@@ -307,13 +360,13 @@ class SubmissionsService extends BaseService {
     super(client, "/v3/orgs/:orgId/data-capture/submissions");
   }
   async getVersions(submissionId) {
-    const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions`);
+    const versionsEndpoint = `${this.endpoint}/${submissionId}/relationships/versions`;
     const resp = await this.client.makeGetRequest(versionsEndpoint);
     resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
     return resp;
   }
   async getVersion(submissionId, versionId) {
-    const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+    const versionEndpoint = `${this.endpoint}/${submissionId}/relationships/versions/${versionId}`;
     const resp = await this.client.makeGetRequest(versionEndpoint);
     resp.data = SubmissionVersion.hydrate(resp.data);
     return resp;
@@ -400,7 +453,7 @@ class ServiceAccountsService extends BaseService {
     super(client, "/v3/orgs/:orgId/iam/service-accounts");
   }
   async createKey(serviceAccount) {
-    let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + "/" + serviceAccount.id + "/keys");
+    let createKeyEndpoint = this.endpoint + "/" + serviceAccount.id + "/keys";
     return await this.client.makePostRequest(createKeyEndpoint, {
       data: {
         type: "service-account-keys"
@@ -408,7 +461,7 @@ class ServiceAccountsService extends BaseService {
     });
   }
   async logs(id) {
-    const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
+    const logsEndpoint = `${this.endpoint}/${id}/logs`;
     const resp = await this.client.makeGetRequest(logsEndpoint);
     resp.data = resp.data.map((log) => Log.hydrate(log));
     return resp;
@@ -428,11 +481,11 @@ class GroupsService extends BaseService {
     super(client, "/v3/orgs/:orgId/iam/groups");
   }
   async deleteBinding(groupId, bindingId) {
-    let deleteEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings/" + bindingId);
+    let deleteEndpoint = this.endpoint + "/" + groupId + "/bindings/" + bindingId;
     return await this.client.makeDeleteRequest(deleteEndpoint);
   }
   async createBinding(groupId, body) {
-    let createBindingEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings");
+    let createBindingEndpoint = this.endpoint + "/" + groupId + "/bindings";
     return await this.client.makePostRequest(createBindingEndpoint, {
       data: {
         type: "bindings",
@@ -500,7 +553,7 @@ class VehicleManufacturersService extends BaseService {
     super(client, "/v3/assets/vehicles/manufacturers");
   }
   async models(id) {
-    const modelsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/models`);
+    const modelsEndpoint = this.client.substituteOrganisation(`${this.endpoint}/${id}/models`);
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
     return resp;
@@ -552,7 +605,7 @@ class EquipmentManufacturersService extends BaseService {
     super(client, "/v3/assets/equipment/manufacturers");
   }
   async models(id) {
-    const modelsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/models`);
+    const modelsEndpoint = this.client.substituteOrganisation(`${this.endpoint}/${id}/models`);
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
     return resp;
@@ -649,12 +702,13 @@ class Client {
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
   }
-  finalEndpoint(url) {
+  substituteOrganisation(url) {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
   async makeDeleteRequest(endpoint) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(endpoint);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };
@@ -676,6 +730,7 @@ class Client {
   async makePostRequest(baseEndpoint, body, param) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };
@@ -698,6 +753,7 @@ class Client {
   async makeGetRequest(baseEndpoint, param) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };

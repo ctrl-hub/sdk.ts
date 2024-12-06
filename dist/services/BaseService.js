@@ -1,36 +1,28 @@
 import { Client } from "../Client";
-import { RequestOptions } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
-export class BaseService {
+import { RequestBuilder } from '../utils/RequestBuilder';
+export class BaseService extends RequestBuilder {
     client;
     endpoint;
     modelRegistry;
     hydrator;
     constructor(client, endpoint) {
+        super();
         this.client = client;
         this.endpoint = endpoint;
         this.modelRegistry = ModelRegistry.getInstance();
         this.hydrator = new Hydrator(this.modelRegistry);
     }
-    async get(param) {
-        // Make the request and type the response
-        let endpoint = this.client.finalEndpoint(this.endpoint);
-        let requestParam;
-        if (typeof param === 'string') {
-            requestParam = param;
-        }
-        else if (typeof param === 'object') {
-            // If param is an object, convert it to RequestOptions
-            requestParam = new RequestOptions(param);
-        }
-        let resp = await this.client.makeGetRequest(endpoint, requestParam);
+    async get(param, options) {
+        const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
+        let resp = await this.client.makeGetRequest(endpoint, requestOptions);
         resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+        this.clearRequestOptions();
         return resp;
     }
     async create(model) {
-        let createEndpoint = this.client.finalEndpoint(this.endpoint);
-        return await this.client.makePostRequest(createEndpoint, {
+        return await this.client.makePostRequest(this.endpoint, {
             data: {
                 type: model.type,
                 attributes: model.attributes,
