@@ -7,23 +7,19 @@ export class EquipmentModel {
     meta = {};
     links = {};
     relationships;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            documentation: [],
+            name: data?.attributes?.name ?? '',
+            documentation: data?.attributes?.documentation ?? [],
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let equipmentModel = new EquipmentModel();
-        if (data) {
-            equipmentModel.id = data.id || '';
-            equipmentModel.type = data.type || 'equipment-models';
-            equipmentModel.relationships = data.relationships || {};
-            equipmentModel.attributes.name = data.attributes.name || '';
-            equipmentModel.attributes.documentation = data.attributes.documentation || [];
-            equipmentModel.meta = data.meta || {};
-            equipmentModel.links = data.links || {};
-        }
-        return equipmentModel;
+        return new EquipmentModel(data);
     }
 }

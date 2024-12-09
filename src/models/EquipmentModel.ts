@@ -20,27 +20,21 @@ export class EquipmentModel implements Model {
     public meta: any = {};
     public links: any = {};
     public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: EquipmentModel) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            documentation: [],
+            name: data?.attributes?.name ?? '',
+            documentation: data?.attributes?.documentation ?? [],
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let equipmentModel = new EquipmentModel();
-
-        if (data) {
-            equipmentModel.id = data.id || '';
-            equipmentModel.type = data.type || 'equipment-models';
-            equipmentModel.relationships = data.relationships || {};
-            equipmentModel.attributes.name = data.attributes.name || '';
-            equipmentModel.attributes.documentation = data.attributes.documentation || [];
-            equipmentModel.meta = data.meta || {};
-            equipmentModel.links = data.links || {};
-        }
-
-        return equipmentModel;
+    static hydrate(data: EquipmentModel): EquipmentModel {
+        return new EquipmentModel(data);
     }
 }

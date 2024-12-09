@@ -1,5 +1,6 @@
 import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
+import type { Relationship } from "types/Relationship";
 
 type VehicleAttributes = {
     registration: string;
@@ -8,6 +9,12 @@ type VehicleAttributes = {
     colour: string;
 };
 
+type VehicleRelationships = {
+    manufacturer: Relationship;
+    model: Relationship;
+    specification: Relationship;
+}
+
 @RegisterModel
 export class Vehicle implements Model {
     public id: string = '';
@@ -15,33 +22,43 @@ export class Vehicle implements Model {
     public attributes: VehicleAttributes;
     public meta: any = {};
     public links: any = {};
-    public relationships?: any;
+    public relationships?: VehicleRelationships;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: Vehicle) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            registration: '',
-            vin: '',
-            description: '',
-            colour: '',
-        }
-        this.relationships = {};
+            registration: data?.attributes?.registration ?? '',
+            vin: data?.attributes?.vin ?? '',
+            description: data?.attributes?.description ?? '',
+            colour: data?.attributes?.colour ?? '',
+        };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = {
+            manufacturer: {
+                data: {
+                    id: data?.relationships?.manufacturer?.data?.id ?? '',
+                    type: data?.relationships?.manufacturer?.data?.type ?? '',
+                }
+            },
+            model: {
+                data: {
+                    id: data?.relationships?.model?.data?.id ?? '',
+                    type: data?.relationships?.model?.data?.type ?? '',
+                },
+            },
+            specification: {
+                data: {
+                    id: data?.relationships?.specification?.data?.id ?? '',
+                    type: data?.relationships?.specification?.data?.type ?? '',
+                },
+            },
+        };
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let vehicle = new Vehicle();
-
-        if (data) {
-            vehicle.id = data.id || '';
-            vehicle.type = data.type || 'vehicles';
-            vehicle.relationships = data.relationships || {};
-            vehicle.attributes.registration = data.attributes.registration || '';
-            vehicle.attributes.vin = data.attributes.vin || '';
-            vehicle.attributes.description = data.attributes.description || '';
-            vehicle.attributes.colour = data.attributes.colour || '';
-            vehicle.meta = data.meta || {};
-            vehicle.links = data.links || {};
-        }
-
-        return vehicle;
+    static hydrate(data: Vehicle): Vehicle {
+        return new Vehicle(data);
     }
 }

@@ -1,9 +1,15 @@
 import type { Model } from "../types/Model";
+import type { Relationship } from "types/Relationship";
 type VehicleAttributes = {
     registration: string;
     vin: string;
     description: string;
     colour: string;
+};
+type VehicleRelationships = {
+    manufacturer: Relationship;
+    model: Relationship;
+    specification: Relationship;
 };
 export declare class Vehicle implements Model {
     id: string;
@@ -11,8 +17,9 @@ export declare class Vehicle implements Model {
     attributes: VehicleAttributes;
     meta: any;
     links: any;
-    relationships?: any;
-    constructor();
-    static hydrate(data: any): Vehicle;
+    relationships?: VehicleRelationships;
+    included?: any;
+    constructor(data?: Vehicle);
+    static hydrate(data: Vehicle): Vehicle;
 }
 export {};

@@ -1,6 +1,11 @@
+import type { Relationship } from "types/Relationship";
 import type { Model } from "../types/Model";
 type EquipmentAttributes = {
     serial: string;
+};
+type EquipmentRelationships = {
+    manufacturer: Relationship;
+    model: Relationship;
 };
 export declare class Equipment implements Model {
     id: string;
@@ -8,8 +13,9 @@ export declare class Equipment implements Model {
     attributes: EquipmentAttributes;
     meta: any;
     links: any;
-    relationships?: any;
-    constructor();
-    static hydrate(data: any): Equipment;
+    relationships?: EquipmentRelationships;
+    included?: any;
+    constructor(data?: Equipment);
+    static hydrate(data: Equipment): Equipment;
 }
 export {};
