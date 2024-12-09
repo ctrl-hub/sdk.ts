@@ -517,30 +517,19 @@ class VehicleModel {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: "",
-      specification: {
-        emissions: "",
-        transmission: ""
-      },
-      documentation: []
+      name: data?.attributes?.name ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let vehicleModel = new VehicleModel;
-    if (data) {
-      vehicleModel.id = data.id || "";
-      vehicleModel.type = data.type || "vehicle-models";
-      vehicleModel.relationships = data.relationships || {};
-      vehicleModel.attributes.name = data.attributes.name || "";
-      vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || "";
-      vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || "";
-      vehicleModel.attributes.documentation = data.attributes.documentation || [];
-      vehicleModel.meta = data.meta || {};
-      vehicleModel.links = data.links || {};
-    }
-    return vehicleModel;
+    return new VehicleModel(data);
   }
 }
 VehicleModel = __legacyDecorateClassTS([
@@ -560,10 +549,48 @@ class VehicleManufacturersService extends BaseService {
   }
 }
 
+// src/models/VehicleSpecification.ts
+class VehicleSpecification {
+  id = "";
+  type = "vehicle-specifications";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
+    this.attributes = {
+      emissions: data?.attributes?.emissions ?? 0,
+      engine: data?.attributes?.engine ?? "",
+      fuel: data?.attributes?.fuel ?? "",
+      transmission: data?.attributes?.transmission ?? "",
+      year: data?.attributes?.year ?? 0,
+      documentation: data?.attributes?.documentation ?? []
+    };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
+  }
+  static hydrate(data) {
+    return new VehicleSpecification(data);
+  }
+}
+VehicleSpecification = __legacyDecorateClassTS([
+  RegisterModel
+], VehicleSpecification);
+
 // src/services/VehicleModelsService.ts
 class VehicleModelsService extends BaseService {
   constructor(client) {
     super(client, "/v3/assets/vehicles/models");
+  }
+  async specifications(id) {
+    const modelsEndpoint = `${this.endpoint}/${id}/specifications`;
+    const resp = await this.client.makeGetRequest(modelsEndpoint);
+    resp.data = resp.data.map((model) => VehicleSpecification.hydrate(model));
+    return resp;
   }
 }
 
@@ -575,24 +602,20 @@ class EquipmentModel {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: "",
-      documentation: []
+      name: data?.attributes?.name ?? "",
+      documentation: data?.attributes?.documentation ?? []
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let equipmentModel = new EquipmentModel;
-    if (data) {
-      equipmentModel.id = data.id || "";
-      equipmentModel.type = data.type || "equipment-models";
-      equipmentModel.relationships = data.relationships || {};
-      equipmentModel.attributes.name = data.attributes.name || "";
-      equipmentModel.attributes.documentation = data.attributes.documentation || [];
-      equipmentModel.meta = data.meta || {};
-      equipmentModel.links = data.links || {};
-    }
-    return equipmentModel;
+    return new EquipmentModel(data);
   }
 }
 EquipmentModel = __legacyDecorateClassTS([
@@ -795,22 +818,32 @@ class Equipment {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      serial: ""
+      serial: data?.attributes?.serial ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = {
+      manufacturer: {
+        data: {
+          id: data?.relationships?.manufacturer?.data?.id ?? "",
+          type: data?.relationships?.manufacturer?.data?.type ?? ""
+        }
+      },
+      model: {
+        data: {
+          id: data?.relationships?.model?.data?.id ?? "",
+          type: data?.relationships?.model?.data?.type ?? ""
+        }
+      }
+    };
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let equipment = new Equipment;
-    if (data) {
-      equipment.id = data.id || "";
-      equipment.type = data.type || "equipment-items";
-      equipment.relationships = data.relationships || {};
-      equipment.attributes.serial = data.attributes.serial || "";
-      equipment.meta = data.meta || {};
-      equipment.links = data.links || {};
-    }
-    return equipment;
+    return new Equipment(data);
   }
 }
 Equipment = __legacyDecorateClassTS([
@@ -824,22 +857,19 @@ class EquipmentManufacturer {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: ""
+      name: data?.attributes?.name ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let equipmentManufacturer = new EquipmentManufacturer;
-    if (data) {
-      equipmentManufacturer.id = data.id || "";
-      equipmentManufacturer.type = data.type || "equipment-manufacturers";
-      equipmentManufacturer.relationships = data.relationships || {};
-      equipmentManufacturer.attributes.name = data.attributes.name || "";
-      equipmentManufacturer.meta = data.meta || {};
-      equipmentManufacturer.links = data.links || {};
-    }
-    return equipmentManufacturer;
+    return new EquipmentManufacturer(data);
   }
 }
 EquipmentManufacturer = __legacyDecorateClassTS([
@@ -1097,29 +1127,41 @@ class Vehicle {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      registration: "",
-      vin: "",
-      description: "",
-      colour: ""
+      registration: data?.attributes?.registration ?? "",
+      vin: data?.attributes?.vin ?? "",
+      description: data?.attributes?.description ?? "",
+      colour: data?.attributes?.colour ?? ""
     };
-    this.relationships = {};
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = {
+      manufacturer: {
+        data: {
+          id: data?.relationships?.manufacturer?.data?.id ?? "",
+          type: data?.relationships?.manufacturer?.data?.type ?? ""
+        }
+      },
+      model: {
+        data: {
+          id: data?.relationships?.model?.data?.id ?? "",
+          type: data?.relationships?.model?.data?.type ?? ""
+        }
+      },
+      specification: {
+        data: {
+          id: data?.relationships?.specification?.data?.id ?? "",
+          type: data?.relationships?.specification?.data?.type ?? ""
+        }
+      }
+    };
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let vehicle = new Vehicle;
-    if (data) {
-      vehicle.id = data.id || "";
-      vehicle.type = data.type || "vehicles";
-      vehicle.relationships = data.relationships || {};
-      vehicle.attributes.registration = data.attributes.registration || "";
-      vehicle.attributes.vin = data.attributes.vin || "";
-      vehicle.attributes.description = data.attributes.description || "";
-      vehicle.attributes.colour = data.attributes.colour || "";
-      vehicle.meta = data.meta || {};
-      vehicle.links = data.links || {};
-    }
-    return vehicle;
+    return new Vehicle(data);
   }
 }
 Vehicle = __legacyDecorateClassTS([
@@ -1133,22 +1175,19 @@ class VehicleManufacturer {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: ""
+      name: data?.attributes?.name ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let vehicleManufacturer = new VehicleManufacturer;
-    if (data) {
-      vehicleManufacturer.id = data.id || "";
-      vehicleManufacturer.type = data.type || "vehicle-manufacturers";
-      vehicleManufacturer.relationships = data.relationships || {};
-      vehicleManufacturer.attributes.name = data.attributes.name || "";
-      vehicleManufacturer.meta = data.meta || {};
-      vehicleManufacturer.links = data.links || {};
-    }
-    return vehicleManufacturer;
+    return new VehicleManufacturer(data);
   }
 }
 VehicleManufacturer = __legacyDecorateClassTS([

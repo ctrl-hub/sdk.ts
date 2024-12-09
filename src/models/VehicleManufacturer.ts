@@ -13,25 +13,20 @@ export class VehicleManufacturer implements Model {
     public meta: any = {};
     public links: any = {};
     public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: VehicleManufacturer) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
+            name: data?.attributes?.name ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let vehicleManufacturer = new VehicleManufacturer();
-
-        if (data) {
-            vehicleManufacturer.id = data.id || '';
-            vehicleManufacturer.type = data.type || 'vehicle-manufacturers';
-            vehicleManufacturer.relationships = data.relationships || {};
-            vehicleManufacturer.attributes.name = data.attributes.name || '';
-            vehicleManufacturer.meta = data.meta || {};
-            vehicleManufacturer.links = data.links || {};
-        }
-
-        return vehicleManufacturer;
+    static hydrate(data: VehicleManufacturer): VehicleManufacturer {
+        return new VehicleManufacturer(data);
     }
 }

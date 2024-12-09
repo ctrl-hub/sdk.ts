@@ -13,25 +13,20 @@ export class EquipmentManufacturer implements Model {
     public meta: any = {};
     public links: any = {};
     public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: EquipmentManufacturer) {
+        this.id = data?.id ?? ''
         this.attributes = {
-            name: '',
+            name: data?.attributes?.name ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let equipmentManufacturer = new EquipmentManufacturer();
-
-        if (data) {
-            equipmentManufacturer.id = data.id || '';
-            equipmentManufacturer.type = data.type || 'equipment-manufacturers';
-            equipmentManufacturer.relationships = data.relationships || {};
-            equipmentManufacturer.attributes.name = data.attributes.name || '';
-            equipmentManufacturer.meta = data.meta || {};
-            equipmentManufacturer.links = data.links || {};
-        }
-
-        return equipmentManufacturer;
+    static hydrate(data: EquipmentManufacturer): EquipmentManufacturer {
+        return new EquipmentManufacturer(data);
     }
 }

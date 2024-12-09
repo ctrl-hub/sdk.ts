@@ -9,7 +9,8 @@ export declare class EquipmentManufacturer implements Model {
     meta: any;
     links: any;
     relationships?: any;
-    constructor();
-    static hydrate(data: any): EquipmentManufacturer;
+    included?: any;
+    constructor(data?: EquipmentManufacturer);
+    static hydrate(data: EquipmentManufacturer): EquipmentManufacturer;
 }
 export {};
