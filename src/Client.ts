@@ -12,192 +12,212 @@ import type {InternalResponse} from "./types/Response";
 import {GroupsService} from "./services/GroupService";
 import { VehiclesService } from "./services/VehiclesService";
 import { EquipmentService } from "./services/EquipmentService";
+import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
+import { VehicleModelsService } from "@services/VehicleModelsService";
+import { EquipmentManufacturersService } from "@services/EquipmentManufacturersService";
+import { EquipmentModelsService } from "@services/EquipmentModelsService";
 
 export class Client {
-  readonly config: ClientConfigInterface;
-  public organisation: string;
-  public services: Record<string, any> = {};
-  public bearerToken: string = '';
-  private tokenPromise: Promise<void> | null = null;
+    readonly config: ClientConfigInterface;
+    public organisation: string;
+    public services: Record<string, any> = {};
+    public bearerToken: string = '';
+    private tokenPromise: Promise<void> | null = null;
 
-  constructor(config: ClientConfigInterface) {
-    this.config = config;
-    this.organisation = "";
+    constructor(config: ClientConfigInterface) {
+        this.config = config;
+        this.organisation = "";
 
-    if (config.clientId && config.clientSecret && config.authDomain) {
-      this.tokenPromise = this.getToken();
+        if (config.clientId && config.clientSecret && config.authDomain) {
+            this.tokenPromise = this.getToken();
+        }
     }
-  }
 
-  async getToken(){
-    const url = this.config.authDomain || '';
+    async getToken() {
+        const url = this.config.authDomain || '';
 
-    const params = new URLSearchParams();
-    params.append("grant_type", "client_credentials");
-    params.append("client_id", this.config.clientId || '');
-    params.append("client_secret", this.config.clientSecret || '');
+        const params = new URLSearchParams();
+        params.append("grant_type", "client_credentials");
+        params.append("client_id", this.config.clientId || '');
+        params.append("client_secret", this.config.clientSecret || '');
 
-    const response = await fetch(url + '/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-      },
-      body: params.toString()
-    });
+        const response = await fetch(url + '/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: params.toString()
+        });
 
-    let tokenJson = await response.json();
+        let tokenJson = await response.json();
 
-    if (tokenJson.access_token) {
-      this.bearerToken = tokenJson.access_token;
+        if (tokenJson.access_token) {
+            this.bearerToken = tokenJson.access_token;
+        }
     }
-  }
 
-  async ensureAuthenticated() {
-    if (this.tokenPromise) {
-      await this.tokenPromise;
-      this.tokenPromise = null;
+    async ensureAuthenticated() {
+        if (this.tokenPromise) {
+            await this.tokenPromise;
+            this.tokenPromise = null;
+        }
     }
-  }
 
-  public roles(): RolesService {
-    return new RolesService(this);
-  }
+    public roles(): RolesService {
+        return new RolesService(this);
+    }
 
-  public serviceAccountKeys(): ServiceAccountKeysService {
-    return new ServiceAccountKeysService(this);
-  }
+    public serviceAccountKeys(): ServiceAccountKeysService {
+        return new ServiceAccountKeysService(this);
+    }
 
-  public serviceAccounts(): ServiceAccountsService {
-    return new ServiceAccountsService(this);
-  }
+    public serviceAccounts(): ServiceAccountsService {
+        return new ServiceAccountsService(this);
+    }
 
-  public formCategories(): FormCategoriesService {
-    return new FormCategoriesService(this);
-  }
+    public formCategories(): FormCategoriesService {
+        return new FormCategoriesService(this);
+    }
 
-  public forms(): FormsService {
-    return new FormsService(this);
-  }
+    public forms(): FormsService {
+        return new FormsService(this);
+    }
 
-  public submissions(): SubmissionsService {
-    return new SubmissionsService(this);
-  }
+    public submissions(): SubmissionsService {
+        return new SubmissionsService(this);
+    }
 
-  public permissions(): PermissionsService {
-    return new PermissionsService(this);
-  }
+    public permissions(): PermissionsService {
+        return new PermissionsService(this);
+    }
 
-  public groups(): GroupsService {
-    return new GroupsService(this);
-  }
+    public groups(): GroupsService {
+        return new GroupsService(this);
+    }
 
-  public vehicles(): VehiclesService {
-    return new VehiclesService(this);
-  }
+    public vehicles(): VehiclesService {
+        return new VehiclesService(this);
+    }
 
-  public equipment(): EquipmentService {
-    return new EquipmentService(this);
-  }
+    public vehicleManufacturers(): VehicleManufacturersService {
+        return new VehicleManufacturersService(this);
+    }
 
-  setOrganisationSlug(organisation: string) {
-    this.config.organisationId = organisation;
-  }
+    public vehicleModels(): VehicleModelsService {
+        return new VehicleModelsService(this);
+    }
+
+    public equipment(): EquipmentService {
+        return new EquipmentService(this);
+    }
+
+    public equipmentManufacturers(): EquipmentManufacturersService {
+        return new EquipmentManufacturersService(this);
+    }
+
+    public equipmentModels(): EquipmentModelsService {
+        return new EquipmentModelsService(this);
+    }
+
+    setOrganisationSlug(organisation: string) {
+        this.config.organisationId = organisation;
+    }
 
   substituteOrganisation(url: string): string {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
 
-  async makeDeleteRequest(
-      endpoint: string,
-  ): Promise<any> {
-    await this.ensureAuthenticated();
+    async makeDeleteRequest(
+        endpoint: string,
+    ): Promise<any> {
+        await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(endpoint);
     url = this.substituteOrganisation(url);
 
-    let headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+        let headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
 
-    if (this.bearerToken) {
-      headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
+
+        try {
+            const fetchResponse = await fetch(url, {
+                method: 'DELETE',
+                headers: headers,
+                credentials: 'include',
+            });
+
+            let json = await fetchResponse.json();
+            return Requests.buildInternalResponse(fetchResponse, json);
+        } catch (error) {
+            return Requests.buildInternalErrorResponse(error);
+        }
     }
 
-    try {
-      const fetchResponse = await fetch(url, {
-        method: 'DELETE',
-        headers: headers,
-        credentials: 'include',
-      });
-
-      let json = await fetchResponse.json();
-      return Requests.buildInternalResponse(fetchResponse, json);
-    } catch (error) {
-      return Requests.buildInternalErrorResponse(error);
-    }
-  }
-
-  async makePostRequest(
-      baseEndpoint: string,
-      body?: any,
-      param?: string | RequestOptions | null,
-  ): Promise<any> {
-    await this.ensureAuthenticated();
+    async makePostRequest(
+        baseEndpoint: string,
+        body?: any,
+        param?: string | RequestOptions | null,
+    ): Promise<any> {
+        await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(baseEndpoint, param);
     url = this.substituteOrganisation(url);
 
-    let headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+        let headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
 
-    if (this.bearerToken) {
-      headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
+
+        try {
+            const fetchResponse = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                credentials: 'include',
+                body: JSON.stringify(body),
+            });
+
+            let json = await fetchResponse.json();
+            return Requests.buildInternalResponse(fetchResponse, json);
+        } catch (error) {
+            return Requests.buildInternalErrorResponse(error);
+        }
     }
 
-    try {
-      const fetchResponse = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
-
-      let json = await fetchResponse.json();
-      return Requests.buildInternalResponse(fetchResponse, json);
-    } catch (error) {
-      return Requests.buildInternalErrorResponse(error);
-    }
-  }
-
-  async makeGetRequest(
-    baseEndpoint: string,
-    param?: string | RequestOptions,
-  ): Promise<InternalResponse> {
-    await this.ensureAuthenticated();
+    async makeGetRequest(
+        baseEndpoint: string,
+        param?: string | RequestOptions,
+    ): Promise<InternalResponse> {
+        await this.ensureAuthenticated();
 
     let url = Requests.buildRequestURL(baseEndpoint, param);
     url = this.substituteOrganisation(url);
 
-    let headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+        let headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
 
-    if (this.bearerToken) {
-      headers['Authorization'] = `Bearer ${this.bearerToken}`;
-    }
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
 
-    try {
-      // @todo switch on cookie, "X-Session-Token" or client_credentials
-      const fetchResponse = await fetch(url, {
-        credentials: "include", // @todo only required for cookie based auth,
-        headers: headers
-      });
-      let json = await fetchResponse.json();
-      return Requests.buildInternalResponse(fetchResponse, json);
-    } catch (error) {
-      return Requests.buildInternalErrorResponse(error);
+        try {
+            // @todo switch on cookie, "X-Session-Token" or client_credentials
+            const fetchResponse = await fetch(url, {
+                credentials: "include", // @todo only required for cookie based auth,
+                headers: headers
+            });
+            let json = await fetchResponse.json();
+            return Requests.buildInternalResponse(fetchResponse, json);
+        } catch (error) {
+            return Requests.buildInternalErrorResponse(error);
+        }
     }
-  }
 
 }

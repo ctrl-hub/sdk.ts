@@ -134,6 +134,10 @@ class Requests {
 }
 
 // src/utils/ModelRegistry.ts
+function RegisterModel(target) {
+  return ModelRegistry.register(target);
+}
+
 class ModelRegistry {
   static instance;
   models = {};
@@ -150,9 +154,6 @@ class ModelRegistry {
     }
     return modelClass;
   }
-}
-function RegisterModel(target) {
-  return ModelRegistry.register(target);
 }
 
 // src/utils/Hydrator.ts
@@ -184,6 +185,9 @@ class Hydrator {
         return;
       const hydrateRelation = (relation) => {
         const includedData = this.findMatchingIncluded(relation, included);
+        if (!includedData) {
+          return relation;
+        }
         try {
           const ModelClass = this.modelRegistry.models[relation.type];
           return ModelClass ? ModelClass.hydrate(includedData) : includedData;
@@ -200,36 +204,90 @@ class Hydrator {
   }
 }
 
+// src/utils/RequestBuilder.ts
+class RequestBuilder {
+  requestOptions = {};
+  withIncludes(includes) {
+    this.requestOptions.include = includes;
+    return this;
+  }
+  withSort(sort) {
+    this.requestOptions.sort = sort.map((sortOption) => ({
+      key: sortOption.key,
+      direction: sortOption.direction || "asc"
+    }));
+    return this;
+  }
+  withFilters(filters) {
+    this.requestOptions.filters = filters;
+    return this;
+  }
+  withPagination(limit, offset = 0) {
+    this.requestOptions.limit = limit;
+    this.requestOptions.offset = offset;
+    return this;
+  }
+  withLimit(limit) {
+    this.requestOptions.limit = limit;
+    return this;
+  }
+  withOffset(offset) {
+    this.requestOptions.offset = offset;
+    return this;
+  }
+  buildRequestParams(endpoint, param, options) {
+    let finalEndpoint = endpoint;
+    let requestOptions;
+    if (typeof param === "string") {
+      finalEndpoint = `${endpoint}/${param}`;
+      requestOptions = new RequestOptions({
+        ...this.requestOptions,
+        ...options
+      });
+    } else if (typeof param === "object" && param !== null) {
+      requestOptions = new RequestOptions({
+        ...this.requestOptions,
+        ...param
+      });
+    } else if (Object.keys(this.requestOptions).length > 0) {
+      requestOptions = new RequestOptions(this.requestOptions);
+    }
+    return { endpoint: finalEndpoint, requestOptions };
+  }
+  clearRequestOptions() {
+    this.requestOptions = {};
+  }
+  getRequestOptions() {
+    return this.requestOptions;
+  }
+}
+
 // src/services/BaseService.ts
-class BaseService {
+class BaseService extends RequestBuilder {
   client;
   endpoint;
   modelRegistry;
   hydrator;
   constructor(client, endpoint) {
+    super();
     this.client = client;
     this.endpoint = endpoint;
     this.modelRegistry = ModelRegistry.getInstance();
     this.hydrator = new Hydrator(this.modelRegistry);
   }
-  async get(param) {
-    let endpoint = this.client.finalEndpoint(this.endpoint);
-    let requestParam;
-    if (typeof param === "string") {
-      requestParam = param;
-    } else if (typeof param === "object") {
-      requestParam = new RequestOptions(param);
-    }
-    let resp = await this.client.makeGetRequest(endpoint, requestParam);
+  async get(param, options) {
+    const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
+    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
     resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    this.clearRequestOptions();
     return resp;
   }
   async create(model) {
-    let createEndpoint = this.client.finalEndpoint(this.endpoint);
-    return await this.client.makePostRequest(createEndpoint, {
+    return await this.client.makePostRequest(this.endpoint, {
       data: {
         type: model.type,
-        attributes: model.attributes
+        attributes: model.attributes,
+        relationships: model.relationships
       }
     });
   }
@@ -302,13 +360,13 @@ class SubmissionsService extends BaseService {
     super(client, "/v3/orgs/:orgId/data-capture/submissions");
   }
   async getVersions(submissionId) {
-    const versionsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions`);
+    const versionsEndpoint = `${this.endpoint}/${submissionId}/relationships/versions`;
     const resp = await this.client.makeGetRequest(versionsEndpoint);
     resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
     return resp;
   }
   async getVersion(submissionId, versionId) {
-    const versionEndpoint = this.client.finalEndpoint(`${this.endpoint}/${submissionId}/relationships/versions/${versionId}`);
+    const versionEndpoint = `${this.endpoint}/${submissionId}/relationships/versions/${versionId}`;
     const resp = await this.client.makeGetRequest(versionEndpoint);
     resp.data = SubmissionVersion.hydrate(resp.data);
     return resp;
@@ -395,7 +453,7 @@ class ServiceAccountsService extends BaseService {
     super(client, "/v3/orgs/:orgId/iam/service-accounts");
   }
   async createKey(serviceAccount) {
-    let createKeyEndpoint = this.client.finalEndpoint(this.endpoint + "/" + serviceAccount.id + "/keys");
+    let createKeyEndpoint = this.endpoint + "/" + serviceAccount.id + "/keys";
     return await this.client.makePostRequest(createKeyEndpoint, {
       data: {
         type: "service-account-keys"
@@ -403,7 +461,7 @@ class ServiceAccountsService extends BaseService {
     });
   }
   async logs(id) {
-    const logsEndpoint = this.client.finalEndpoint(`${this.endpoint}/${id}/logs`);
+    const logsEndpoint = `${this.endpoint}/${id}/logs`;
     const resp = await this.client.makeGetRequest(logsEndpoint);
     resp.data = resp.data.map((log) => Log.hydrate(log));
     return resp;
@@ -423,11 +481,11 @@ class GroupsService extends BaseService {
     super(client, "/v3/orgs/:orgId/iam/groups");
   }
   async deleteBinding(groupId, bindingId) {
-    let deleteEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings/" + bindingId);
+    let deleteEndpoint = this.endpoint + "/" + groupId + "/bindings/" + bindingId;
     return await this.client.makeDeleteRequest(deleteEndpoint);
   }
   async createBinding(groupId, body) {
-    let createBindingEndpoint = this.client.finalEndpoint(this.endpoint + "/" + groupId + "/bindings");
+    let createBindingEndpoint = this.endpoint + "/" + groupId + "/bindings";
     return await this.client.makePostRequest(createBindingEndpoint, {
       data: {
         type: "bindings",
@@ -448,6 +506,116 @@ class VehiclesService extends BaseService {
 class EquipmentService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/assets/equipment");
+  }
+}
+
+// src/models/VehicleModel.ts
+class VehicleModel {
+  id = "";
+  type = "vehicle-models";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: "",
+      specification: {
+        emissions: "",
+        transmission: ""
+      },
+      documentation: []
+    };
+  }
+  static hydrate(data) {
+    let vehicleModel = new VehicleModel;
+    if (data) {
+      vehicleModel.id = data.id || "";
+      vehicleModel.type = data.type || "vehicle-models";
+      vehicleModel.relationships = data.relationships || {};
+      vehicleModel.attributes.name = data.attributes.name || "";
+      vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || "";
+      vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || "";
+      vehicleModel.attributes.documentation = data.attributes.documentation || [];
+      vehicleModel.meta = data.meta || {};
+      vehicleModel.links = data.links || {};
+    }
+    return vehicleModel;
+  }
+}
+VehicleModel = __legacyDecorateClassTS([
+  RegisterModel
+], VehicleModel);
+
+// src/services/VehicleManufacturersService.ts
+class VehicleManufacturersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/vehicles/manufacturers");
+  }
+  async models(id) {
+    const modelsEndpoint = `${this.endpoint}/${id}/models`;
+    const resp = await this.client.makeGetRequest(modelsEndpoint);
+    resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
+    return resp;
+  }
+}
+
+// src/services/VehicleModelsService.ts
+class VehicleModelsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/vehicles/models");
+  }
+}
+
+// src/models/EquipmentModel.ts
+class EquipmentModel {
+  id = "";
+  type = "equipment-models";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: "",
+      documentation: []
+    };
+  }
+  static hydrate(data) {
+    let equipmentModel = new EquipmentModel;
+    if (data) {
+      equipmentModel.id = data.id || "";
+      equipmentModel.type = data.type || "equipment-models";
+      equipmentModel.relationships = data.relationships || {};
+      equipmentModel.attributes.name = data.attributes.name || "";
+      equipmentModel.attributes.documentation = data.attributes.documentation || [];
+      equipmentModel.meta = data.meta || {};
+      equipmentModel.links = data.links || {};
+    }
+    return equipmentModel;
+  }
+}
+EquipmentModel = __legacyDecorateClassTS([
+  RegisterModel
+], EquipmentModel);
+
+// src/services/EquipmentManufacturersService.ts
+class EquipmentManufacturersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/equipment/manufacturers");
+  }
+  async models(id) {
+    const modelsEndpoint = `${this.endpoint}/${id}/models`;
+    const resp = await this.client.makeGetRequest(modelsEndpoint);
+    resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
+    return resp;
+  }
+}
+
+// src/services/EquipmentModelsService.ts
+class EquipmentModelsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/equipment/models");
   }
 }
 
@@ -516,18 +684,31 @@ class Client {
   vehicles() {
     return new VehiclesService(this);
   }
+  vehicleManufacturers() {
+    return new VehicleManufacturersService(this);
+  }
+  vehicleModels() {
+    return new VehicleModelsService(this);
+  }
   equipment() {
     return new EquipmentService(this);
+  }
+  equipmentManufacturers() {
+    return new EquipmentManufacturersService(this);
+  }
+  equipmentModels() {
+    return new EquipmentModelsService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
   }
-  finalEndpoint(url) {
+  substituteOrganisation(url) {
     return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
   }
   async makeDeleteRequest(endpoint) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(endpoint);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };
@@ -549,6 +730,7 @@ class Client {
   async makePostRequest(baseEndpoint, body, param) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };
@@ -571,6 +753,7 @@ class Client {
   async makeGetRequest(baseEndpoint, param) {
     await this.ensureAuthenticated();
     let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
     let headers = {
       "Content-Type": "application/json"
     };
@@ -633,6 +816,35 @@ class Equipment {
 Equipment = __legacyDecorateClassTS([
   RegisterModel
 ], Equipment);
+// src/models/EquipmentManufacturer.ts
+class EquipmentManufacturer {
+  id = "";
+  type = "equipment-manufacturers";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: ""
+    };
+  }
+  static hydrate(data) {
+    let equipmentManufacturer = new EquipmentManufacturer;
+    if (data) {
+      equipmentManufacturer.id = data.id || "";
+      equipmentManufacturer.type = data.type || "equipment-manufacturers";
+      equipmentManufacturer.relationships = data.relationships || {};
+      equipmentManufacturer.attributes.name = data.attributes.name || "";
+      equipmentManufacturer.meta = data.meta || {};
+      equipmentManufacturer.links = data.links || {};
+    }
+    return equipmentManufacturer;
+  }
+}
+EquipmentManufacturer = __legacyDecorateClassTS([
+  RegisterModel
+], EquipmentManufacturer);
 // src/models/Form.ts
 class Form {
   id = "";
@@ -889,8 +1101,10 @@ class Vehicle {
     this.attributes = {
       registration: "",
       vin: "",
-      description: ""
+      description: "",
+      colour: ""
     };
+    this.relationships = {};
   }
   static hydrate(data) {
     let vehicle = new Vehicle;
@@ -901,6 +1115,7 @@ class Vehicle {
       vehicle.attributes.registration = data.attributes.registration || "";
       vehicle.attributes.vin = data.attributes.vin || "";
       vehicle.attributes.description = data.attributes.description || "";
+      vehicle.attributes.colour = data.attributes.colour || "";
       vehicle.meta = data.meta || {};
       vehicle.links = data.links || {};
     }
@@ -910,7 +1125,38 @@ class Vehicle {
 Vehicle = __legacyDecorateClassTS([
   RegisterModel
 ], Vehicle);
+// src/models/VehicleManufacturer.ts
+class VehicleManufacturer {
+  id = "";
+  type = "vehicle-manufacturers";
+  attributes;
+  meta = {};
+  links = {};
+  relationships;
+  constructor() {
+    this.attributes = {
+      name: ""
+    };
+  }
+  static hydrate(data) {
+    let vehicleManufacturer = new VehicleManufacturer;
+    if (data) {
+      vehicleManufacturer.id = data.id || "";
+      vehicleManufacturer.type = data.type || "vehicle-manufacturers";
+      vehicleManufacturer.relationships = data.relationships || {};
+      vehicleManufacturer.attributes.name = data.attributes.name || "";
+      vehicleManufacturer.meta = data.meta || {};
+      vehicleManufacturer.links = data.links || {};
+    }
+    return vehicleManufacturer;
+  }
+}
+VehicleManufacturer = __legacyDecorateClassTS([
+  RegisterModel
+], VehicleManufacturer);
 export {
+  VehicleModel,
+  VehicleManufacturer,
   Vehicle,
   SubmissionVersion,
   Submission,
@@ -923,6 +1169,8 @@ export {
   Group,
   FormCategory,
   Form,
+  EquipmentModel,
+  EquipmentManufacturer,
   Equipment,
   ClientConfig,
   Client

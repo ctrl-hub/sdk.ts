@@ -12,7 +12,9 @@ export class Vehicle {
             registration: '',
             vin: '',
             description: '',
+            colour: '',
         };
+        this.relationships = {};
     }
     static hydrate(data) {
         let vehicle = new Vehicle();
@@ -23,6 +25,7 @@ export class Vehicle {
             vehicle.attributes.registration = data.attributes.registration || '';
             vehicle.attributes.vin = data.attributes.vin || '';
             vehicle.attributes.description = data.attributes.description || '';
+            vehicle.attributes.colour = data.attributes.colour || '';
             vehicle.meta = data.meta || {};
             vehicle.links = data.links || {};
         }

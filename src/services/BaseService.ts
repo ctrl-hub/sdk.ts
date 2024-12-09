@@ -1,6 +1,6 @@
 import { Client } from "../Client";
-import { InternalResponse, JsonData } from '../types/Response';
-import { RequestOptionsType } from "../utils/RequestOptions";
+import type { InternalResponse, JsonData } from '../types/Response';
+import type { RequestOptionsType } from "../utils/RequestOptions";
 import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
 import { RequestBuilder } from '../utils/RequestBuilder';
@@ -41,6 +41,7 @@ export class BaseService<T> extends RequestBuilder {
             data: {
                 type: model.type,
                 attributes: model.attributes,
+                relationships: model.relationships,
             }
         });
     }

@@ -1,5 +1,5 @@
 import { ModelRegistry } from './ModelRegistry';
-import { JsonData } from '../types/Response';
+import type { JsonData } from '../types/Response';
 
 interface RelationData {
     id: string;

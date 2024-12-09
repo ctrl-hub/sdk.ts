@@ -1,4 +1,6 @@
 export { Equipment } from "./Equipment";
+export { EquipmentModel } from "./EquipmentModel";
+export { EquipmentManufacturer } from "./EquipmentManufacturer";
 export { Form } from "./Form";
 export { FormCategory } from "./FormCategory";
 export { Submission } from "./Submission";
@@ -7,3 +9,5 @@ export { Role } from "./Role";
 export { ServiceAccount } from "./ServiceAccount";
 export { ServiceAccountKey } from "./ServiceAccountKey";
 export { Vehicle } from "./Vehicle";
+export { VehicleModel } from "./VehicleModel";
+export { VehicleManufacturer } from "./VehicleManufacturer";
