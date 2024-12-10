@@ -541,8 +541,8 @@ class VehicleManufacturersService extends BaseService {
   constructor(client) {
     super(client, "/v3/assets/vehicles/manufacturers");
   }
-  async models(id) {
-    const modelsEndpoint = `${this.endpoint}/${id}/models`;
+  async models(manufacturerId) {
+    const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
     return resp;
@@ -584,10 +584,10 @@ VehicleSpecification = __legacyDecorateClassTS([
 // src/services/VehicleModelsService.ts
 class VehicleModelsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/assets/vehicles/models");
+    super(client, "/v3/assets/vehicles/manufacturers");
   }
-  async specifications(id) {
-    const modelsEndpoint = `${this.endpoint}/${id}/specifications`;
+  async specifications(manufacturerId, modelId) {
+    const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models/${modelId}/specifications`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => VehicleSpecification.hydrate(model));
     return resp;

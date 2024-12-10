@@ -5,5 +5,5 @@ import { VehicleSpecification } from "@models/VehicleSpecification";
 import type { InternalResponse } from "types/Response";
 export declare class VehicleModelsService extends BaseService<VehicleModel> {
     constructor(client: Client);
-    specifications(id: string): Promise<InternalResponse<VehicleSpecification[]>>;
+    specifications(manufacturerId: string, modelId: string): Promise<InternalResponse<VehicleSpecification[]>>;
 }
