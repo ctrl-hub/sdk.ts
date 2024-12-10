@@ -1,8 +1,8 @@
 import { RegisterModel } from '../utils/ModelRegistry';
 @RegisterModel
-export class EquipmentManufacturer {
+export class VehicleSpecification {
     id = '';
-    type = 'equipment-manufacturers';
+    type = 'vehicle-specifications';
     attributes;
     meta = {};
     links = {};
@@ -11,7 +11,12 @@ export class EquipmentManufacturer {
     constructor(data) {
         this.id = data?.id ?? '';
         this.attributes = {
-            name: data?.attributes?.name ?? '',
+            emissions: data?.attributes?.emissions ?? 0,
+            engine: data?.attributes?.engine ?? '',
+            fuel: data?.attributes?.fuel ?? '',
+            transmission: data?.attributes?.transmission ?? '',
+            year: data?.attributes?.year ?? 0,
+            documentation: data?.attributes?.documentation ?? [],
         };
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
@@ -19,6 +24,6 @@ export class EquipmentManufacturer {
         this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        return new EquipmentManufacturer(data);
+        return new VehicleSpecification(data);
     }
 }
