@@ -1,33 +1,32 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type PermissionAttributes = {
-  description: string;
+    description: string;
 };
 
 @RegisterModel
 export class Permission implements Model {
-  public id: string = "";
-  public type: string = "roles";
-  public attributes: PermissionAttributes;
-  public meta: any = {};
-  links: any;
+    public id: string = '';
+    public type: string = 'roles';
+    public attributes: PermissionAttributes;
+    public meta: any = {};
+    public links: any = {};
+    public relationships?: any;
+    public included?: any;
 
-  constructor() {
-    this.attributes = {
-      description: "",
-    };
-  }
-
-  static hydrate(data: any) {
-    let permission = new Permission();
-
-    if (data) {
-      permission.id = data.id;
-      permission.attributes.description = data.attributes.description || "";
-      permission.meta = data.meta || {};
+    constructor(data?: Permission) {
+        this.id = data?.id ?? '';
+        this.attributes = {
+            description: data?.attributes?.description ?? '',
+        };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    return permission;
-  }
+    static hydrate(data: any): Permission {
+        return new Permission(data);
+    }
 }

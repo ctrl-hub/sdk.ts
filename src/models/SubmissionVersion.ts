@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type SubmissionVersionAttributes = {
@@ -18,35 +18,25 @@ export class SubmissionVersion implements Model {
     public meta: any = {};
     public links: any = {};
     public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: SubmissionVersion) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            author: '',
-            form: '',
-            form_version: '',
-            reference: '',
-            status: '',
-            content: {},
+            author: data?.attributes?.author ?? '',
+            form: data?.attributes?.form ?? '',
+            form_version: data?.attributes?.form_version ?? '',
+            reference: data?.attributes?.reference ?? '',
+            status: data?.attributes?.status ?? '',
+            content: data?.attributes?.content ?? {},
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let submissionVersion = new SubmissionVersion();
-
-        if (data) {
-            submissionVersion.id = data.id || '';
-            submissionVersion.type = data.type || 'submissions';
-            submissionVersion.attributes.author = data.attributes.author || '';
-            submissionVersion.attributes.form = data.attributes.form || '';
-            submissionVersion.attributes.form_version = data.attributes.form_version || '';
-            submissionVersion.attributes.reference = data.attributes.reference || '';
-            submissionVersion.attributes.status = data.attributes.status || '';
-            submissionVersion.attributes.content = data.attributes.content || {};
-            submissionVersion.meta = data.meta || {};
-            submissionVersion.links = data.links || {};
-            submissionVersion.relationships = data.relationships || {};
-        }
-
-        return submissionVersion;
+    static hydrate(data: any): SubmissionVersion {
+        return new SubmissionVersion(data);
     }
 }

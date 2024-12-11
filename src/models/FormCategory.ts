@@ -1,4 +1,4 @@
-import type {Model} from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type FormCategoryAttributes = {
@@ -8,15 +8,22 @@ type FormCategoryAttributes = {
 @RegisterModel
 export class FormCategory implements Model {
     public id: string = '';
-    public type: string = 'form_categories';
+    public type: string = 'form-categories';
     public attributes: FormCategoryAttributes;
     public meta: any = {};
-    links: any;
+    public links: any = {};
+    public relationships?: {};
+    public included?: any;
 
-    constructor() {
+    constructor(data?: FormCategory) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
+            name: data?.attributes?.name ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any) {

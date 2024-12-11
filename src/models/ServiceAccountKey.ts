@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type Attributes = {
@@ -12,28 +12,23 @@ export class ServiceAccountKey implements Model {
     public type: string = 'service-account-keys';
     public attributes: Attributes;
     public meta: any = {};
-    relationships: any[];
-    links: any;
+    public links: any = {};
+    public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: ServiceAccountKey) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            client_id: '',
-            enabled: false,
+            client_id: data?.attributes?.client_id ?? '',
+            enabled: data?.attributes?.enabled ?? false,
         };
-        this.relationships = [];
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let serviceAccountKey = new ServiceAccountKey();
-
-        if (data) {
-            serviceAccountKey.id = data.id;
-            serviceAccountKey.attributes.client_id = data.attributes.client_id || '';
-            serviceAccountKey.attributes.enabled = data.attributes.enabled;
-            serviceAccountKey.meta = data.meta || {};
-        }
-
-        return serviceAccountKey;
+    static hydrate(data: any): ServiceAccountKey {
+        return new ServiceAccountKey(data);
     }
-
 }

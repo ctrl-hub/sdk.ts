@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type SubmissionAttributes = {
@@ -14,27 +14,21 @@ export class Submission implements Model {
     public meta: any = {};
     public links: any = {};
     public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: Submission) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            reference: '',
-            status: '',
+            reference: data?.attributes?.reference ?? '',
+            status: data?.attributes?.status ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let submission = new Submission();
-
-        if (data) {
-            submission.id = data.id || '';
-            submission.type = data.type || 'submissions';
-            submission.relationships = data.relationships || {};
-            submission.attributes.reference = data.attributes.reference || '';
-            submission.attributes.status = data.attributes.status || '';
-            submission.meta = data.meta || {};
-            submission.links = data.links || {};
-        }
-
-        return submission;
+    static hydrate(data: any): Submission {
+        return new Submission(data);
     }
 }
