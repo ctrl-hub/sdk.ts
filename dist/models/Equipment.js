@@ -20,13 +20,13 @@ export class Equipment {
                 data: {
                     id: data?.relationships?.manufacturer?.data?.id ?? '',
                     type: data?.relationships?.manufacturer?.data?.type ?? '',
-                }
+                },
             },
             model: {
                 data: {
                     id: data?.relationships?.model?.data?.id ?? '',
                     type: data?.relationships?.model?.data?.type ?? '',
-                }
+                },
             },
         };
         this.included = data?.included ?? {};

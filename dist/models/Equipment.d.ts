@@ -1,5 +1,5 @@
-import type { Relationship } from "types/Relationship";
-import type { Model } from "../types/Model";
+import type { Relationship } from 'types/Relationship';
+import type { Model } from '../types/Model';
 type EquipmentAttributes = {
     serial: string;
 };
