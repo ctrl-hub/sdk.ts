@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type PermissionAttributes = {
     description: string;
 };
@@ -8,7 +8,9 @@ export declare class Permission implements Model {
     attributes: PermissionAttributes;
     meta: any;
     links: any;
-    constructor();
+    relationships?: any;
+    included?: any;
+    constructor(data?: Permission);
     static hydrate(data: any): Permission;
 }
 export {};

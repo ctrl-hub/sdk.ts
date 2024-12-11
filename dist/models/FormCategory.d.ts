@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type FormCategoryAttributes = {
     name: string;
 };
@@ -8,7 +8,9 @@ export declare class FormCategory implements Model {
     attributes: FormCategoryAttributes;
     meta: any;
     links: any;
-    constructor();
+    relationships?: {};
+    included?: any;
+    constructor(data?: FormCategory);
     static hydrate(data: any): FormCategory;
 }
 export {};

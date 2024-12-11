@@ -5,27 +5,23 @@ export class ServiceAccount {
     type = 'service-accounts';
     attributes;
     meta = {};
+    links = {};
     relationships;
-    links;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            description: '',
-            email: '',
-            enabled: false,
+            name: data?.attributes?.name ?? '',
+            description: data?.attributes?.description ?? '',
+            email: data?.attributes?.email ?? '',
+            enabled: data?.attributes?.enabled ?? false,
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let serviceAccount = new ServiceAccount();
-        if (data) {
-            serviceAccount.id = data.id;
-            serviceAccount.attributes.name = data.attributes.name || '';
-            serviceAccount.attributes.description = data.attributes.description || '';
-            serviceAccount.attributes.email = data.attributes.email || '';
-            serviceAccount.attributes.enabled = data.attributes.enabled || false;
-            serviceAccount.meta = data.meta || {};
-            serviceAccount.relationships = data.relationships || {};
-        }
-        return serviceAccount;
+        return new ServiceAccount(data);
     }
 }

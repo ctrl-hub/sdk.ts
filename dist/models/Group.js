@@ -6,28 +6,21 @@ export class Group {
     attributes;
     meta = {};
     links = {};
-    constructor() {
+    relationships;
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            description: '',
-            bindings: []
+            name: data?.attributes?.name ?? '',
+            description: data?.attributes?.description ?? '',
+            bindings: data?.attributes?.bindings ?? [],
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let group = new Group();
-        if (data) {
-            group.id = data.id || '';
-            group.type = data.type || 'groups';
-            group.attributes.name = data.attributes?.name || '';
-            group.attributes.description = data.attributes?.description || '';
-            group.attributes.bindings = data.attributes?.bindings || [];
-            // Map relationships
-            // group.relationships.service_accounts.data = data.relationships?.service_accounts?.data || [];
-            // group.relationships.users.data = data.relationships?.users?.data || [];
-            // Meta and links
-            group.meta = data.meta || {};
-            group.links = data.links || {};
-        }
-        return group;
+        return new Group(data);
     }
 }

@@ -7,23 +7,19 @@ export class Submission {
     meta = {};
     links = {};
     relationships;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            reference: '',
-            status: '',
+            reference: data?.attributes?.reference ?? '',
+            status: data?.attributes?.status ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let submission = new Submission();
-        if (data) {
-            submission.id = data.id || '';
-            submission.type = data.type || 'submissions';
-            submission.relationships = data.relationships || {};
-            submission.attributes.reference = data.attributes.reference || '';
-            submission.attributes.status = data.attributes.status || '';
-            submission.meta = data.meta || {};
-            submission.links = data.links || {};
-        }
-        return submission;
+        return new Submission(data);
     }
 }

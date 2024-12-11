@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type RoleAttributes = {
     custom: boolean;
     name: string;
@@ -12,7 +12,9 @@ export declare class Role implements Model {
     attributes: RoleAttributes;
     meta: any;
     links: any;
-    constructor();
+    relationships?: any;
+    included?: any;
+    constructor(data?: Role);
     static hydrate(data: any): Role;
 }
 export {};

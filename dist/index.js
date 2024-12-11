@@ -322,32 +322,24 @@ class SubmissionVersion {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      author: "",
-      form: "",
-      form_version: "",
-      reference: "",
-      status: "",
-      content: {}
+      author: data?.attributes?.author ?? "",
+      form: data?.attributes?.form ?? "",
+      form_version: data?.attributes?.form_version ?? "",
+      reference: data?.attributes?.reference ?? "",
+      status: data?.attributes?.status ?? "",
+      content: data?.attributes?.content ?? {}
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let submissionVersion = new SubmissionVersion;
-    if (data) {
-      submissionVersion.id = data.id || "";
-      submissionVersion.type = data.type || "submissions";
-      submissionVersion.attributes.author = data.attributes.author || "";
-      submissionVersion.attributes.form = data.attributes.form || "";
-      submissionVersion.attributes.form_version = data.attributes.form_version || "";
-      submissionVersion.attributes.reference = data.attributes.reference || "";
-      submissionVersion.attributes.status = data.attributes.status || "";
-      submissionVersion.attributes.content = data.attributes.content || {};
-      submissionVersion.meta = data.meta || {};
-      submissionVersion.links = data.links || {};
-      submissionVersion.relationships = data.relationships || {};
-    }
-    return submissionVersion;
+    return new SubmissionVersion(data);
   }
 }
 SubmissionVersion = __legacyDecorateClassTS([
@@ -386,61 +378,41 @@ class Log {
   type = "logs";
   attributes;
   meta = {};
+  links = {};
   relationships;
-  links;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
       actor: {
-        type: "",
-        id: ""
+        type: data?.attributes?.actor?.type ?? "",
+        id: data?.attributes?.actor?.id ?? ""
       },
-      duration: 0,
+      duration: data?.attributes?.duration ?? 0,
       request: {
-        time: "",
-        headers: {},
-        body: "",
-        path: "",
-        query: {},
-        raw_query: "",
-        method: "",
-        content_length: 0
+        time: data?.attributes?.request?.time ?? "",
+        headers: data?.attributes?.request?.headers ?? {},
+        body: data?.attributes?.request?.body ?? "",
+        path: data?.attributes?.request?.path ?? "",
+        query: data?.attributes?.request?.query ?? {},
+        raw_query: data?.attributes?.request?.raw_query ?? "",
+        method: data?.attributes?.request?.method ?? "",
+        content_length: data?.attributes?.request?.content_length ?? 0
       },
       response: {
-        time: "",
-        body: "",
-        headers: {},
-        status: 0
+        time: data?.attributes?.response?.time ?? "",
+        body: data?.attributes?.response?.body ?? "",
+        headers: data?.attributes?.response?.headers ?? {},
+        status: data?.attributes?.response?.status ?? 0
       }
     };
-    this.relationships = [];
-    this.links = {};
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let log = new Log;
-    if (data) {
-      log.id = data.id;
-      log.attributes.actor = data.attributes.actor || { type: "", id: "" };
-      log.attributes.duration = data.attributes.duration || 0;
-      log.attributes.request = data.attributes.request || {
-        time: "",
-        headers: {},
-        body: "",
-        path: "",
-        query: {},
-        raw_query: "",
-        method: "",
-        content_length: 0
-      };
-      log.attributes.response = data.attributes.response || {
-        time: "",
-        body: "",
-        headers: {},
-        status: 0
-      };
-      log.meta = data.meta || {};
-      log.links = data.links || {};
-    }
-    return log;
+    return new Log(data);
   }
 }
 Log = __legacyDecorateClassTS([
@@ -883,30 +855,23 @@ class Form {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: "",
-      description: "",
-      field_mappings: [],
-      status: "",
-      type: ""
+      name: data?.attributes?.name ?? "",
+      description: data?.attributes?.description ?? "",
+      field_mappings: data?.attributes?.field_mappings ?? [],
+      status: data?.attributes?.status ?? "",
+      type: data?.attributes?.type ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let form = new Form;
-    if (data) {
-      form.id = data.id || "";
-      form.type = data.type || "forms";
-      form.relationships = data.relationships || {};
-      form.attributes.name = data.attributes.name || "";
-      form.attributes.description = data.attributes.description || "";
-      form.attributes.field_mappings = data.attributes.field_mappings || [];
-      form.attributes.type = data.attributes.type || "";
-      form.attributes.status = data.attributes.status || "";
-      form.meta = data.meta || {};
-      form.links = data.links || {};
-    }
-    return form;
+    return new Form(data);
   }
 }
 Form = __legacyDecorateClassTS([
@@ -915,14 +880,21 @@ Form = __legacyDecorateClassTS([
 // src/models/FormCategory.ts
 class FormCategory {
   id = "";
-  type = "form_categories";
+  type = "form-categories";
   attributes;
   meta = {};
-  links;
-  constructor() {
+  links = {};
+  relationships;
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: ""
+      name: data?.attributes?.name ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     let formCategory = new FormCategory;
@@ -944,25 +916,22 @@ class Group {
   attributes;
   meta = {};
   links = {};
-  constructor() {
+  relationships;
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: "",
-      description: "",
-      bindings: []
+      name: data?.attributes?.name ?? "",
+      description: data?.attributes?.description ?? "",
+      bindings: data?.attributes?.bindings ?? []
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let group = new Group;
-    if (data) {
-      group.id = data.id || "";
-      group.type = data.type || "groups";
-      group.attributes.name = data.attributes?.name || "";
-      group.attributes.description = data.attributes?.description || "";
-      group.attributes.bindings = data.attributes?.bindings || [];
-      group.meta = data.meta || {};
-      group.links = data.links || {};
-    }
-    return group;
+    return new Group(data);
   }
 }
 Group = __legacyDecorateClassTS([
@@ -974,20 +943,21 @@ class Permission {
   type = "roles";
   attributes;
   meta = {};
-  links;
-  constructor() {
+  links = {};
+  relationships;
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      description: ""
+      description: data?.attributes?.description ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let permission = new Permission;
-    if (data) {
-      permission.id = data.id;
-      permission.attributes.description = data.attributes.description || "";
-      permission.meta = data.meta || {};
-    }
-    return permission;
+    return new Permission(data);
   }
 }
 Permission = __legacyDecorateClassTS([
@@ -999,28 +969,25 @@ class Role {
   type = "roles";
   attributes;
   meta = {};
-  links;
-  constructor() {
+  links = {};
+  relationships;
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      custom: false,
-      name: "",
-      description: "",
-      launch_stage: "",
-      permissions: []
+      custom: data?.attributes?.custom ?? false,
+      name: data?.attributes?.name ?? "",
+      description: data?.attributes?.description ?? "",
+      launch_stage: data?.attributes?.launch_stage ?? "",
+      permissions: data?.attributes?.permissions ?? []
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let role = new Role;
-    if (data) {
-      role.id = data.id;
-      role.attributes.custom = data.attributes.custom || false;
-      role.attributes.name = data.attributes.name || "";
-      role.attributes.description = data.attributes.description || "";
-      role.attributes.launch_stage = data.attributes.launch_stage || "";
-      role.attributes.permissions = data.attributes.permissions || [];
-      role.meta = data.meta || {};
-    }
-    return role;
+    return new Role(data);
   }
 }
 Role = __legacyDecorateClassTS([
@@ -1032,28 +999,24 @@ class ServiceAccount {
   type = "service-accounts";
   attributes;
   meta = {};
+  links = {};
   relationships;
-  links;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      name: "",
-      description: "",
-      email: "",
-      enabled: false
+      name: data?.attributes?.name ?? "",
+      description: data?.attributes?.description ?? "",
+      email: data?.attributes?.email ?? "",
+      enabled: data?.attributes?.enabled ?? false
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let serviceAccount = new ServiceAccount;
-    if (data) {
-      serviceAccount.id = data.id;
-      serviceAccount.attributes.name = data.attributes.name || "";
-      serviceAccount.attributes.description = data.attributes.description || "";
-      serviceAccount.attributes.email = data.attributes.email || "";
-      serviceAccount.attributes.enabled = data.attributes.enabled || false;
-      serviceAccount.meta = data.meta || {};
-      serviceAccount.relationships = data.relationships || {};
-    }
-    return serviceAccount;
+    return new ServiceAccount(data);
   }
 }
 ServiceAccount = __legacyDecorateClassTS([
@@ -1065,24 +1028,22 @@ class ServiceAccountKey {
   type = "service-account-keys";
   attributes;
   meta = {};
+  links = {};
   relationships;
-  links;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      client_id: "",
-      enabled: false
+      client_id: data?.attributes?.client_id ?? "",
+      enabled: data?.attributes?.enabled ?? false
     };
-    this.relationships = [];
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let serviceAccountKey = new ServiceAccountKey;
-    if (data) {
-      serviceAccountKey.id = data.id;
-      serviceAccountKey.attributes.client_id = data.attributes.client_id || "";
-      serviceAccountKey.attributes.enabled = data.attributes.enabled;
-      serviceAccountKey.meta = data.meta || {};
-    }
-    return serviceAccountKey;
+    return new ServiceAccountKey(data);
   }
 }
 ServiceAccountKey = __legacyDecorateClassTS([
@@ -1096,24 +1057,20 @@ class Submission {
   meta = {};
   links = {};
   relationships;
-  constructor() {
+  included;
+  constructor(data) {
+    this.id = data?.id ?? "";
     this.attributes = {
-      reference: "",
-      status: ""
+      reference: data?.attributes?.reference ?? "",
+      status: data?.attributes?.status ?? ""
     };
+    this.meta = data?.meta ?? {};
+    this.links = data?.links ?? {};
+    this.relationships = data?.relationships ?? {};
+    this.included = data?.included ?? {};
   }
   static hydrate(data) {
-    let submission = new Submission;
-    if (data) {
-      submission.id = data.id || "";
-      submission.type = data.type || "submissions";
-      submission.relationships = data.relationships || {};
-      submission.attributes.reference = data.attributes.reference || "";
-      submission.attributes.status = data.attributes.status || "";
-      submission.meta = data.meta || {};
-      submission.links = data.links || {};
-    }
-    return submission;
+    return new Submission(data);
   }
 }
 Submission = __legacyDecorateClassTS([

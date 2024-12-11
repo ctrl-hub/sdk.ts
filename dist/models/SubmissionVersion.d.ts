@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type SubmissionVersionAttributes = {
     author: string;
     form: string;
@@ -14,7 +14,8 @@ export declare class SubmissionVersion implements Model {
     meta: any;
     links: any;
     relationships?: any;
-    constructor();
+    included?: any;
+    constructor(data?: SubmissionVersion);
     static hydrate(data: any): SubmissionVersion;
 }
 export {};
