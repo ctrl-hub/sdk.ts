@@ -5,23 +5,21 @@ export class ServiceAccountKey {
     type = 'service-account-keys';
     attributes;
     meta = {};
+    links = {};
     relationships;
-    links;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            client_id: '',
-            enabled: false,
+            client_id: data?.attributes?.client_id ?? '',
+            enabled: data?.attributes?.enabled ?? false,
         };
-        this.relationships = [];
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let serviceAccountKey = new ServiceAccountKey();
-        if (data) {
-            serviceAccountKey.id = data.id;
-            serviceAccountKey.attributes.client_id = data.attributes.client_id || '';
-            serviceAccountKey.attributes.enabled = data.attributes.enabled;
-            serviceAccountKey.meta = data.meta || {};
-        }
-        return serviceAccountKey;
+        return new ServiceAccountKey(data);
     }
 }

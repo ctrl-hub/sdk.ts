@@ -7,31 +7,23 @@ export class SubmissionVersion {
     meta = {};
     links = {};
     relationships;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            author: '',
-            form: '',
-            form_version: '',
-            reference: '',
-            status: '',
-            content: {},
+            author: data?.attributes?.author ?? '',
+            form: data?.attributes?.form ?? '',
+            form_version: data?.attributes?.form_version ?? '',
+            reference: data?.attributes?.reference ?? '',
+            status: data?.attributes?.status ?? '',
+            content: data?.attributes?.content ?? {},
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let submissionVersion = new SubmissionVersion();
-        if (data) {
-            submissionVersion.id = data.id || '';
-            submissionVersion.type = data.type || 'submissions';
-            submissionVersion.attributes.author = data.attributes.author || '';
-            submissionVersion.attributes.form = data.attributes.form || '';
-            submissionVersion.attributes.form_version = data.attributes.form_version || '';
-            submissionVersion.attributes.reference = data.attributes.reference || '';
-            submissionVersion.attributes.status = data.attributes.status || '';
-            submissionVersion.attributes.content = data.attributes.content || {};
-            submissionVersion.meta = data.meta || {};
-            submissionVersion.links = data.links || {};
-            submissionVersion.relationships = data.relationships || {};
-        }
-        return submissionVersion;
+        return new SubmissionVersion(data);
     }
 }

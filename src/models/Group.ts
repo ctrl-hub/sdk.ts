@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type Binding = {
@@ -27,34 +27,23 @@ export class Group implements Model {
     public attributes: GroupAttributes;
     public meta: any = {};
     public links: any = {};
+    public relationships?: any;
+    public included?: any;
 
-    constructor() {
+    constructor(data?: Group) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            description: '',
-            bindings: []
+            name: data?.attributes?.name ?? '',
+            description: data?.attributes?.description ?? '',
+            bindings: data?.attributes?.bindings ?? [],
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
 
-    static hydrate(data: any) {
-        let group = new Group();
-
-        if (data) {
-            group.id = data.id || '';
-            group.type = data.type || 'groups';
-            group.attributes.name = data.attributes?.name || '';
-            group.attributes.description = data.attributes?.description || '';
-            group.attributes.bindings = data.attributes?.bindings || [];
-
-            // Map relationships
-            // group.relationships.service_accounts.data = data.relationships?.service_accounts?.data || [];
-            // group.relationships.users.data = data.relationships?.users?.data || [];
-
-            // Meta and links
-            group.meta = data.meta || {};
-            group.links = data.links || {};
-        }
-
-        return group;
+    static hydrate(data: any): Group {
+        return new Group(data);
     }
 }

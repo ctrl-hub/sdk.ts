@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type ServiceAccountAttributes = {
     name: string;
     description: string;
@@ -10,9 +10,10 @@ export declare class ServiceAccount implements Model {
     type: string;
     attributes: ServiceAccountAttributes;
     meta: any;
-    relationships?: any;
     links: any;
-    constructor();
+    relationships?: any;
+    included?: any;
+    constructor(data?: ServiceAccount);
     static hydrate(data: any): ServiceAccount;
 }
 export {};

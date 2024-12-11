@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type Actor = {
     type: string;
     id: string;
@@ -32,9 +32,10 @@ export declare class Log implements Model {
     type: string;
     attributes: Attributes;
     meta: any;
-    relationships: any[];
     links: any;
-    constructor();
+    relationships?: any;
+    included?: any;
+    constructor(data?: Log);
     static hydrate(data: any): Log;
 }
 export {};

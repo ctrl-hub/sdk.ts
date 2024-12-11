@@ -7,29 +7,18 @@ export class VehicleModel {
     meta = {};
     links = {};
     relationships;
-    constructor() {
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
-            specification: {
-                emissions: '',
-                transmission: ''
-            },
-            documentation: [],
+            name: data?.attributes?.name ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
-        let vehicleModel = new VehicleModel();
-        if (data) {
-            vehicleModel.id = data.id || '';
-            vehicleModel.type = data.type || 'vehicle-models';
-            vehicleModel.relationships = data.relationships || {};
-            vehicleModel.attributes.name = data.attributes.name || '';
-            vehicleModel.attributes.specification.emissions = data.attributes.specification.emissions || '';
-            vehicleModel.attributes.specification.transmission = data.attributes.specification.transmission || '';
-            vehicleModel.attributes.documentation = data.attributes.documentation || [];
-            vehicleModel.meta = data.meta || {};
-            vehicleModel.links = data.links || {};
-        }
-        return vehicleModel;
+        return new VehicleModel(data);
     }
 }

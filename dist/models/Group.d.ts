@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type Binding = {
     id: string;
     role: string;
@@ -22,7 +22,9 @@ export declare class Group implements Model {
     attributes: GroupAttributes;
     meta: any;
     links: any;
-    constructor();
+    relationships?: any;
+    included?: any;
+    constructor(data?: Group);
     static hydrate(data: any): Group;
 }
 export {};

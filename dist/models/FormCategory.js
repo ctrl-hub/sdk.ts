@@ -2,14 +2,21 @@ import { RegisterModel } from '../utils/ModelRegistry';
 @RegisterModel
 export class FormCategory {
     id = '';
-    type = 'form_categories';
+    type = 'form-categories';
     attributes;
     meta = {};
-    links;
-    constructor() {
+    links = {};
+    relationships;
+    included;
+    constructor(data) {
+        this.id = data?.id ?? '';
         this.attributes = {
-            name: '',
+            name: data?.attributes?.name ?? '',
         };
+        this.meta = data?.meta ?? {};
+        this.links = data?.links ?? {};
+        this.relationships = data?.relationships ?? {};
+        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         let formCategory = new FormCategory();

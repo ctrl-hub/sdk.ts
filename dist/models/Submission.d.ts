@@ -1,4 +1,4 @@
-import type { Model } from "../types/Model";
+import type { Model } from '../types/Model';
 type SubmissionAttributes = {
     reference: string;
     status: string;
@@ -10,7 +10,8 @@ export declare class Submission implements Model {
     meta: any;
     links: any;
     relationships?: any;
-    constructor();
+    included?: any;
+    constructor(data?: Submission);
     static hydrate(data: any): Submission;
 }
 export {};
