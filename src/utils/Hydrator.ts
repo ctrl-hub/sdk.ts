@@ -46,7 +46,8 @@ export class Hydrator {
 
                 try {
                     const ModelClass = this.modelRegistry.models[relation.type];
-                    return ModelClass ? ModelClass.hydrate(includedData) : includedData;
+                    const hydratedRelation = ModelClass ? ModelClass.hydrate(includedData) : includedData;
+                    return this.hydrateRelationships(hydratedRelation as JsonData, included);
                 } catch (e) {
                     return includedData;
                 }
