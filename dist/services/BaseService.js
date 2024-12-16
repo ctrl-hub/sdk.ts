@@ -17,17 +17,13 @@ export class BaseService extends RequestBuilder {
     async get(param, options) {
         const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
         let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-        resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-        this.clearRequestOptions();
-        return resp;
+        const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+        return {
+            ...resp,
+            data: hydratedData
+        };
     }
-    async create(model) {
-        return await this.client.makePostRequest(this.endpoint, {
-            data: {
-                type: model.type,
-                attributes: model.attributes,
-                relationships: model.relationships,
-            }
-        });
+    async create(payload) {
+        return await this.client.makePostRequest(this.endpoint, payload);
     }
 }

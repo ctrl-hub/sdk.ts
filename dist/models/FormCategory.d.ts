@@ -1,16 +1,15 @@
 import type { Model } from '../types/Model';
-type FormCategoryAttributes = {
-    name: string;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 export declare class FormCategory implements Model {
     id: string;
     type: string;
-    attributes: FormCategoryAttributes;
     meta: any;
     links: any;
-    relationships?: {};
+    _relationships?: any;
     included?: any;
-    constructor(data?: FormCategory);
+    name: string;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): FormCategory;
+    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
-export {};

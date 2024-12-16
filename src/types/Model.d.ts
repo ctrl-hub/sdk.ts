@@ -1,9 +1,8 @@
-export type Model<TAttributes = Record<string, any>, TRelationships = any> = {
-    id?: string;
-    type: String;
-    attributes: TAttributes;
-    meta: any;
-    relationships?: TRelationships,
+export interface Model {
+    id: string;
+    type: string;
+    meta?: any;
+    links?: any;
+    _relationships?: any;
     included?: any;
-    links: any;
 }

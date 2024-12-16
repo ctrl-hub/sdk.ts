@@ -3,23 +3,27 @@ import { RegisterModel } from '../utils/ModelRegistry';
 export class ServiceAccountKey {
     id = '';
     type = 'service-account-keys';
-    attributes;
     meta = {};
     links = {};
-    relationships;
+    _relationships;
     included;
+    client_id = '';
+    enabled = false;
+    static relationships = [];
     constructor(data) {
         this.id = data?.id ?? '';
-        this.attributes = {
-            client_id: data?.attributes?.client_id ?? '',
-            enabled: data?.attributes?.enabled ?? false,
-        };
+        this.client_id = data?.attributes?.client_id ?? '';
+        this.enabled = data?.attributes?.enabled ?? false;
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this._relationships = data?.relationships ?? {};
         this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new ServiceAccountKey(data);
+    }
+    toJSON() {
+        const { _relationships, ...rest } = this;
+        return rest;
     }
 }

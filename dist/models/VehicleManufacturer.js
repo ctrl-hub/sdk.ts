@@ -3,22 +3,25 @@ import { RegisterModel } from '../utils/ModelRegistry';
 export class VehicleManufacturer {
     id = '';
     type = 'vehicle-manufacturers';
-    attributes;
     meta = {};
     links = {};
-    relationships;
+    _relationships;
     included;
+    name = '';
+    static relationships = [];
     constructor(data) {
         this.id = data?.id ?? '';
-        this.attributes = {
-            name: data?.attributes?.name ?? '',
-        };
+        this.name = data?.attributes?.name ?? '';
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this._relationships = data?.relationships ?? {};
         this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new VehicleManufacturer(data);
+    }
+    toJSON() {
+        const { _relationships, ...rest } = this;
+        return rest;
     }
 }

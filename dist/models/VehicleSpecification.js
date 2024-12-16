@@ -3,27 +3,41 @@ import { RegisterModel } from '../utils/ModelRegistry';
 export class VehicleSpecification {
     id = '';
     type = 'vehicle-specifications';
-    attributes;
     meta = {};
     links = {};
-    relationships;
+    _relationships;
     included;
+    emissions = 0;
+    engine = '';
+    fuel = '';
+    transmission = '';
+    year = 0;
+    documentation = [];
+    static relationships = [
+        {
+            name: 'model',
+            type: 'single',
+            modelType: 'vehicle-models'
+        }
+    ];
     constructor(data) {
         this.id = data?.id ?? '';
-        this.attributes = {
-            emissions: data?.attributes?.emissions ?? 0,
-            engine: data?.attributes?.engine ?? '',
-            fuel: data?.attributes?.fuel ?? '',
-            transmission: data?.attributes?.transmission ?? '',
-            year: data?.attributes?.year ?? 0,
-            documentation: data?.attributes?.documentation ?? [],
-        };
+        this.emissions = data?.attributes?.emissions ?? 0;
+        this.engine = data?.attributes?.engine ?? '';
+        this.fuel = data?.attributes?.fuel ?? '';
+        this.transmission = data?.attributes?.transmission ?? '';
+        this.year = data?.attributes?.year ?? 0;
+        this.documentation = data?.attributes?.documentation ?? [];
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this._relationships = data?.relationships ?? {};
         this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new VehicleSpecification(data);
+    }
+    toJSON() {
+        const { _relationships, ...rest } = this;
+        return rest;
     }
 }

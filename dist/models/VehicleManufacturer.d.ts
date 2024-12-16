@@ -1,16 +1,15 @@
 import type { Model } from "../types/Model";
-type VehicleManufacturerAttributes = {
-    name: string;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 export declare class VehicleManufacturer implements Model {
     id: string;
     type: string;
-    attributes: VehicleManufacturerAttributes;
     meta: any;
     links: any;
-    relationships?: any;
+    _relationships?: any;
     included?: any;
-    constructor(data?: VehicleManufacturer);
-    static hydrate(data: VehicleManufacturer): VehicleManufacturer;
+    name: string;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
+    static hydrate(data: any): VehicleManufacturer;
+    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
-export {};

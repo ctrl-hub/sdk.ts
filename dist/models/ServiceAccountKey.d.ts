@@ -1,17 +1,16 @@
 import type { Model } from '../types/Model';
-type Attributes = {
-    client_id: string;
-    enabled: boolean;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 export declare class ServiceAccountKey implements Model {
     id: string;
     type: string;
-    attributes: Attributes;
     meta: any;
     links: any;
-    relationships?: any;
+    _relationships?: any;
     included?: any;
-    constructor(data?: ServiceAccountKey);
+    client_id: string;
+    enabled: boolean;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): ServiceAccountKey;
+    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
-export {};

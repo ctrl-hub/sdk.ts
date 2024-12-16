@@ -1,21 +1,17 @@
-import type { Relationship } from 'types/Relationship';
 import type { Model } from '../types/Model';
-type EquipmentAttributes = {
-    serial: string;
-};
-type EquipmentRelationships = {
-    manufacturer: Relationship;
-    model: Relationship;
-};
+import type { EquipmentModel } from './EquipmentModel';
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 export declare class Equipment implements Model {
     id: string;
     type: string;
-    attributes: EquipmentAttributes;
     meta: any;
     links: any;
-    relationships?: EquipmentRelationships;
     included?: any;
-    constructor(data?: Equipment);
-    static hydrate(data: Equipment): Equipment;
+    _relationships?: any;
+    serial: string;
+    model?: EquipmentModel;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
+    static hydrate(data: any): Equipment;
+    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
-export {};
