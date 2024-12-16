@@ -1,12 +1,8 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class VehicleModel {
-    id = '';
+export class VehicleModel extends BaseModel {
     type = 'vehicle-models';
-    meta = {};
-    links = {};
-    _relationships;
-    included;
     name = '';
     static relationships = [
         {
@@ -16,18 +12,10 @@ export class VehicleModel {
         }
     ];
     constructor(data) {
-        this.id = data?.id ?? '';
+        super(data);
         this.name = data?.attributes?.name ?? '';
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new VehicleModel(data);
-    }
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

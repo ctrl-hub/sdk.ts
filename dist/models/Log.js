@@ -1,19 +1,15 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Log {
-    id = '';
+export class Log extends BaseModel {
     type = 'logs';
-    meta = {};
-    links = {};
-    _relationships;
-    included;
     actor;
     duration;
     request;
     response;
     static relationships = [];
     constructor(data) {
-        this.id = data?.id ?? '';
+        super(data);
         this.actor = data?.attributes?.actor ?? { type: '', id: '' };
         this.duration = data?.attributes?.duration ?? 0;
         this.request = data?.attributes?.request ?? {
@@ -32,16 +28,8 @@ export class Log {
             headers: {},
             status: 0
         };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new Log(data);
-    }
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

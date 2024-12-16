@@ -1,12 +1,7 @@
-import type { Model } from '../types/Model';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-export declare class SubmissionVersion implements Model {
-    id: string;
+import { BaseModel } from '@models/BaseModel';
+export declare class SubmissionVersion extends BaseModel {
     type: string;
-    meta: any;
-    links: any;
-    _relationships?: any;
-    included?: any;
     author: string;
     form: string;
     form_version: string;
@@ -16,5 +11,4 @@ export declare class SubmissionVersion implements Model {
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     static hydrate(data: any): SubmissionVersion;
-    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }

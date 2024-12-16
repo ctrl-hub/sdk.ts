@@ -1,6 +1,6 @@
-import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 type VehicleModelDocumentation = {
     name: string;
@@ -9,13 +9,8 @@ type VehicleModelDocumentation = {
 }
 
 @RegisterModel
-export class VehicleSpecification implements Model {
-    public id: string = '';
+export class VehicleSpecification extends BaseModel {
     public type: string = 'vehicle-specifications';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public emissions: number = 0;
     public engine: string = '';
@@ -33,26 +28,16 @@ export class VehicleSpecification implements Model {
     ];
 
     constructor(data?: any) {
-        this.id = data?.id ?? '';
+        super(data);
         this.emissions = data?.attributes?.emissions ?? 0;
         this.engine = data?.attributes?.engine ?? '';
         this.fuel = data?.attributes?.fuel ?? '';
         this.transmission = data?.attributes?.transmission ?? '';
         this.year = data?.attributes?.year ?? 0;
         this.documentation = data?.attributes?.documentation ?? [];
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): VehicleSpecification {
         return new VehicleSpecification(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

@@ -1,12 +1,8 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class EquipmentModel {
-    id = '';
+export class EquipmentModel extends BaseModel {
     type = 'equipment-models';
-    meta = {};
-    links = {};
-    _relationships;
-    included;
     name = '';
     documentation = [];
     manufacturer;
@@ -18,19 +14,11 @@ export class EquipmentModel {
         }
     ];
     constructor(data) {
-        this.id = data?.id ?? '';
+        super(data);
         this.name = data?.attributes?.name ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new EquipmentModel(data);
-    }
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

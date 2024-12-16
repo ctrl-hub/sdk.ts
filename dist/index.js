@@ -311,14 +311,57 @@ class PermissionsService extends BaseService {
   }
 }
 
-// src/models/SubmissionVersion.ts
-class SubmissionVersion {
+// src/models/BaseModel.ts
+class BaseModel {
   id = "";
-  type = "submission-versions";
-  meta = {};
-  links = {};
-  _relationships;
+  meta;
+  links;
   included;
+  _relationships;
+  static relationships = [];
+  constructor(data) {
+    this.id = data?.id ?? "";
+    if (data?.meta && Object.keys(data.meta).length > 0) {
+      this.meta = data.meta;
+    }
+    if (data?.links && Object.keys(data.links).length > 0) {
+      this.links = data.links;
+    }
+    if (data?.included && Object.keys(data.included).length > 0) {
+      this.included = data.included;
+    }
+    if (data?.relationships && Object.keys(data.relationships).length > 0) {
+      this._relationships = data.relationships;
+    }
+  }
+  toJSON() {
+    const obj = {};
+    if (this.id)
+      obj.id = this.id;
+    if (this.type)
+      obj.type = this.type;
+    if (this.meta)
+      obj.meta = this.meta;
+    if (this.links)
+      obj.links = this.links;
+    for (const [key, value] of Object.entries(this)) {
+      if (["id", "type", "meta", "links", "included", "_relationships"].includes(key)) {
+        continue;
+      }
+      if (value !== null && value !== undefined) {
+        if (typeof value === "object" && Object.keys(value).length === 0) {
+          continue;
+        }
+        obj[key] = value;
+      }
+    }
+    return obj;
+  }
+}
+
+// src/models/SubmissionVersion.ts
+class SubmissionVersion extends BaseModel {
+  type = "submission-versions";
   author = "";
   form = "";
   form_version = "";
@@ -327,24 +370,16 @@ class SubmissionVersion {
   content = {};
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.author = data?.attributes?.author ?? "";
     this.form = data?.attributes?.form ?? "";
     this.form_version = data?.attributes?.form_version ?? "";
     this.reference = data?.attributes?.reference ?? "";
     this.status = data?.attributes?.status ?? "";
     this.content = data?.attributes?.content ?? {};
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new SubmissionVersion(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 SubmissionVersion = __legacyDecorateClassTS([
@@ -378,20 +413,15 @@ class FormsService extends BaseService {
 }
 
 // src/models/Log.ts
-class Log {
-  id = "";
+class Log extends BaseModel {
   type = "logs";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   actor;
   duration;
   request;
   response;
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.actor = data?.attributes?.actor ?? { type: "", id: "" };
     this.duration = data?.attributes?.duration ?? 0;
     this.request = data?.attributes?.request ?? {
@@ -410,17 +440,9 @@ class Log {
       headers: {},
       status: 0
     };
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Log(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Log = __legacyDecorateClassTS([
@@ -490,13 +512,8 @@ class EquipmentService extends BaseService {
 }
 
 // src/models/VehicleModel.ts
-class VehicleModel {
-  id = "";
+class VehicleModel extends BaseModel {
   type = "vehicle-models";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   static relationships = [
     {
@@ -506,19 +523,11 @@ class VehicleModel {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new VehicleModel(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 VehicleModel = __legacyDecorateClassTS([
@@ -539,13 +548,8 @@ class VehicleManufacturersService extends BaseService {
 }
 
 // src/models/VehicleSpecification.ts
-class VehicleSpecification {
-  id = "";
+class VehicleSpecification extends BaseModel {
   type = "vehicle-specifications";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   emissions = 0;
   engine = "";
   fuel = "";
@@ -560,24 +564,16 @@ class VehicleSpecification {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.emissions = data?.attributes?.emissions ?? 0;
     this.engine = data?.attributes?.engine ?? "";
     this.fuel = data?.attributes?.fuel ?? "";
     this.transmission = data?.attributes?.transmission ?? "";
     this.year = data?.attributes?.year ?? 0;
     this.documentation = data?.attributes?.documentation ?? [];
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new VehicleSpecification(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 VehicleSpecification = __legacyDecorateClassTS([
@@ -598,13 +594,8 @@ class VehicleModelsService extends BaseService {
 }
 
 // src/models/EquipmentModel.ts
-class EquipmentModel {
-  id = "";
+class EquipmentModel extends BaseModel {
   type = "equipment-models";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   documentation = [];
   manufacturer;
@@ -616,20 +607,12 @@ class EquipmentModel {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
     this.documentation = data?.attributes?.documentation ?? [];
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new EquipmentModel(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 EquipmentModel = __legacyDecorateClassTS([
@@ -825,13 +808,8 @@ class ClientConfig {
   }
 }
 // src/models/Equipment.ts
-class Equipment {
-  id = "";
+class Equipment extends BaseModel {
   type = "equipment-items";
-  meta = {};
-  links = {};
-  included;
-  _relationships;
   serial = "";
   model;
   static relationships = [
@@ -842,61 +820,35 @@ class Equipment {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.serial = data?.attributes?.serial ?? "";
-    this._relationships = data?.relationships ?? {};
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Equipment(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Equipment = __legacyDecorateClassTS([
   RegisterModel
 ], Equipment);
 // src/models/EquipmentManufacturer.ts
-class EquipmentManufacturer {
-  id = "";
+class EquipmentManufacturer extends BaseModel {
   type = "equipment-manufacturers";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new EquipmentManufacturer(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 EquipmentManufacturer = __legacyDecorateClassTS([
   RegisterModel
 ], EquipmentManufacturer);
 // src/models/Form.ts
-class Form {
-  id = "";
+class Form extends BaseModel {
   type = "forms";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   description = "";
   field_mappings = [];
@@ -904,127 +856,75 @@ class Form {
   formType = "";
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.field_mappings = data?.attributes?.field_mappings ?? [];
     this.status = data?.attributes?.status ?? "";
     this.formType = data?.attributes?.type ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Form(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Form = __legacyDecorateClassTS([
   RegisterModel
 ], Form);
 // src/models/FormCategory.ts
-class FormCategory {
-  id = "";
+class FormCategory extends BaseModel {
   type = "form_categories";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new FormCategory(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 FormCategory = __legacyDecorateClassTS([
   RegisterModel
 ], FormCategory);
 // src/models/Group.ts
-class Group {
-  id = "";
+class Group extends BaseModel {
   type = "groups";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   description = "";
   bindings = [];
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.bindings = data?.attributes?.bindings ?? [];
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Group(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Group = __legacyDecorateClassTS([
   RegisterModel
 ], Group);
 // src/models/Permission.ts
-class Permission {
-  id = "";
+class Permission extends BaseModel {
   type = "permissions";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   description = "";
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.description = data?.attributes?.description ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Permission(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Permission = __legacyDecorateClassTS([
   RegisterModel
 ], Permission);
 // src/models/Role.ts
-class Role {
-  id = "";
+class Role extends BaseModel {
   type = "roles";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   custom = false;
   name = "";
   description = "";
@@ -1032,36 +932,23 @@ class Role {
   permissions = [];
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.custom = data?.attributes?.custom ?? false;
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.launch_stage = data?.attributes?.launch_stage ?? "";
     this.permissions = data?.attributes?.permissions ?? [];
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Role(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Role = __legacyDecorateClassTS([
   RegisterModel
 ], Role);
 // src/models/ServiceAccount.ts
-class ServiceAccount {
-  id = "";
+class ServiceAccount extends BaseModel {
   type = "service-accounts";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   description = "";
   email = "";
@@ -1074,66 +961,41 @@ class ServiceAccount {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.email = data?.attributes?.email ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new ServiceAccount(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 ServiceAccount = __legacyDecorateClassTS([
   RegisterModel
 ], ServiceAccount);
 // src/models/ServiceAccountKey.ts
-class ServiceAccountKey {
-  id = "";
+class ServiceAccountKey extends BaseModel {
   type = "service-account-keys";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   client_id = "";
   enabled = false;
   static relationships = [];
   constructor(data) {
+    super(data);
     this.id = data?.id ?? "";
     this.client_id = data?.attributes?.client_id ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new ServiceAccountKey(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 ServiceAccountKey = __legacyDecorateClassTS([
   RegisterModel
 ], ServiceAccountKey);
 // src/models/Submission.ts
-class Submission {
-  id = "";
+class Submission extends BaseModel {
   type = "submissions";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   reference = "";
   status = "";
   static relationships = [
@@ -1149,34 +1011,20 @@ class Submission {
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
-    this.type = data?.type ?? "submissions";
+    super(data);
     this.reference = data?.attributes?.reference ?? "";
     this.status = data?.attributes?.status ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Submission(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Submission = __legacyDecorateClassTS([
   RegisterModel
 ], Submission);
 // src/models/Vehicle.ts
-class Vehicle {
-  id = "";
+class Vehicle extends BaseModel {
   type = "vehicles";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   registration = "";
   vin = "";
   description = "";
@@ -1184,62 +1032,36 @@ class Vehicle {
   specification;
   static relationships = [
     {
-      name: "model",
-      type: "single",
-      modelType: "vehicle-models"
-    },
-    {
       name: "specification",
       type: "single",
       modelType: "vehicle-specifications"
     }
   ];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.registration = data?.attributes?.registration ?? "";
     this.vin = data?.attributes?.vin ?? "";
     this.description = data?.attributes?.description ?? "";
     this.colour = data?.attributes?.colour ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new Vehicle(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 Vehicle = __legacyDecorateClassTS([
   RegisterModel
 ], Vehicle);
 // src/models/VehicleManufacturer.ts
-class VehicleManufacturer {
-  id = "";
+class VehicleManufacturer extends BaseModel {
   type = "vehicle-manufacturers";
-  meta = {};
-  links = {};
-  _relationships;
-  included;
   name = "";
   static relationships = [];
   constructor(data) {
-    this.id = data?.id ?? "";
+    super(data);
     this.name = data?.attributes?.name ?? "";
-    this.meta = data?.meta ?? {};
-    this.links = data?.links ?? {};
-    this._relationships = data?.relationships ?? {};
-    this.included = data?.included ?? {};
   }
   static hydrate(data) {
     return new VehicleManufacturer(data);
-  }
-  toJSON() {
-    const { _relationships, ...rest } = this;
-    return rest;
   }
 }
 VehicleManufacturer = __legacyDecorateClassTS([

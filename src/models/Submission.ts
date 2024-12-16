@@ -1,15 +1,10 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class Submission implements Model {
-    public id: string = '';
+export class Submission extends BaseModel {
     public type: string = 'submissions';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public reference: string = '';
     public status: string = '';
@@ -28,23 +23,12 @@ export class Submission implements Model {
     ];
 
     constructor(data?: any) {
-        this.id = data?.id ?? '';
-        this.type = data?.type ?? 'submissions';
+        super(data);
         this.reference = data?.attributes?.reference ?? '';
         this.status = data?.attributes?.status ?? '';
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): Submission {
         return new Submission(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

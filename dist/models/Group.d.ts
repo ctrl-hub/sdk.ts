@@ -1,5 +1,5 @@
-import type { Model } from '../types/Model';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 type Binding = {
     id: string;
     role: string;
@@ -12,19 +12,13 @@ type Binding = {
         }[];
     };
 };
-export declare class Group implements Model {
-    id: string;
+export declare class Group extends BaseModel {
     type: string;
-    meta: any;
-    links: any;
-    _relationships?: any;
-    included?: any;
     name: string;
     description: string;
     bindings: Binding[];
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     static hydrate(data: any): Group;
-    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
 export {};

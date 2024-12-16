@@ -1,27 +1,15 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Permission {
-    id = '';
+export class Permission extends BaseModel {
     type = 'permissions';
-    meta = {};
-    links = {};
-    _relationships;
-    included;
     description = '';
     static relationships = [];
     constructor(data) {
-        this.id = data?.id ?? '';
+        super(data);
         this.description = data?.attributes?.description ?? '';
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new Permission(data);
-    }
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

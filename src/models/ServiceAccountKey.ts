@@ -1,15 +1,10 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class ServiceAccountKey implements Model {
-    public id: string = '';
+export class ServiceAccountKey extends BaseModel {
     public type: string = 'service-account-keys';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public client_id: string = '';
     public enabled: boolean = false;
@@ -17,22 +12,13 @@ export class ServiceAccountKey implements Model {
     static relationships: RelationshipDefinition[] = [];
 
     constructor(data?: any) {
+        super(data);
         this.id = data?.id ?? '';
         this.client_id = data?.attributes?.client_id ?? '';
         this.enabled = data?.attributes?.enabled ?? false;
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): ServiceAccountKey {
         return new ServiceAccountKey(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

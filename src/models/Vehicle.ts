@@ -1,16 +1,11 @@
-import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { VehicleSpecification } from '@models/VehicleSpecification';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class Vehicle implements Model {
-    public id: string = '';
+export class Vehicle extends BaseModel {
     public type: string = 'vehicles';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public registration: string = '';
     public vin: string = '';
@@ -21,11 +16,6 @@ export class Vehicle implements Model {
 
     static relationships: RelationshipDefinition[] = [
         {
-            name: 'model',
-            type: 'single',
-            modelType: 'vehicle-models'
-        },
-        {
             name: 'specification',
             type: 'single',
             modelType: 'vehicle-specifications'
@@ -33,24 +23,14 @@ export class Vehicle implements Model {
     ];
 
     constructor(data?: any) {
-        this.id = data?.id ?? '';
+        super(data);
         this.registration = data?.attributes?.registration ?? '';
         this.vin = data?.attributes?.vin ?? '';
         this.description = data?.attributes?.description ?? '';
         this.colour = data?.attributes?.colour ?? '';
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): Vehicle {
         return new Vehicle(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

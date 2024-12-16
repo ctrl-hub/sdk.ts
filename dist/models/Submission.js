@@ -1,12 +1,8 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Submission {
-    id = '';
+export class Submission extends BaseModel {
     type = 'submissions';
-    meta = {};
-    links = {};
-    _relationships;
-    included;
     reference = '';
     status = '';
     static relationships = [
@@ -22,20 +18,11 @@ export class Submission {
         },
     ];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.type = data?.type ?? 'submissions';
+        super(data);
         this.reference = data?.attributes?.reference ?? '';
         this.status = data?.attributes?.status ?? '';
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
     static hydrate(data) {
         return new Submission(data);
-    }
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

@@ -1,5 +1,5 @@
-import type { Model } from '../types/Model';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 type Actor = {
     type: string;
     id: string;
@@ -22,13 +22,8 @@ type Response = {
     headers: ResponseHeaders;
     status: number;
 };
-export declare class Log implements Model {
-    id: string;
+export declare class Log extends BaseModel {
     type: string;
-    meta: any;
-    links: any;
-    _relationships?: any;
-    included?: any;
     actor: Actor;
     duration: number;
     request: Request;
@@ -36,6 +31,5 @@ export declare class Log implements Model {
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     static hydrate(data: any): Log;
-    toJSON(): Omit<this, "_relationships" | "toJSON">;
 }
 export {};

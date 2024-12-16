@@ -1,7 +1,7 @@
-import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { EquipmentManufacturer } from './EquipmentManufacturer';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 type EquipmentModelDocumentation = {
     name: string;
@@ -10,13 +10,8 @@ type EquipmentModelDocumentation = {
 }
 
 @RegisterModel
-export class EquipmentModel implements Model {
-    public id: string = '';
+export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public name: string = '';
     public documentation: EquipmentModelDocumentation[] = [];
@@ -32,22 +27,12 @@ export class EquipmentModel implements Model {
     ];
 
     constructor(data?: any) {
-        this.id = data?.id ?? '';
+        super(data);
         this.name = data?.attributes?.name ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): EquipmentModel {
         return new EquipmentModel(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }

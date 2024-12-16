@@ -1,6 +1,6 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 // Update Attributes type to match the JSON structure
 type Actor = {
@@ -31,13 +31,8 @@ type Response = {
 };
 
 @RegisterModel
-export class Log implements Model {
-    public id: string = '';
+export class Log extends BaseModel {
     public type: string = 'logs';
-    public meta: any = {};
-    public links: any = {};
-    public _relationships?: any;
-    public included?: any;
 
     public actor: Actor;
     public duration: number;
@@ -47,8 +42,7 @@ export class Log implements Model {
     static relationships: RelationshipDefinition[] = [];
 
     constructor(data?: any) {
-        this.id = data?.id ?? '';
-
+        super(data);
         this.actor = data?.attributes?.actor ?? { type: '', id: '' };
         this.duration = data?.attributes?.duration ?? 0;
         this.request = data?.attributes?.request ?? {
@@ -67,19 +61,9 @@ export class Log implements Model {
             headers: {},
             status: 0
         };
-
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this._relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
     }
 
     static hydrate(data: any): Log {
         return new Log(data);
-    }
-
-    toJSON() {
-        const { _relationships, ...rest } = this;
-        return rest;
     }
 }
