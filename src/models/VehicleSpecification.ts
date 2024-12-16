@@ -1,4 +1,5 @@
-import type { Model } from "../types/Model";
+import type { Relationship } from 'types/Relationship';
+import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
 
 type VehicleSpecificationAttributes = {
@@ -14,7 +15,11 @@ type VehicleModelDocumentation = {
     name: string;
     description: string;
     link: string;
-}
+};
+
+type VehicleSpecificationRelationships = {
+    model: Relationship;
+};
 
 @RegisterModel
 export class VehicleSpecification implements Model {
@@ -23,7 +28,7 @@ export class VehicleSpecification implements Model {
     public attributes: VehicleSpecificationAttributes;
     public meta: any = {};
     public links: any = {};
-    public relationships?: any;
+    public relationships?: VehicleSpecificationRelationships;
     public included?: any;
 
     constructor(data?: VehicleSpecification) {
@@ -38,7 +43,14 @@ export class VehicleSpecification implements Model {
         };
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this.relationships = {
+            model: {
+                data: {
+                    id: data?.relationships?.model?.data?.id ?? '',
+                    type: data?.relationships?.model?.data?.type ?? 'vehicle-models',
+                },
+            },
+        };
         this.included = data?.included ?? {};
     }
 

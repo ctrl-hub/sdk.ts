@@ -134,6 +134,10 @@ class Requests {
 }
 
 // src/utils/ModelRegistry.ts
+function RegisterModel(target) {
+  return ModelRegistry.register(target);
+}
+
 class ModelRegistry {
   static instance;
   models = {};
@@ -150,9 +154,6 @@ class ModelRegistry {
     }
     return modelClass;
   }
-}
-function RegisterModel(target) {
-  return ModelRegistry.register(target);
 }
 
 // src/utils/Hydrator.ts
@@ -497,7 +498,14 @@ class VehicleModel {
     };
     this.meta = data?.meta ?? {};
     this.links = data?.links ?? {};
-    this.relationships = data?.relationships ?? {};
+    this.relationships = {
+      manufacturer: {
+        data: {
+          id: data?.relationships?.manufacturer?.data?.id ?? "",
+          type: data?.relationships?.manufacturer?.data?.type ?? "vehicle-manufacurers"
+        }
+      }
+    };
     this.included = data?.included ?? {};
   }
   static hydrate(data) {
@@ -542,7 +550,14 @@ class VehicleSpecification {
     };
     this.meta = data?.meta ?? {};
     this.links = data?.links ?? {};
-    this.relationships = data?.relationships ?? {};
+    this.relationships = {
+      model: {
+        data: {
+          id: data?.relationships?.model?.data?.id ?? "",
+          type: data?.relationships?.model?.data?.type ?? "vehicle-models"
+        }
+      }
+    };
     this.included = data?.included ?? {};
   }
   static hydrate(data) {
@@ -583,7 +598,14 @@ class EquipmentModel {
     };
     this.meta = data?.meta ?? {};
     this.links = data?.links ?? {};
-    this.relationships = data?.relationships ?? {};
+    this.relationships = {
+      manufacturer: {
+        data: {
+          id: data?.relationships?.manufacturer?.data?.id ?? "",
+          type: data?.relationships?.manufacturer?.data?.type ?? "equipment-manufacturers"
+        }
+      }
+    };
     this.included = data?.included ?? {};
   }
   static hydrate(data) {
@@ -799,16 +821,10 @@ class Equipment {
     this.meta = data?.meta ?? {};
     this.links = data?.links ?? {};
     this.relationships = {
-      manufacturer: {
-        data: {
-          id: data?.relationships?.manufacturer?.data?.id ?? "",
-          type: data?.relationships?.manufacturer?.data?.type ?? ""
-        }
-      },
       model: {
         data: {
           id: data?.relationships?.model?.data?.id ?? "",
-          type: data?.relationships?.model?.data?.type ?? ""
+          type: data?.relationships?.model?.data?.type ?? "equipment-models"
         }
       }
     };
@@ -1096,22 +1112,10 @@ class Vehicle {
     this.meta = data?.meta ?? {};
     this.links = data?.links ?? {};
     this.relationships = {
-      manufacturer: {
-        data: {
-          id: data?.relationships?.manufacturer?.data?.id ?? "",
-          type: data?.relationships?.manufacturer?.data?.type ?? ""
-        }
-      },
-      model: {
-        data: {
-          id: data?.relationships?.model?.data?.id ?? "",
-          type: data?.relationships?.model?.data?.type ?? ""
-        }
-      },
       specification: {
         data: {
           id: data?.relationships?.specification?.data?.id ?? "",
-          type: data?.relationships?.specification?.data?.type ?? ""
+          type: data?.relationships?.specification?.data?.type ?? "vehicle-specifications"
         }
       }
     };

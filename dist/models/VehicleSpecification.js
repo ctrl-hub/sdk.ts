@@ -20,7 +20,14 @@ export class VehicleSpecification {
         };
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this.relationships = {
+            model: {
+                data: {
+                    id: data?.relationships?.model?.data?.id ?? '',
+                    type: data?.relationships?.model?.data?.type ?? 'vehicle-models',
+                },
+            },
+        };
         this.included = data?.included ?? {};
     }
     static hydrate(data) {

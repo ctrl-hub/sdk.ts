@@ -1,4 +1,5 @@
-import type { Model } from "../types/Model";
+import type { Relationship } from 'types/Relationship';
+import type { Model } from '../types/Model';
 type VehicleSpecificationAttributes = {
     emissions: number;
     engine: string;
@@ -12,13 +13,16 @@ type VehicleModelDocumentation = {
     description: string;
     link: string;
 };
+type VehicleSpecificationRelationships = {
+    model: Relationship;
+};
 export declare class VehicleSpecification implements Model {
     id: string;
     type: string;
     attributes: VehicleSpecificationAttributes;
     meta: any;
     links: any;
-    relationships?: any;
+    relationships?: VehicleSpecificationRelationships;
     included?: any;
     constructor(data?: VehicleSpecification);
     static hydrate(data: VehicleSpecification): VehicleSpecification;

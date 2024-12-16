@@ -16,7 +16,14 @@ export class EquipmentModel {
         };
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this.relationships = {
+            manufacturer: {
+                data: {
+                    id: data?.relationships?.manufacturer?.data?.id ?? '',
+                    type: data?.relationships?.manufacturer?.data?.type ?? 'equipment-manufacturers',
+                },
+            },
+        };
         this.included = data?.included ?? {};
     }
     static hydrate(data) {

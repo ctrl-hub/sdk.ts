@@ -1,5 +1,5 @@
-import type { Model } from "../types/Model";
-import type { Relationship } from "types/Relationship";
+import type { Model } from '../types/Model';
+import type { Relationship } from 'types/Relationship';
 type VehicleAttributes = {
     registration: string;
     vin: string;
@@ -7,8 +7,6 @@ type VehicleAttributes = {
     colour: string;
 };
 type VehicleRelationships = {
-    manufacturer: Relationship;
-    model: Relationship;
     specification: Relationship;
 };
 export declare class Vehicle implements Model {

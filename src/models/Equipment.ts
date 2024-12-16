@@ -7,7 +7,6 @@ type EquipmentAttributes = {
 };
 
 type EquipmentRelationships = {
-    manufacturer: Relationship;
     model: Relationship;
 };
 
@@ -29,16 +28,10 @@ export class Equipment implements Model {
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
         this.relationships = {
-            manufacturer: {
-                data: {
-                    id: data?.relationships?.manufacturer?.data?.id ?? '',
-                    type: data?.relationships?.manufacturer?.data?.type ?? '',
-                },
-            },
             model: {
                 data: {
                     id: data?.relationships?.model?.data?.id ?? '',
-                    type: data?.relationships?.model?.data?.type ?? '',
+                    type: data?.relationships?.model?.data?.type ?? 'equipment-models',
                 },
             },
         };

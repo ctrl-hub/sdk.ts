@@ -15,7 +15,14 @@ export class VehicleModel {
         };
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
+        this.relationships = {
+            manufacturer: {
+                data: {
+                    id: data?.relationships?.manufacturer?.data?.id ?? '',
+                    type: data?.relationships?.manufacturer?.data?.type ?? 'vehicle-manufacurers',
+                },
+            },
+        };
         this.included = data?.included ?? {};
     }
     static hydrate(data) {

@@ -4,7 +4,6 @@ type EquipmentAttributes = {
     serial: string;
 };
 type EquipmentRelationships = {
-    manufacturer: Relationship;
     model: Relationship;
 };
 export declare class Equipment implements Model {

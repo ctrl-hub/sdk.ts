@@ -19,22 +19,10 @@ export class Vehicle {
         this.meta = data?.meta ?? {};
         this.links = data?.links ?? {};
         this.relationships = {
-            manufacturer: {
-                data: {
-                    id: data?.relationships?.manufacturer?.data?.id ?? '',
-                    type: data?.relationships?.manufacturer?.data?.type ?? '',
-                }
-            },
-            model: {
-                data: {
-                    id: data?.relationships?.model?.data?.id ?? '',
-                    type: data?.relationships?.model?.data?.type ?? '',
-                },
-            },
             specification: {
                 data: {
                     id: data?.relationships?.specification?.data?.id ?? '',
-                    type: data?.relationships?.specification?.data?.type ?? '',
+                    type: data?.relationships?.specification?.data?.type ?? 'vehicle-specifications',
                 },
             },
         };
