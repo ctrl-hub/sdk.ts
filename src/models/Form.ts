@@ -13,7 +13,7 @@ export class Form extends BaseModel {
 
     public name: string = '';
     public description: string = '';
-    public field_mappings: FieldMapping[] = [];
+    public fieldMappings: FieldMapping[] = [];
     public status: string = '';
     public formType: string = '';
 
@@ -23,7 +23,7 @@ export class Form extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
         this.description = data?.attributes?.description ?? '';
-        this.field_mappings = data?.attributes?.field_mappings ?? [];
+        this.fieldMappings = data?.attributes?.field_mappings ?? [];
         this.status = data?.attributes?.status ?? '';
         this.formType = data?.attributes?.type ?? '';
     }
