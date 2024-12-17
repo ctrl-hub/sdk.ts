@@ -10,7 +10,7 @@ export class Vehicle extends BaseModel {
     public description: string = '';
     public colour: string = '';
 
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
             relationships: {

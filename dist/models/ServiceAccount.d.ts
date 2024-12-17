@@ -9,7 +9,7 @@ export declare class ServiceAccount extends BaseModel {
     email?: string;
     enabled?: boolean;
     keys?: ServiceAccountKey[];
-    getApiMapping(): {
+    jsonApiMapping(): {
         attributes: string[];
     };
     static relationships: RelationshipDefinition[];

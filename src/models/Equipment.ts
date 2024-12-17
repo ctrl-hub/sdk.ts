@@ -9,7 +9,7 @@ export class Equipment extends BaseModel {
 
     public model?: EquipmentModel | string = '';
 
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['serial'],
             relationships: {

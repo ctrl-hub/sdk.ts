@@ -34,7 +34,7 @@ describe('JsonApiSerializer', () => {
             expect(payload).toEqual(expectedPayload);
         });
 
-        it('should transform a model whcih does not have getApiMapping', () => {
+        it('should transform a model whcih does not have jsonApiMapping', () => {
             const formCategory = new FormCategory();
             formCategory.name = "Test Category";
 

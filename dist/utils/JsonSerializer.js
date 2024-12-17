@@ -1,7 +1,7 @@
 export class JsonApiSerializer {
     static buildCreatePayload(model) {
-        if ('getApiMapping' in model) {
-            const mapping = model.getApiMapping();
+        if ('jsonApiMapping' in model) {
+            const mapping = model.jsonApiMapping();
             const payload = {
                 data: {
                     type: model.type,

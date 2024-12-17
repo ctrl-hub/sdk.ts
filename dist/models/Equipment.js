@@ -3,7 +3,7 @@ export class Equipment extends BaseModel {
     type = 'equipment-items';
     serial = '';
     model = '';
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['serial'],
             relationships: {

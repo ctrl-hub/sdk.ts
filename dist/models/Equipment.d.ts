@@ -5,7 +5,7 @@ export declare class Equipment extends BaseModel {
     type: string;
     serial: string;
     model?: EquipmentModel | string;
-    getApiMapping(): {
+    jsonApiMapping(): {
         attributes: string[];
         relationships: {
             model: string;

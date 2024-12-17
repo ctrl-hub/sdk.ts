@@ -6,7 +6,7 @@ export class ServiceAccount extends BaseModel {
     email = '';
     enabled = false;
     keys = [];
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['name', 'description'],
         };

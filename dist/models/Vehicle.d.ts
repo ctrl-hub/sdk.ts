@@ -7,7 +7,7 @@ export declare class Vehicle extends BaseModel {
     vin: string;
     description: string;
     colour: string;
-    getApiMapping(): {
+    jsonApiMapping(): {
         attributes: string[];
         relationships: {
             specification: string;

@@ -6,7 +6,7 @@ export class Vehicle extends BaseModel {
     vin = '';
     description = '';
     colour = '';
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
             relationships: {

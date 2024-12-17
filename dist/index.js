@@ -176,7 +176,7 @@ class Equipment extends BaseModel {
   type = "equipment-items";
   serial = "";
   model = "";
-  getApiMapping() {
+  jsonApiMapping() {
     return {
       attributes: ["serial"],
       relationships: {
@@ -301,7 +301,7 @@ class ServiceAccount extends BaseModel {
   email = "";
   enabled = false;
   keys = [];
-  getApiMapping() {
+  jsonApiMapping() {
     return {
       attributes: ["name", "description"]
     };
@@ -367,7 +367,7 @@ class Vehicle extends BaseModel {
   vin = "";
   description = "";
   colour = "";
-  getApiMapping() {
+  jsonApiMapping() {
     return {
       attributes: ["registration", "vin", "description", "colour"],
       relationships: {
@@ -590,8 +590,8 @@ class RequestBuilder {
 // src/utils/JsonSerializer.ts
 class JsonApiSerializer {
   static buildCreatePayload(model) {
-    if ("getApiMapping" in model) {
-      const mapping = model.getApiMapping();
+    if ("jsonApiMapping" in model) {
+      const mapping = model.jsonApiMapping();
       const payload = {
         data: {
           type: model.type,

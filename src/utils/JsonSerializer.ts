@@ -8,8 +8,8 @@ export class JsonApiSerializer {
             relationships?: Record<string, { data: { type: string, id: string } }>;
         }
     } {
-        if ('getApiMapping' in model) {
-            const mapping = (model as any).getApiMapping() as {
+        if ('jsonApiMapping' in model) {
+            const mapping = (model as any).jsonApiMapping() as {
                 attributes?: string[];
                 relationships?: Record<string, string>;
             };

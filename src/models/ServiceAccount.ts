@@ -13,7 +13,7 @@ export class ServiceAccount extends BaseModel {
 
     public keys?: ServiceAccountKey[] = [];
 
-    getApiMapping() {
+    jsonApiMapping() {
         return {
             attributes: ['name', 'description'],
         };
