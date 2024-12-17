@@ -29,7 +29,4 @@ export class Log extends BaseModel {
             status: 0
         };
     }
-    static hydrate(data) {
-        return new Log(data);
-    }
 }

@@ -32,7 +32,4 @@ export class EquipmentModel extends BaseModel {
         this.documentation = data?.attributes?.documentation ?? [];
     }
 
-    static hydrate(data: any): EquipmentModel {
-        return new EquipmentModel(data);
-    }
 }

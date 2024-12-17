@@ -29,7 +29,7 @@ export class Hydrator {
             throw new Error(`No model found for type: ${item.type}`);
         }
 
-        const hydratedItem = ModelClass.hydrate(item) as T;
+        const hydratedItem = new ModelClass(item) as T;
         return this.hydrateRelationships(hydratedItem, included, ModelClass) as T;
     }
 
@@ -63,7 +63,7 @@ export class Hydrator {
         const ModelClass = this.modelRegistry.models[relation.type];
         if (!ModelClass) return includedData;
 
-        const hydratedModel = ModelClass.hydrate(includedData);
+        const hydratedModel = new ModelClass(includedData);
         return this.hydrateRelationships(hydratedModel, included, ModelClass);
     }
 

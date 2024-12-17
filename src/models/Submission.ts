@@ -28,7 +28,4 @@ export class Submission extends BaseModel {
         this.status = data?.attributes?.status ?? '';
     }
 
-    static hydrate(data: any): Submission {
-        return new Submission(data);
-    }
 }

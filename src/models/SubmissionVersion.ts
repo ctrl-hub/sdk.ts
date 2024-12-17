@@ -25,7 +25,4 @@ export class SubmissionVersion extends BaseModel {
         this.content = data?.attributes?.content ?? {};
     }
 
-    static hydrate(data: any): SubmissionVersion {
-        return new SubmissionVersion(data);
-    }
 }

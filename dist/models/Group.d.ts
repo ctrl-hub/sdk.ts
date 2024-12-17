@@ -19,6 +19,5 @@ export declare class Group extends BaseModel {
     bindings: Binding[];
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Group;
 }
 export {};

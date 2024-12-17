@@ -5,5 +5,4 @@ export declare class Permission extends BaseModel {
     description: string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Permission;
 }

@@ -25,7 +25,4 @@ export class Equipment extends BaseModel {
         this.serial = data?.attributes?.serial ?? '';
         this.model = '';
     }
-    static hydrate(data) {
-        return new Equipment(data);
-    }
 }

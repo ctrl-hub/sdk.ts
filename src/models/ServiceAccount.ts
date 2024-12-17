@@ -38,7 +38,4 @@ export class ServiceAccount extends BaseModel {
         this.enabled = data?.attributes?.enabled ?? false;
     }
 
-    static hydrate(data: any): ServiceAccount {
-        return new ServiceAccount(data);
-    }
 }

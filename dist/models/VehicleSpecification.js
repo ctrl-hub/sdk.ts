@@ -28,7 +28,4 @@ export class VehicleSpecification extends BaseModel {
         this.documentation = data?.attributes?.documentation ?? [];
         this.model = new VehicleModel();
     }
-    static hydrate(data) {
-        return new VehicleSpecification(data);
-    }
 }

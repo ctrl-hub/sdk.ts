@@ -27,7 +27,4 @@ export class ServiceAccount extends BaseModel {
         this.email = data?.attributes?.email ?? '';
         this.enabled = data?.attributes?.enabled ?? false;
     }
-    static hydrate(data) {
-        return new ServiceAccount(data);
-    }
 }

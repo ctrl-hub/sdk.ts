@@ -6,5 +6,4 @@ export declare class ServiceAccountKey extends BaseModel {
     enabled: boolean;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): ServiceAccountKey;
 }

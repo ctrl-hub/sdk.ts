@@ -14,5 +14,4 @@ export declare class ServiceAccount extends BaseModel {
     };
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): ServiceAccount;
 }

@@ -3,7 +3,6 @@ import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 
 interface ModelClass<T extends Model> {
     new (...args: any[]): T;
-    hydrate(data: any): T;
     relationships: RelationshipDefinition[];
 }
 

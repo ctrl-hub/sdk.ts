@@ -12,14 +12,14 @@ export class SubmissionsService extends BaseService<Submission> {
     async getVersions(submissionId: string): Promise<InternalResponse<SubmissionVersion[]>> {
         const versionsEndpoint = `${this.endpoint}/${submissionId}/relationships/versions`;
         const resp = await this.client.makeGetRequest(versionsEndpoint);
-        resp.data = resp.data.map((submissionVersion: any) => SubmissionVersion.hydrate(submissionVersion));
+        resp.data = resp.data.map((submissionVersion: any) => new SubmissionVersion(submissionVersion));
         return resp;
     }
 
     async getVersion(submissionId: string, versionId: string): Promise<InternalResponse<SubmissionVersion>> {
         const versionEndpoint = `${this.endpoint}/${submissionId}/relationships/versions/${versionId}`;
         const resp = await this.client.makeGetRequest(versionEndpoint);
-        resp.data = SubmissionVersion.hydrate(resp.data);
+        resp.data = new SubmissionVersion(resp.data);
         return resp;
     }
 }

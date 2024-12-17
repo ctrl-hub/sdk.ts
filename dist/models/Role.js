@@ -17,7 +17,4 @@ export class Role extends BaseModel {
         this.launch_stage = data?.attributes?.launch_stage ?? '';
         this.permissions = data?.attributes?.permissions ?? [];
     }
-    static hydrate(data) {
-        return new Role(data);
-    }
 }

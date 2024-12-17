@@ -13,6 +13,5 @@ export declare class EquipmentModel extends BaseModel {
     manufacturer?: EquipmentManufacturer;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): EquipmentModel;
 }
 export {};

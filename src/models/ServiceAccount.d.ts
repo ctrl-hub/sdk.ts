@@ -13,6 +13,5 @@ export declare class ServiceAccount implements Model {
     relationships?: any;
     links: any;
     constructor();
-    static hydrate(data: any, fullResponseData: any): ServiceAccount;
 }
 export {};

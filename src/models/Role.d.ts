@@ -13,6 +13,5 @@ export declare class Role implements Model {
   meta: any;
   links: any;
   constructor();
-  static hydrate(data: any): Role;
 }
 export {};

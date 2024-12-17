@@ -16,5 +16,4 @@ export declare class Vehicle extends BaseModel {
     specification?: VehicleSpecification | string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Vehicle;
 }

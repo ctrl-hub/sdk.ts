@@ -21,7 +21,7 @@ export class ServiceAccountsService extends BaseService<ServiceAccount> {
     async logs(id: string): Promise<InternalResponse<Log[]>> {
         const logsEndpoint = `${this.endpoint}/${id}/logs`;
         const resp = await this.client.makeGetRequest(logsEndpoint);
-        resp.data = resp.data.map((log: any) => Log.hydrate(log));
+        resp.data = resp.data.map((log: any) => new Log(log));
         return resp;
     }
 

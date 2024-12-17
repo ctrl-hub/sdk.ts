@@ -17,7 +17,4 @@ export class Form extends BaseModel {
         this.status = data?.attributes?.status ?? '';
         this.formType = data?.attributes?.type ?? '';
     }
-    static hydrate(data) {
-        return new Form(data);
-    }
 }

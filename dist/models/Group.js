@@ -13,7 +13,4 @@ export class Group extends BaseModel {
         this.description = data?.attributes?.description ?? '';
         this.bindings = data?.attributes?.bindings ?? [];
     }
-    static hydrate(data) {
-        return new Group(data);
-    }
 }

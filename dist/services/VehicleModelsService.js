@@ -9,7 +9,7 @@ export class VehicleModelsService extends BaseService {
     async specifications(manufacturerId, modelId) {
         const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models/${modelId}/specifications`;
         const resp = await this.client.makeGetRequest(modelsEndpoint);
-        resp.data = resp.data.map((model) => VehicleSpecification.hydrate(model));
+        resp.data = resp.data.map((model) => new VehicleSpecification(model));
         return resp;
     }
 }

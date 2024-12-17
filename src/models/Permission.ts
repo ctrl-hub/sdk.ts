@@ -15,7 +15,4 @@ export class Permission extends BaseModel {
         this.description = data?.attributes?.description ?? '';
     }
 
-    static hydrate(data: any): Permission {
-        return new Permission(data);
-    }
 }

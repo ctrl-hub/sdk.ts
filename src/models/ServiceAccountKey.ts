@@ -18,7 +18,4 @@ export class ServiceAccountKey extends BaseModel {
         this.enabled = data?.attributes?.enabled ?? false;
     }
 
-    static hydrate(data: any): ServiceAccountKey {
-        return new ServiceAccountKey(data);
-    }
 }

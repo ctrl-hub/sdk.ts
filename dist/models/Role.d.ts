@@ -9,5 +9,4 @@ export declare class Role extends BaseModel {
     permissions: string[];
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Role;
 }

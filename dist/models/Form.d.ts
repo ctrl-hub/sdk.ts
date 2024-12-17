@@ -13,6 +13,5 @@ export declare class Form extends BaseModel {
     formType: string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Form;
 }
 export {};

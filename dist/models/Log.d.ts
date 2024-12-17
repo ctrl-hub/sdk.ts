@@ -30,6 +30,5 @@ export declare class Log extends BaseModel {
     response: Response;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Log;
 }
 export {};

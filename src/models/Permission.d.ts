@@ -9,6 +9,5 @@ export declare class Permission implements Model {
   meta: any;
   links: any;
   constructor();
-  static hydrate(data: any): Permission;
 }
 export {};

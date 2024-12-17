@@ -12,7 +12,7 @@ export class VehicleManufacturersService extends BaseService<VehicleManufacturer
     async models(manufacturerId: string): Promise<InternalResponse<VehicleModel[]>> {
         const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models`;
         const resp = await this.client.makeGetRequest(modelsEndpoint);
-        resp.data = resp.data.map((model: any) => VehicleModel.hydrate(model));
+        resp.data = resp.data.map((model: any) => new VehicleModel(model));
         return resp;
     }
 }

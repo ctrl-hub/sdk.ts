@@ -12,7 +12,4 @@ export class ServiceAccountKey extends BaseModel {
         this.client_id = data?.attributes?.client_id ?? '';
         this.enabled = data?.attributes?.enabled ?? false;
     }
-    static hydrate(data) {
-        return new ServiceAccountKey(data);
-    }
 }

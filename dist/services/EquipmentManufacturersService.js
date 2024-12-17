@@ -9,7 +9,7 @@ export class EquipmentManufacturersService extends BaseService {
     async models(id) {
         const modelsEndpoint = `${this.endpoint}/${id}/models`;
         const resp = await this.client.makeGetRequest(modelsEndpoint);
-        resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
+        resp.data = resp.data.map((model) => new EquipmentModel(model));
         return resp;
     }
 }

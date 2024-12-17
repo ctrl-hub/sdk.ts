@@ -32,7 +32,4 @@ export class Vehicle extends BaseModel {
         this.colour = data?.attributes?.colour ?? '';
         this.specification = '';
     }
-    static hydrate(data) {
-        return new Vehicle(data);
-    }
 }

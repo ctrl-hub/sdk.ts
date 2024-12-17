@@ -32,7 +32,4 @@ export class Group extends BaseModel {
         this.bindings = data?.attributes?.bindings ?? [];
     }
 
-    static hydrate(data: any): Group {
-        return new Group(data);
-    }
 }

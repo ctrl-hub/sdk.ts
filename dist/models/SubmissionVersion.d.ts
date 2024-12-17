@@ -10,5 +10,4 @@ export declare class SubmissionVersion extends BaseModel {
     content: object;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): SubmissionVersion;
 }

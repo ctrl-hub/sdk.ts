@@ -23,7 +23,4 @@ export class Role extends BaseModel {
         this.permissions = data?.attributes?.permissions ?? [];
     }
 
-    static hydrate(data: any): Role {
-        return new Role(data);
-    }
 }

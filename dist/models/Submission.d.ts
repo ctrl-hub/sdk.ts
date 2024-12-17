@@ -6,5 +6,4 @@ export declare class Submission extends BaseModel {
     status: string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): Submission;
 }

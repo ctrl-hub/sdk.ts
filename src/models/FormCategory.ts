@@ -15,7 +15,4 @@ export class FormCategory extends BaseModel {
         this.name = data?.attributes?.name ?? '';
     }
 
-    static hydrate(data: any): FormCategory {
-        return new FormCategory(data);
-    }
 }

@@ -18,7 +18,7 @@ export class ServiceAccountsService extends BaseService {
     async logs(id) {
         const logsEndpoint = `${this.endpoint}/${id}/logs`;
         const resp = await this.client.makeGetRequest(logsEndpoint);
-        resp.data = resp.data.map((log) => Log.hydrate(log));
+        resp.data = resp.data.map((log) => new Log(log));
         return resp;
     }
 }

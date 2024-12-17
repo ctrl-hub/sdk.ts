@@ -15,7 +15,4 @@ export class VehicleManufacturer extends BaseModel {
         this.name = data?.attributes?.name ?? '';
     }
 
-    static hydrate(data: any): VehicleManufacturer {
-        return new VehicleManufacturer(data);
-    }
 }

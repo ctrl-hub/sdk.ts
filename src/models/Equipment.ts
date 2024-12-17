@@ -34,7 +34,4 @@ export class Equipment extends BaseModel {
         this.model = '';
     }
 
-    static hydrate(data: any): Equipment {
-        return new Equipment(data);
-    }
 }

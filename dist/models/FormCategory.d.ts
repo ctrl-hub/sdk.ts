@@ -5,5 +5,4 @@ export declare class FormCategory extends BaseModel {
     name: string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
-    static hydrate(data: any): FormCategory;
 }

@@ -21,7 +21,4 @@ export class VehicleModel extends BaseModel {
         this.name = data?.attributes?.name ?? '';
     }
 
-    static hydrate(data: any): VehicleModel {
-        return new VehicleModel(data);
-    }
 }

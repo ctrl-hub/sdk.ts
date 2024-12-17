@@ -22,7 +22,4 @@ export class Submission extends BaseModel {
         this.reference = data?.attributes?.reference ?? '';
         this.status = data?.attributes?.status ?? '';
     }
-    static hydrate(data) {
-        return new Submission(data);
-    }
 }

@@ -18,7 +18,4 @@ export class EquipmentModel extends BaseModel {
         this.name = data?.attributes?.name ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
     }
-    static hydrate(data) {
-        return new EquipmentModel(data);
-    }
 }

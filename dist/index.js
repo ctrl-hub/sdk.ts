@@ -172,7 +172,7 @@ class Hydrator {
     if (!ModelClass) {
       throw new Error(`No model found for type: ${item.type}`);
     }
-    const hydratedItem = ModelClass.hydrate(item);
+    const hydratedItem = new ModelClass(item);
     return this.hydrateRelationships(hydratedItem, included, ModelClass);
   }
   hydrateRelationships(item, included, ModelClass) {
@@ -197,7 +197,7 @@ class Hydrator {
     const ModelClass = this.modelRegistry.models[relation.type];
     if (!ModelClass)
       return includedData;
-    const hydratedModel = ModelClass.hydrate(includedData);
+    const hydratedModel = new ModelClass(includedData);
     return this.hydrateRelationships(hydratedModel, included, ModelClass);
   }
   findMatchingIncluded(relation, included) {
@@ -416,9 +416,6 @@ class SubmissionVersion extends BaseModel {
     this.status = data?.attributes?.status ?? "";
     this.content = data?.attributes?.content ?? {};
   }
-  static hydrate(data) {
-    return new SubmissionVersion(data);
-  }
 }
 SubmissionVersion = __legacyDecorateClassTS([
   RegisterModel
@@ -432,13 +429,13 @@ class SubmissionsService extends BaseService {
   async getVersions(submissionId) {
     const versionsEndpoint = `${this.endpoint}/${submissionId}/relationships/versions`;
     const resp = await this.client.makeGetRequest(versionsEndpoint);
-    resp.data = resp.data.map((submissionVersion) => SubmissionVersion.hydrate(submissionVersion));
+    resp.data = resp.data.map((submissionVersion) => new SubmissionVersion(submissionVersion));
     return resp;
   }
   async getVersion(submissionId, versionId) {
     const versionEndpoint = `${this.endpoint}/${submissionId}/relationships/versions/${versionId}`;
     const resp = await this.client.makeGetRequest(versionEndpoint);
-    resp.data = SubmissionVersion.hydrate(resp.data);
+    resp.data = new SubmissionVersion(resp.data);
     return resp;
   }
 }
@@ -479,9 +476,6 @@ class Log extends BaseModel {
       status: 0
     };
   }
-  static hydrate(data) {
-    return new Log(data);
-  }
 }
 Log = __legacyDecorateClassTS([
   RegisterModel
@@ -503,7 +497,7 @@ class ServiceAccountsService extends BaseService {
   async logs(id) {
     const logsEndpoint = `${this.endpoint}/${id}/logs`;
     const resp = await this.client.makeGetRequest(logsEndpoint);
-    resp.data = resp.data.map((log) => Log.hydrate(log));
+    resp.data = resp.data.map((log) => new Log(log));
     return resp;
   }
 }
@@ -564,9 +558,6 @@ class VehicleModel extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
   }
-  static hydrate(data) {
-    return new VehicleModel(data);
-  }
 }
 VehicleModel = __legacyDecorateClassTS([
   RegisterModel
@@ -580,7 +571,7 @@ class VehicleManufacturersService extends BaseService {
   async models(manufacturerId) {
     const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
-    resp.data = resp.data.map((model) => VehicleModel.hydrate(model));
+    resp.data = resp.data.map((model) => new VehicleModel(model));
     return resp;
   }
 }
@@ -612,9 +603,6 @@ class VehicleSpecification extends BaseModel {
     this.documentation = data?.attributes?.documentation ?? [];
     this.model = new VehicleModel;
   }
-  static hydrate(data) {
-    return new VehicleSpecification(data);
-  }
 }
 VehicleSpecification = __legacyDecorateClassTS([
   RegisterModel
@@ -628,7 +616,7 @@ class VehicleModelsService extends BaseService {
   async specifications(manufacturerId, modelId) {
     const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models/${modelId}/specifications`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
-    resp.data = resp.data.map((model) => VehicleSpecification.hydrate(model));
+    resp.data = resp.data.map((model) => new VehicleSpecification(model));
     return resp;
   }
 }
@@ -651,9 +639,6 @@ class EquipmentModel extends BaseModel {
     this.name = data?.attributes?.name ?? "";
     this.documentation = data?.attributes?.documentation ?? [];
   }
-  static hydrate(data) {
-    return new EquipmentModel(data);
-  }
 }
 EquipmentModel = __legacyDecorateClassTS([
   RegisterModel
@@ -667,7 +652,7 @@ class EquipmentManufacturersService extends BaseService {
   async models(id) {
     const modelsEndpoint = `${this.endpoint}/${id}/models`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
-    resp.data = resp.data.map((model) => EquipmentModel.hydrate(model));
+    resp.data = resp.data.map((model) => new EquipmentModel(model));
     return resp;
   }
 }
@@ -872,9 +857,6 @@ class Equipment extends BaseModel {
     this.serial = data?.attributes?.serial ?? "";
     this.model = "";
   }
-  static hydrate(data) {
-    return new Equipment(data);
-  }
 }
 Equipment = __legacyDecorateClassTS([
   RegisterModel
@@ -887,9 +869,6 @@ class EquipmentManufacturer extends BaseModel {
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
-  }
-  static hydrate(data) {
-    return new EquipmentManufacturer(data);
   }
 }
 EquipmentManufacturer = __legacyDecorateClassTS([
@@ -912,9 +891,6 @@ class Form extends BaseModel {
     this.status = data?.attributes?.status ?? "";
     this.formType = data?.attributes?.type ?? "";
   }
-  static hydrate(data) {
-    return new Form(data);
-  }
 }
 Form = __legacyDecorateClassTS([
   RegisterModel
@@ -927,9 +903,6 @@ class FormCategory extends BaseModel {
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
-  }
-  static hydrate(data) {
-    return new FormCategory(data);
   }
 }
 FormCategory = __legacyDecorateClassTS([
@@ -948,9 +921,6 @@ class Group extends BaseModel {
     this.description = data?.attributes?.description ?? "";
     this.bindings = data?.attributes?.bindings ?? [];
   }
-  static hydrate(data) {
-    return new Group(data);
-  }
 }
 Group = __legacyDecorateClassTS([
   RegisterModel
@@ -963,9 +933,6 @@ class Permission extends BaseModel {
   constructor(data) {
     super(data);
     this.description = data?.attributes?.description ?? "";
-  }
-  static hydrate(data) {
-    return new Permission(data);
   }
 }
 Permission = __legacyDecorateClassTS([
@@ -987,9 +954,6 @@ class Role extends BaseModel {
     this.description = data?.attributes?.description ?? "";
     this.launch_stage = data?.attributes?.launch_stage ?? "";
     this.permissions = data?.attributes?.permissions ?? [];
-  }
-  static hydrate(data) {
-    return new Role(data);
   }
 }
 Role = __legacyDecorateClassTS([
@@ -1022,9 +986,6 @@ class ServiceAccount extends BaseModel {
     this.email = data?.attributes?.email ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
   }
-  static hydrate(data) {
-    return new ServiceAccount(data);
-  }
 }
 ServiceAccount = __legacyDecorateClassTS([
   RegisterModel
@@ -1040,9 +1001,6 @@ class ServiceAccountKey extends BaseModel {
     this.id = data?.id ?? "";
     this.client_id = data?.attributes?.client_id ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
-  }
-  static hydrate(data) {
-    return new ServiceAccountKey(data);
   }
 }
 ServiceAccountKey = __legacyDecorateClassTS([
@@ -1069,9 +1027,6 @@ class Submission extends BaseModel {
     super(data);
     this.reference = data?.attributes?.reference ?? "";
     this.status = data?.attributes?.status ?? "";
-  }
-  static hydrate(data) {
-    return new Submission(data);
   }
 }
 Submission = __legacyDecorateClassTS([
@@ -1108,9 +1063,6 @@ class Vehicle extends BaseModel {
     this.colour = data?.attributes?.colour ?? "";
     this.specification = "";
   }
-  static hydrate(data) {
-    return new Vehicle(data);
-  }
 }
 Vehicle = __legacyDecorateClassTS([
   RegisterModel
@@ -1123,9 +1075,6 @@ class VehicleManufacturer extends BaseModel {
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
-  }
-  static hydrate(data) {
-    return new VehicleManufacturer(data);
   }
 }
 VehicleManufacturer = __legacyDecorateClassTS([
