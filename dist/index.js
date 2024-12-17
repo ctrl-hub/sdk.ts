@@ -1002,6 +1002,7 @@ class ServiceAccount extends BaseModel {
   description = "";
   email = "";
   enabled = false;
+  keys = [];
   getApiMapping() {
     return {
       attributes: ["name", "description"]
@@ -1018,12 +1019,8 @@ class ServiceAccount extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
-    if (data?.attributes?.email) {
-      this.email = data?.attributes?.email;
-    }
-    if (data?.attributes?.enabled) {
-      this.enabled = data?.attributes?.enabled;
-    }
+    this.email = data?.attributes?.email ?? "";
+    this.enabled = data?.attributes?.enabled ?? false;
   }
   static hydrate(data) {
     return new ServiceAccount(data);

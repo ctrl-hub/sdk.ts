@@ -2,7 +2,8 @@ import type { Model } from '../types/Model';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 
 export abstract class BaseModel implements Model {
-    public id?: string = '';
+    public id: string = '';
+
     public type: string = '';
     public meta?: Record<string, any>;
     public links?: Record<string, any>;
