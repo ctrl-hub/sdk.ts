@@ -1,19 +1,12 @@
-import type { Model } from '../types/Model';
-type ServiceAccountAttributes = {
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class ServiceAccount extends BaseModel {
+    type: string;
     name: string;
     description: string;
     email: string;
     enabled: boolean;
-};
-export declare class ServiceAccount implements Model {
-    id: string;
-    type: string;
-    attributes: ServiceAccountAttributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: ServiceAccount);
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): ServiceAccount;
 }
-export {};

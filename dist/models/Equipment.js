@@ -1,29 +1,20 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Equipment {
-    id = '';
+export class Equipment extends BaseModel {
     type = 'equipment-items';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    serial = '';
+    model;
+    static relationships = [
+        {
+            name: 'model',
+            type: 'single',
+            modelType: 'equipment-models'
+        }
+    ];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            serial: data?.attributes?.serial ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = {
-            model: {
-                data: {
-                    id: data?.relationships?.model?.data?.id ?? '',
-                    type: data?.relationships?.model?.data?.type ?? 'equipment-models',
-                },
-            },
-        };
-        this.included = data?.included ?? {};
+        super(data);
+        this.serial = data?.attributes?.serial ?? '';
     }
     static hydrate(data) {
         return new Equipment(data);

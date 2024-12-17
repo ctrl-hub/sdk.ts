@@ -1,16 +1,9 @@
-import type { Model } from '../types/Model';
-type PermissionAttributes = {
-    description: string;
-};
-export declare class Permission implements Model {
-    id: string;
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class Permission extends BaseModel {
     type: string;
-    attributes: PermissionAttributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: Permission);
+    description: string;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): Permission;
 }
-export {};

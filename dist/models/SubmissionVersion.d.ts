@@ -1,21 +1,14 @@
-import type { Model } from '../types/Model';
-type SubmissionVersionAttributes = {
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class SubmissionVersion extends BaseModel {
+    type: string;
     author: string;
     form: string;
     form_version: string;
     reference: string;
     status: string;
     content: object;
-};
-export declare class SubmissionVersion implements Model {
-    id: string;
-    type: string;
-    attributes: SubmissionVersionAttributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: SubmissionVersion);
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): SubmissionVersion;
 }
-export {};

@@ -1,32 +1,27 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { VehicleSpecification } from '@models/VehicleSpecification';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Vehicle {
-    id = '';
+export class Vehicle extends BaseModel {
     type = 'vehicles';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    registration = '';
+    vin = '';
+    description = '';
+    colour = '';
+    specification;
+    static relationships = [
+        {
+            name: 'specification',
+            type: 'single',
+            modelType: 'vehicle-specifications'
+        }
+    ];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            registration: data?.attributes?.registration ?? '',
-            vin: data?.attributes?.vin ?? '',
-            description: data?.attributes?.description ?? '',
-            colour: data?.attributes?.colour ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = {
-            specification: {
-                data: {
-                    id: data?.relationships?.specification?.data?.id ?? '',
-                    type: data?.relationships?.specification?.data?.type ?? 'vehicle-specifications',
-                },
-            },
-        };
-        this.included = data?.included ?? {};
+        super(data);
+        this.registration = data?.attributes?.registration ?? '';
+        this.vin = data?.attributes?.vin ?? '';
+        this.description = data?.attributes?.description ?? '';
+        this.colour = data?.attributes?.colour ?? '';
     }
     static hydrate(data) {
         return new Vehicle(data);

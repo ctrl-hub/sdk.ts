@@ -1,23 +1,16 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class ServiceAccountKey {
-    id = '';
+export class ServiceAccountKey extends BaseModel {
     type = 'service-account-keys';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    client_id = '';
+    enabled = false;
+    static relationships = [];
     constructor(data) {
+        super(data);
         this.id = data?.id ?? '';
-        this.attributes = {
-            client_id: data?.attributes?.client_id ?? '',
-            enabled: data?.attributes?.enabled ?? false,
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        this.client_id = data?.attributes?.client_id ?? '';
+        this.enabled = data?.attributes?.enabled ?? false;
     }
     static hydrate(data) {
         return new ServiceAccountKey(data);

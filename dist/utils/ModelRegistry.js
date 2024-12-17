@@ -15,6 +15,6 @@ export class ModelRegistry {
         return modelClass;
     }
 }
-export function RegisterModel(target) {
-    return ModelRegistry.register(target);
+export function RegisterModel(constructor) {
+    return ModelRegistry.register(constructor);
 }

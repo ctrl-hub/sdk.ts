@@ -1,30 +1,15 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class FormCategory {
-    id = '';
-    type = 'form-categories';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+export class FormCategory extends BaseModel {
+    type = 'form_categories';
+    name = '';
+    static relationships = [];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            name: data?.attributes?.name ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        super(data);
+        this.name = data?.attributes?.name ?? '';
     }
     static hydrate(data) {
-        let formCategory = new FormCategory();
-        if (data) {
-            formCategory.id = data.id;
-            formCategory.attributes.name = data.attributes.name || '';
-            formCategory.meta = data.meta || {};
-        }
-        return formCategory;
+        return new FormCategory(data);
     }
 }

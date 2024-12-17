@@ -1,34 +1,29 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class VehicleSpecification {
-    id = '';
+export class VehicleSpecification extends BaseModel {
     type = 'vehicle-specifications';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    emissions = 0;
+    engine = '';
+    fuel = '';
+    transmission = '';
+    year = 0;
+    documentation = [];
+    static relationships = [
+        {
+            name: 'model',
+            type: 'single',
+            modelType: 'vehicle-models'
+        }
+    ];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            emissions: data?.attributes?.emissions ?? 0,
-            engine: data?.attributes?.engine ?? '',
-            fuel: data?.attributes?.fuel ?? '',
-            transmission: data?.attributes?.transmission ?? '',
-            year: data?.attributes?.year ?? 0,
-            documentation: data?.attributes?.documentation ?? [],
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = {
-            model: {
-                data: {
-                    id: data?.relationships?.model?.data?.id ?? '',
-                    type: data?.relationships?.model?.data?.type ?? 'vehicle-models',
-                },
-            },
-        };
-        this.included = data?.included ?? {};
+        super(data);
+        this.emissions = data?.attributes?.emissions ?? 0;
+        this.engine = data?.attributes?.engine ?? '';
+        this.fuel = data?.attributes?.fuel ?? '';
+        this.transmission = data?.attributes?.transmission ?? '';
+        this.year = data?.attributes?.year ?? 0;
+        this.documentation = data?.attributes?.documentation ?? [];
     }
     static hydrate(data) {
         return new VehicleSpecification(data);

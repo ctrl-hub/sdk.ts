@@ -1,26 +1,21 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Form {
-    id = '';
+export class Form extends BaseModel {
     type = 'forms';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    name = '';
+    description = '';
+    fieldMappings = [];
+    status = '';
+    formType = '';
+    static relationships = [];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            name: data?.attributes?.name ?? '',
-            description: data?.attributes?.description ?? '',
-            field_mappings: data?.attributes?.field_mappings ?? [],
-            status: data?.attributes?.status ?? '',
-            type: data?.attributes?.type ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        super(data);
+        this.name = data?.attributes?.name ?? '';
+        this.description = data?.attributes?.description ?? '';
+        this.fieldMappings = data?.attributes?.field_mappings ?? [];
+        this.status = data?.attributes?.status ?? '';
+        this.formType = data?.attributes?.type ?? '';
     }
     static hydrate(data) {
         return new Form(data);

@@ -1,16 +1,9 @@
-import type { Model } from "../types/Model";
-type VehicleManufacturerAttributes = {
-    name: string;
-};
-export declare class VehicleManufacturer implements Model {
-    id: string;
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class VehicleManufacturer extends BaseModel {
     type: string;
-    attributes: VehicleManufacturerAttributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: VehicleManufacturer);
-    static hydrate(data: VehicleManufacturer): VehicleManufacturer;
+    name: string;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
+    static hydrate(data: any): VehicleManufacturer;
 }
-export {};

@@ -1,17 +1,10 @@
-import type { Model } from '../types/Model';
-type Attributes = {
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class ServiceAccountKey extends BaseModel {
+    type: string;
     client_id: string;
     enabled: boolean;
-};
-export declare class ServiceAccountKey implements Model {
-    id: string;
-    type: string;
-    attributes: Attributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: ServiceAccountKey);
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): ServiceAccountKey;
 }
-export {};

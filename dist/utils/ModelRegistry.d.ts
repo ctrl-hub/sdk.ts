@@ -1,13 +1,15 @@
 import type { Model } from "../types/Model";
-type ModelConstructor<T extends Model = Model> = {
-    new (): T;
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+interface ModelClass<T extends Model> {
+    new (...args: any[]): T;
     hydrate(data: any): T;
-};
+    relationships: RelationshipDefinition[];
+}
 export declare class ModelRegistry {
     private static instance;
-    models: Record<string, ModelConstructor<Model>>;
+    models: Record<string, ModelClass<Model>>;
     static getInstance(): ModelRegistry;
-    static register<T extends Model>(modelClass: ModelConstructor<T>): ModelConstructor<T>;
+    static register<T extends Model>(modelClass: ModelClass<T>): ModelClass<T>;
 }
-export declare function RegisterModel<T extends Model>(target: ModelConstructor<T>): ModelConstructor<T>;
+export declare function RegisterModel<T extends Model>(constructor: ModelClass<T>): ModelClass<T>;
 export {};

@@ -1,23 +1,26 @@
 import { RegisterModel } from '../utils/ModelRegistry';
+import { BaseModel } from '@models/BaseModel';
 @RegisterModel
-export class Submission {
-    id = '';
+export class Submission extends BaseModel {
     type = 'submissions';
-    attributes;
-    meta = {};
-    links = {};
-    relationships;
-    included;
+    reference = '';
+    status = '';
+    static relationships = [
+        {
+            name: 'form',
+            type: 'single',
+            modelType: 'forms'
+        },
+        {
+            name: 'form_version',
+            type: 'single',
+            modelType: 'form-versions'
+        },
+    ];
     constructor(data) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            reference: data?.attributes?.reference ?? '',
-            status: data?.attributes?.status ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        super(data);
+        this.reference = data?.attributes?.reference ?? '';
+        this.status = data?.attributes?.status ?? '';
     }
     static hydrate(data) {
         return new Submission(data);

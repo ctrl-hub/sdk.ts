@@ -1,20 +1,11 @@
-import type { Relationship } from 'types/Relationship';
-import type { Model } from '../types/Model';
-type EquipmentAttributes = {
-    serial: string;
-};
-type EquipmentRelationships = {
-    model: Relationship;
-};
-export declare class Equipment implements Model {
-    id: string;
+import type { EquipmentModel } from './EquipmentModel';
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class Equipment extends BaseModel {
     type: string;
-    attributes: EquipmentAttributes;
-    meta: any;
-    links: any;
-    relationships?: EquipmentRelationships;
-    included?: any;
-    constructor(data?: Equipment);
-    static hydrate(data: Equipment): Equipment;
+    serial: string;
+    model?: EquipmentModel;
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
+    static hydrate(data: any): Equipment;
 }
-export {};

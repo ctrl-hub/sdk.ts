@@ -1,20 +1,13 @@
-import type { Model } from '../types/Model';
-type RoleAttributes = {
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
+export declare class Role extends BaseModel {
+    type: string;
     custom: boolean;
     name: string;
     description: string;
     launch_stage: string;
     permissions: string[];
-};
-export declare class Role implements Model {
-    id: string;
-    type: string;
-    attributes: RoleAttributes;
-    meta: any;
-    links: any;
-    relationships?: any;
-    included?: any;
-    constructor(data?: Role);
+    static relationships: RelationshipDefinition[];
+    constructor(data?: any);
     static hydrate(data: any): Role;
 }
-export {};
