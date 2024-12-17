@@ -1,6 +1,4 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import { BaseModel } from '@models/BaseModel';
-@RegisterModel
 export class ServiceAccountKey extends BaseModel {
     type = 'service-account-keys';
     client_id = '';

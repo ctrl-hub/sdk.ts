@@ -1,4 +1,3 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 
@@ -7,7 +6,6 @@ type FieldMapping = {
     to: string;
 };
 
-@RegisterModel
 export class Form extends BaseModel {
     public type: string = 'forms';
 

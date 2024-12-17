@@ -1,6 +1,4 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import { BaseModel } from '@models/BaseModel';
-@RegisterModel
 export class Permission extends BaseModel {
     type = 'permissions';
     description = '';

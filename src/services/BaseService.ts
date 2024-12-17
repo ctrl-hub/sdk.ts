@@ -1,7 +1,6 @@
 import { Client } from "../Client";
 import type { InternalResponse, JsonData } from '../types/Response';
 import type { RequestOptionsType } from "../utils/RequestOptions";
-import { ModelRegistry } from "../utils/ModelRegistry";
 import { Hydrator } from "../utils/Hydrator";
 import { RequestBuilder } from '../utils/RequestBuilder';
 import type { Model } from '../types/Model';
@@ -9,15 +8,13 @@ import type { Model } from '../types/Model';
 export class BaseService<T extends Model> extends RequestBuilder {
     protected client: Client;
     protected endpoint: string;
-    protected modelRegistry: ModelRegistry;
     protected hydrator: Hydrator;
 
     constructor(client: Client, endpoint: string) {
         super();
         this.client = client;
         this.endpoint = endpoint;
-        this.modelRegistry = ModelRegistry.getInstance();
-        this.hydrator = new Hydrator(this.modelRegistry);
+        this.hydrator = new Hydrator();
     }
 
     // Overloads for get method
@@ -44,44 +41,29 @@ export class BaseService<T extends Model> extends RequestBuilder {
     }
 
     async create(model: Model): Promise<InternalResponse<T>> {
-        let modelType = model.type;
-        let ModelClass = this.modelRegistry.models[modelType];
-        let payload: {
-            data: {
-                type: string;
-                attributes: Record<string, any>;
-                relationships?: Record<string, {
-                    data: {
-                        type: string;
-                        id: string;
-                    }
-                }>;
-            }
-        };
-
-        if ('getApiMapping' in ModelClass.prototype) {
-            const mapping = ModelClass.prototype.getApiMapping() as {
-                attributes: string[];
-                relationships: Record<string, string>;
+        if ('getApiMapping' in model.constructor.prototype) {
+            const mapping = model.constructor.prototype.getApiMapping() as {
+                attributes?: string[];
+                relationships?: Record<string, string>;
             };
 
-            payload = {
+            const payload = {
                 data: {
                     type: model.type,
-                    attributes: {}
+                    attributes: {} as Record<string, any>,
+                    relationships: {} as Record<string, { data: { type: string, id: string } }>
                 }
             };
 
-            mapping.attributes.forEach((attr: string) => {
-                payload.data.attributes[attr] = (model as Record<string, any>)[attr];
+            mapping.attributes?.forEach((attr: string) => {
+                payload.data.attributes[attr] = (model as any)[attr];
             });
 
             if (mapping.relationships) {
-                payload.data.relationships = {};
-                Object.entries(mapping.relationships).forEach(([key, type]: [string, string]) => {
-                    const relationshipValue = (model as Record<string, any>)[key];
+                Object.entries(mapping.relationships).forEach(([key, type]) => {
+                    const relationshipValue = (model as any)[key];
                     if (relationshipValue) {
-                        payload.data.relationships![key] = {
+                        payload.data.relationships[key] = {
                             data: {
                                 type,
                                 id: relationshipValue
@@ -90,17 +72,18 @@ export class BaseService<T extends Model> extends RequestBuilder {
                     }
                 });
             }
-        } else {
-            let {type, id, ...rest} = model;
-            payload = {
-                data: {
-                    type: model.type,
-                    attributes: rest
-                }
-            };
+
+            return await this.client.makePostRequest(this.endpoint, payload);
         }
 
-        return await this.client.makePostRequest(this.endpoint, payload);
+        // default to using all attributes (anything that's not type or id)
+        const {type, id, ...attributes} = model;
+        return await this.client.makePostRequest(this.endpoint, {
+            data: {
+                type: model.type,
+                attributes
+            }
+        });
     }
 
 }

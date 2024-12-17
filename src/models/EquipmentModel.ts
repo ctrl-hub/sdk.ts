@@ -1,4 +1,3 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import type { EquipmentManufacturer } from './EquipmentManufacturer';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
@@ -9,7 +8,6 @@ type EquipmentModelDocumentation = {
     link: string;
 }
 
-@RegisterModel
 export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
 

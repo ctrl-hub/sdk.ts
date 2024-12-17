@@ -1,14 +1,3 @@
-var __legacyDecorateClassTS = function(decorators, target, key, desc) {
-  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-    r = Reflect.decorate(decorators, target, key, desc);
-  else
-    for (var i = decorators.length - 1;i >= 0; i--)
-      if (d = decorators[i])
-        r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
 // src/utils/RequestOptions.ts
 class RequestOptions {
   sort;
@@ -133,34 +122,352 @@ class Requests {
   }
 }
 
-// src/utils/ModelRegistry.ts
-class ModelRegistry {
-  static instance;
-  models = {};
-  static getInstance() {
-    if (!ModelRegistry.instance) {
-      ModelRegistry.instance = new ModelRegistry;
+// src/models/BaseModel.ts
+class BaseModel {
+  id = "";
+  type = "";
+  meta;
+  links;
+  included;
+  _relationships;
+  static relationships = [];
+  constructor(data) {
+    this.id = data?.id ?? "";
+    if (data?.meta && Object.keys(data.meta).length > 0) {
+      this.meta = data.meta;
     }
-    return ModelRegistry.instance;
+    if (data?.links && Object.keys(data.links).length > 0) {
+      this.links = data.links;
+    }
+    if (data?.included && Object.keys(data.included).length > 0) {
+      this.included = data.included;
+    }
+    if (data?.relationships && Object.keys(data.relationships).length > 0) {
+      this._relationships = data.relationships;
+    }
   }
-  static register(modelClass) {
-    const instance = new modelClass;
-    if (instance.type) {
-      ModelRegistry.getInstance().models[instance.type] = modelClass;
+  toJSON() {
+    const obj = {};
+    if (this.id)
+      obj.id = this.id;
+    if (this.type)
+      obj.type = this.type;
+    if (this.meta)
+      obj.meta = this.meta;
+    if (this.links)
+      obj.links = this.links;
+    for (const [key, value] of Object.entries(this)) {
+      if (["id", "type", "meta", "links", "included", "_relationships"].includes(key)) {
+        continue;
+      }
+      if (value !== null && value !== undefined) {
+        if (typeof value === "object" && Object.keys(value).length === 0) {
+          continue;
+        }
+        obj[key] = value;
+      }
     }
-    return modelClass;
+    return obj;
   }
 }
-function RegisterModel(constructor) {
-  return ModelRegistry.register(constructor);
+
+// src/models/Equipment.ts
+class Equipment extends BaseModel {
+  type = "equipment-items";
+  serial = "";
+  model = "";
+  getApiMapping() {
+    return {
+      attributes: ["serial"],
+      relationships: {
+        model: "equipment-models"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "model",
+      type: "single",
+      modelType: "equipment-models"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.serial = data?.attributes?.serial ?? "";
+    this.model = "";
+  }
+}
+
+// src/models/EquipmentModel.ts
+class EquipmentModel extends BaseModel {
+  type = "equipment-models";
+  name = "";
+  documentation = [];
+  manufacturer;
+  static relationships = [
+    {
+      name: "manufacturer",
+      type: "single",
+      modelType: "equipment-manufacturers"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+    this.documentation = data?.attributes?.documentation ?? [];
+  }
+}
+
+// src/models/Form.ts
+class Form extends BaseModel {
+  type = "forms";
+  name = "";
+  description = "";
+  fieldMappings = [];
+  status = "";
+  formType = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.fieldMappings = data?.attributes?.field_mappings ?? [];
+    this.status = data?.attributes?.status ?? "";
+    this.formType = data?.attributes?.type ?? "";
+  }
+}
+
+// src/models/FormCategory.ts
+class FormCategory extends BaseModel {
+  type = "form_categories";
+  name = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
+// src/models/Group.ts
+class Group extends BaseModel {
+  type = "groups";
+  name = "";
+  description = "";
+  bindings = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.bindings = data?.attributes?.bindings ?? [];
+  }
+}
+
+// src/models/Permission.ts
+class Permission extends BaseModel {
+  type = "permissions";
+  description = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.description = data?.attributes?.description ?? "";
+  }
+}
+
+// src/models/Role.ts
+class Role extends BaseModel {
+  type = "roles";
+  custom = false;
+  name = "";
+  description = "";
+  launch_stage = "";
+  permissions = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.custom = data?.attributes?.custom ?? false;
+    this.name = data?.attributes?.name ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.launch_stage = data?.attributes?.launch_stage ?? "";
+    this.permissions = data?.attributes?.permissions ?? [];
+  }
+}
+
+// src/models/ServiceAccount.ts
+class ServiceAccount extends BaseModel {
+  type = "service-accounts";
+  name = "";
+  description = "";
+  email = "";
+  enabled = false;
+  keys = [];
+  getApiMapping() {
+    return {
+      attributes: ["name", "description"]
+    };
+  }
+  static relationships = [
+    {
+      name: "keys",
+      type: "array",
+      modelType: "service-account-keys"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.email = data?.attributes?.email ?? "";
+    this.enabled = data?.attributes?.enabled ?? false;
+  }
+}
+
+// src/models/ServiceAccountKey.ts
+class ServiceAccountKey extends BaseModel {
+  type = "service-account-keys";
+  client_id = "";
+  enabled = false;
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.id = data?.id ?? "";
+    this.client_id = data?.attributes?.client_id ?? "";
+    this.enabled = data?.attributes?.enabled ?? false;
+  }
+}
+
+// src/models/Submission.ts
+class Submission extends BaseModel {
+  type = "submissions";
+  reference = "";
+  status = "";
+  static relationships = [
+    {
+      name: "form",
+      type: "single",
+      modelType: "forms"
+    },
+    {
+      name: "form_version",
+      type: "single",
+      modelType: "form-versions"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.reference = data?.attributes?.reference ?? "";
+    this.status = data?.attributes?.status ?? "";
+  }
+}
+
+// src/models/Vehicle.ts
+class Vehicle extends BaseModel {
+  type = "vehicles";
+  registration = "";
+  vin = "";
+  description = "";
+  colour = "";
+  getApiMapping() {
+    return {
+      attributes: ["registration", "vin", "description", "colour"],
+      relationships: {
+        specification: "vehicle-specifications"
+      }
+    };
+  }
+  specification = "";
+  static relationships = [
+    {
+      name: "specification",
+      type: "single",
+      modelType: "vehicle-specifications"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.registration = data?.attributes?.registration ?? "";
+    this.vin = data?.attributes?.vin ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.colour = data?.attributes?.colour ?? "";
+    this.specification = "";
+  }
+}
+
+// src/models/VehicleModel.ts
+class VehicleModel extends BaseModel {
+  type = "vehicle-models";
+  name = "";
+  static relationships = [
+    {
+      name: "manufacturer",
+      type: "single",
+      modelType: "vehicle-manufacturers"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
+// src/models/VehicleManufacturer.ts
+class VehicleManufacturer extends BaseModel {
+  type = "vehicle-manufacturers";
+  name = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
+// src/models/VehicleSpecification.ts
+class VehicleSpecification extends BaseModel {
+  type = "vehicle-specifications";
+  emissions = 0;
+  engine = "";
+  fuel = "";
+  transmission = "";
+  year = 0;
+  documentation = [];
+  model;
+  static relationships = [
+    {
+      name: "model",
+      type: "single",
+      modelType: "vehicle-models"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.emissions = data?.attributes?.emissions ?? 0;
+    this.engine = data?.attributes?.engine ?? "";
+    this.fuel = data?.attributes?.fuel ?? "";
+    this.transmission = data?.attributes?.transmission ?? "";
+    this.year = data?.attributes?.year ?? 0;
+    this.documentation = data?.attributes?.documentation ?? [];
+    this.model = new VehicleModel;
+  }
 }
 
 // src/utils/Hydrator.ts
 class Hydrator {
-  modelRegistry;
-  constructor(modelRegistry) {
-    this.modelRegistry = modelRegistry;
-  }
+  modelMap = {
+    "equipment-items": Equipment,
+    "equipment-models": EquipmentModel,
+    forms: Form,
+    form_categories: FormCategory,
+    groups: Group,
+    permissions: Permission,
+    roles: Role,
+    "service-accounts": ServiceAccount,
+    "service-account-keys": ServiceAccountKey,
+    submissions: Submission,
+    vehicles: Vehicle,
+    "vehicle-models": VehicleModel,
+    "vehicle-manufacturers": VehicleManufacturer,
+    "vehicle-specifications": VehicleSpecification
+  };
   hydrateResponse(data, included) {
     return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
   }
@@ -168,40 +475,45 @@ class Hydrator {
     return items.map((item) => this.hydrateSingle(item, included));
   }
   hydrateSingle(item, included) {
-    const ModelClass = this.modelRegistry.models[item.type];
+    const ModelClass = this.modelMap[item.type];
     if (!ModelClass) {
       throw new Error(`No model found for type: ${item.type}`);
     }
-    const hydratedItem = new ModelClass(item);
-    return this.hydrateRelationships(hydratedItem, included, ModelClass);
-  }
-  hydrateRelationships(item, included, ModelClass) {
-    if (!ModelClass.relationships)
-      return item;
-    ModelClass.relationships.forEach((relationDef) => {
-      const relationData = item._relationships?.[relationDef.name]?.data;
-      if (!relationData)
-        return;
-      if (relationDef.type === "array") {
-        item[relationDef.name] = Array.isArray(relationData) ? relationData.map((relation) => this.hydrateRelation(relation, included)) : [];
-      } else {
-        item[relationDef.name] = this.hydrateRelation(relationData, included);
-      }
+    const model = new ModelClass({
+      id: item.id,
+      type: item.type,
+      meta: item.meta,
+      links: item.links,
+      attributes: item.attributes,
+      relationships: item.relationships
     });
-    return item;
+    if (item.relationships) {
+      this.hydrateRelationships(model, item.relationships, included, ModelClass);
+    }
+    return model;
   }
-  hydrateRelation(relation, included) {
-    const includedData = this.findMatchingIncluded(relation, included);
+  hydrateRelationships(model, relationships, included, ModelClass) {
+    if (!("relationships" in ModelClass))
+      return;
+    const relationshipDefs = ModelClass.relationships;
+    if (!relationshipDefs)
+      return;
+    for (const relationDef of relationshipDefs) {
+      const relationData = relationships[relationDef.name]?.data;
+      if (!relationData)
+        continue;
+      if (relationDef.type === "array") {
+        model[relationDef.name] = Array.isArray(relationData) ? relationData.map((relation) => this.findAndHydrateIncluded(relation, included)) : [];
+      } else {
+        model[relationDef.name] = this.findAndHydrateIncluded(relationData, included);
+      }
+    }
+  }
+  findAndHydrateIncluded(relation, included) {
+    const includedData = included.find((inc) => inc.id === relation.id && inc.type === relation.type);
     if (!includedData)
-      return relation;
-    const ModelClass = this.modelRegistry.models[relation.type];
-    if (!ModelClass)
-      return includedData;
-    const hydratedModel = new ModelClass(includedData);
-    return this.hydrateRelationships(hydratedModel, included, ModelClass);
-  }
-  findMatchingIncluded(relation, included) {
-    return included?.find((inc) => inc.id === relation.id && inc.type === relation.type);
+      return null;
+    return this.hydrateSingle(includedData, included);
   }
 }
 
@@ -267,14 +579,12 @@ class RequestBuilder {
 class BaseService extends RequestBuilder {
   client;
   endpoint;
-  modelRegistry;
   hydrator;
   constructor(client, endpoint) {
     super();
     this.client = client;
     this.endpoint = endpoint;
-    this.modelRegistry = ModelRegistry.getInstance();
-    this.hydrator = new Hydrator(this.modelRegistry);
+    this.hydrator = new Hydrator;
   }
   async get(param, options) {
     const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
@@ -286,44 +596,40 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model) {
-    let modelType = model.type;
-    let ModelClass = this.modelRegistry.models[modelType];
-    let payload;
-    if ("getApiMapping" in ModelClass.prototype) {
-      const mapping = ModelClass.prototype.getApiMapping();
-      payload = {
+    if ("getApiMapping" in model.constructor.prototype) {
+      const mapping = model.constructor.prototype.getApiMapping();
+      const payload = {
         data: {
           type: model.type,
-          attributes: {}
+          attributes: {},
+          relationships: {}
         }
       };
-      mapping.attributes.forEach((attr) => {
+      mapping.attributes?.forEach((attr) => {
         payload.data.attributes[attr] = model[attr];
       });
       if (mapping.relationships) {
-        payload.data.relationships = {};
-        Object.entries(mapping.relationships).forEach(([key, type]) => {
+        Object.entries(mapping.relationships).forEach(([key, type2]) => {
           const relationshipValue = model[key];
           if (relationshipValue) {
             payload.data.relationships[key] = {
               data: {
-                type,
+                type: type2,
                 id: relationshipValue
               }
             };
           }
         });
       }
-    } else {
-      let { type, id, ...rest } = model;
-      payload = {
-        data: {
-          type: model.type,
-          attributes: rest
-        }
-      };
+      return await this.client.makePostRequest(this.endpoint, payload);
     }
-    return await this.client.makePostRequest(this.endpoint, payload);
+    const { type, id, ...attributes } = model;
+    return await this.client.makePostRequest(this.endpoint, {
+      data: {
+        type: model.type,
+        attributes
+      }
+    });
   }
 }
 
@@ -348,55 +654,6 @@ class PermissionsService extends BaseService {
   }
 }
 
-// src/models/BaseModel.ts
-class BaseModel {
-  id = "";
-  type = "";
-  meta;
-  links;
-  included;
-  _relationships;
-  static relationships = [];
-  constructor(data) {
-    this.id = data?.id ?? "";
-    if (data?.meta && Object.keys(data.meta).length > 0) {
-      this.meta = data.meta;
-    }
-    if (data?.links && Object.keys(data.links).length > 0) {
-      this.links = data.links;
-    }
-    if (data?.included && Object.keys(data.included).length > 0) {
-      this.included = data.included;
-    }
-    if (data?.relationships && Object.keys(data.relationships).length > 0) {
-      this._relationships = data.relationships;
-    }
-  }
-  toJSON() {
-    const obj = {};
-    if (this.id)
-      obj.id = this.id;
-    if (this.type)
-      obj.type = this.type;
-    if (this.meta)
-      obj.meta = this.meta;
-    if (this.links)
-      obj.links = this.links;
-    for (const [key, value] of Object.entries(this)) {
-      if (["id", "type", "meta", "links", "included", "_relationships"].includes(key)) {
-        continue;
-      }
-      if (value !== null && value !== undefined) {
-        if (typeof value === "object" && Object.keys(value).length === 0) {
-          continue;
-        }
-        obj[key] = value;
-      }
-    }
-    return obj;
-  }
-}
-
 // src/models/SubmissionVersion.ts
 class SubmissionVersion extends BaseModel {
   type = "submission-versions";
@@ -417,9 +674,6 @@ class SubmissionVersion extends BaseModel {
     this.content = data?.attributes?.content ?? {};
   }
 }
-SubmissionVersion = __legacyDecorateClassTS([
-  RegisterModel
-], SubmissionVersion);
 
 // src/services/SubmissionsService.ts
 class SubmissionsService extends BaseService {
@@ -477,9 +731,6 @@ class Log extends BaseModel {
     };
   }
 }
-Log = __legacyDecorateClassTS([
-  RegisterModel
-], Log);
 
 // src/services/ServiceAccountService.ts
 class ServiceAccountsService extends BaseService {
@@ -543,26 +794,6 @@ class EquipmentService extends BaseService {
   }
 }
 
-// src/models/VehicleModel.ts
-class VehicleModel extends BaseModel {
-  type = "vehicle-models";
-  name = "";
-  static relationships = [
-    {
-      name: "manufacturer",
-      type: "single",
-      modelType: "vehicle-manufacturers"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-  }
-}
-VehicleModel = __legacyDecorateClassTS([
-  RegisterModel
-], VehicleModel);
-
 // src/services/VehicleManufacturersService.ts
 class VehicleManufacturersService extends BaseService {
   constructor(client) {
@@ -576,38 +807,6 @@ class VehicleManufacturersService extends BaseService {
   }
 }
 
-// src/models/VehicleSpecification.ts
-class VehicleSpecification extends BaseModel {
-  type = "vehicle-specifications";
-  emissions = 0;
-  engine = "";
-  fuel = "";
-  transmission = "";
-  year = 0;
-  documentation = [];
-  model;
-  static relationships = [
-    {
-      name: "model",
-      type: "single",
-      modelType: "vehicle-models"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.emissions = data?.attributes?.emissions ?? 0;
-    this.engine = data?.attributes?.engine ?? "";
-    this.fuel = data?.attributes?.fuel ?? "";
-    this.transmission = data?.attributes?.transmission ?? "";
-    this.year = data?.attributes?.year ?? 0;
-    this.documentation = data?.attributes?.documentation ?? [];
-    this.model = new VehicleModel;
-  }
-}
-VehicleSpecification = __legacyDecorateClassTS([
-  RegisterModel
-], VehicleSpecification);
-
 // src/services/VehicleModelsService.ts
 class VehicleModelsService extends BaseService {
   constructor(client) {
@@ -620,29 +819,6 @@ class VehicleModelsService extends BaseService {
     return resp;
   }
 }
-
-// src/models/EquipmentModel.ts
-class EquipmentModel extends BaseModel {
-  type = "equipment-models";
-  name = "";
-  documentation = [];
-  manufacturer;
-  static relationships = [
-    {
-      name: "manufacturer",
-      type: "single",
-      modelType: "equipment-manufacturers"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-    this.documentation = data?.attributes?.documentation ?? [];
-  }
-}
-EquipmentModel = __legacyDecorateClassTS([
-  RegisterModel
-], EquipmentModel);
 
 // src/services/EquipmentManufacturersService.ts
 class EquipmentManufacturersService extends BaseService {
@@ -832,35 +1008,6 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
-// src/models/Equipment.ts
-class Equipment extends BaseModel {
-  type = "equipment-items";
-  serial = "";
-  model = "";
-  getApiMapping() {
-    return {
-      attributes: ["serial"],
-      relationships: {
-        model: "equipment-models"
-      }
-    };
-  }
-  static relationships = [
-    {
-      name: "model",
-      type: "single",
-      modelType: "equipment-models"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.serial = data?.attributes?.serial ?? "";
-    this.model = "";
-  }
-}
-Equipment = __legacyDecorateClassTS([
-  RegisterModel
-], Equipment);
 // src/models/EquipmentManufacturer.ts
 class EquipmentManufacturer extends BaseModel {
   type = "equipment-manufacturers";
@@ -871,215 +1018,6 @@ class EquipmentManufacturer extends BaseModel {
     this.name = data?.attributes?.name ?? "";
   }
 }
-EquipmentManufacturer = __legacyDecorateClassTS([
-  RegisterModel
-], EquipmentManufacturer);
-// src/models/Form.ts
-class Form extends BaseModel {
-  type = "forms";
-  name = "";
-  description = "";
-  fieldMappings = [];
-  status = "";
-  formType = "";
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.fieldMappings = data?.attributes?.field_mappings ?? [];
-    this.status = data?.attributes?.status ?? "";
-    this.formType = data?.attributes?.type ?? "";
-  }
-}
-Form = __legacyDecorateClassTS([
-  RegisterModel
-], Form);
-// src/models/FormCategory.ts
-class FormCategory extends BaseModel {
-  type = "form_categories";
-  name = "";
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-  }
-}
-FormCategory = __legacyDecorateClassTS([
-  RegisterModel
-], FormCategory);
-// src/models/Group.ts
-class Group extends BaseModel {
-  type = "groups";
-  name = "";
-  description = "";
-  bindings = [];
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.bindings = data?.attributes?.bindings ?? [];
-  }
-}
-Group = __legacyDecorateClassTS([
-  RegisterModel
-], Group);
-// src/models/Permission.ts
-class Permission extends BaseModel {
-  type = "permissions";
-  description = "";
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.description = data?.attributes?.description ?? "";
-  }
-}
-Permission = __legacyDecorateClassTS([
-  RegisterModel
-], Permission);
-// src/models/Role.ts
-class Role extends BaseModel {
-  type = "roles";
-  custom = false;
-  name = "";
-  description = "";
-  launch_stage = "";
-  permissions = [];
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.custom = data?.attributes?.custom ?? false;
-    this.name = data?.attributes?.name ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.launch_stage = data?.attributes?.launch_stage ?? "";
-    this.permissions = data?.attributes?.permissions ?? [];
-  }
-}
-Role = __legacyDecorateClassTS([
-  RegisterModel
-], Role);
-// src/models/ServiceAccount.ts
-class ServiceAccount extends BaseModel {
-  type = "service-accounts";
-  name = "";
-  description = "";
-  email = "";
-  enabled = false;
-  keys = [];
-  getApiMapping() {
-    return {
-      attributes: ["name", "description"]
-    };
-  }
-  static relationships = [
-    {
-      name: "keys",
-      type: "array",
-      modelType: "service-account-keys"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.email = data?.attributes?.email ?? "";
-    this.enabled = data?.attributes?.enabled ?? false;
-  }
-}
-ServiceAccount = __legacyDecorateClassTS([
-  RegisterModel
-], ServiceAccount);
-// src/models/ServiceAccountKey.ts
-class ServiceAccountKey extends BaseModel {
-  type = "service-account-keys";
-  client_id = "";
-  enabled = false;
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.id = data?.id ?? "";
-    this.client_id = data?.attributes?.client_id ?? "";
-    this.enabled = data?.attributes?.enabled ?? false;
-  }
-}
-ServiceAccountKey = __legacyDecorateClassTS([
-  RegisterModel
-], ServiceAccountKey);
-// src/models/Submission.ts
-class Submission extends BaseModel {
-  type = "submissions";
-  reference = "";
-  status = "";
-  static relationships = [
-    {
-      name: "form",
-      type: "single",
-      modelType: "forms"
-    },
-    {
-      name: "form_version",
-      type: "single",
-      modelType: "form-versions"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.reference = data?.attributes?.reference ?? "";
-    this.status = data?.attributes?.status ?? "";
-  }
-}
-Submission = __legacyDecorateClassTS([
-  RegisterModel
-], Submission);
-// src/models/Vehicle.ts
-class Vehicle extends BaseModel {
-  type = "vehicles";
-  registration = "";
-  vin = "";
-  description = "";
-  colour = "";
-  getApiMapping() {
-    return {
-      attributes: ["registration", "vin", "description", "colour"],
-      relationships: {
-        specification: "vehicle-specifications"
-      }
-    };
-  }
-  specification = "";
-  static relationships = [
-    {
-      name: "specification",
-      type: "single",
-      modelType: "vehicle-specifications"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.registration = data?.attributes?.registration ?? "";
-    this.vin = data?.attributes?.vin ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.colour = data?.attributes?.colour ?? "";
-    this.specification = "";
-  }
-}
-Vehicle = __legacyDecorateClassTS([
-  RegisterModel
-], Vehicle);
-// src/models/VehicleManufacturer.ts
-class VehicleManufacturer extends BaseModel {
-  type = "vehicle-manufacturers";
-  name = "";
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? "";
-  }
-}
-VehicleManufacturer = __legacyDecorateClassTS([
-  RegisterModel
-], VehicleManufacturer);
 export {
   VehicleModel,
   VehicleManufacturer,

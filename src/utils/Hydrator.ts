@@ -1,17 +1,38 @@
-import { ModelRegistry } from './ModelRegistry';
 import type { JsonData } from '../types/Response';
 import type { Model } from '../types/Model';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import type { ModelConstructor } from '../types/ModelConstructor';
-
-interface RelationData {
-    id: string;
-    type: string;
-    [key: string]: any;
-}
+import { Equipment } from '@models/Equipment';
+import { EquipmentModel } from '@models/EquipmentModel';
+import { Form } from '@models/Form';
+import { FormCategory } from '@models/FormCategory';
+import { Group } from '@models/Group';
+import { Permission } from '@models/Permission';
+import { Role } from '@models/Role';
+import { ServiceAccount } from '@models/ServiceAccount';
+import { ServiceAccountKey } from '@models/ServiceAccountKey';
+import { Submission } from '@models/Submission';
+import { Vehicle } from '@models/Vehicle';
+import { VehicleModel } from '@models/VehicleModel';
+import { VehicleManufacturer } from '@models/VehicleManufacturer';
+import { VehicleSpecification } from '@models/VehicleSpecification';
 
 export class Hydrator {
-    constructor(private modelRegistry: ModelRegistry) {}
+    private modelMap: Record<string, new (data?: any) => Model> = {
+        'equipment-items': Equipment,
+        'equipment-models': EquipmentModel,
+        'forms': Form,
+        'form_categories': FormCategory,
+        'groups': Group,
+        'permissions': Permission,
+        'roles': Role,
+        'service-accounts': ServiceAccount,
+        'service-account-keys': ServiceAccountKey,
+        'submissions': Submission,
+        'vehicles': Vehicle,
+        'vehicle-models': VehicleModel,
+        'vehicle-manufacturers': VehicleManufacturer,
+        'vehicle-specifications': VehicleSpecification
+    };
 
     hydrateResponse<T extends Model>(data: JsonData | JsonData[], included: any[]): T | T[] {
         return Array.isArray(data)
@@ -24,50 +45,59 @@ export class Hydrator {
     }
 
     private hydrateSingle<T extends Model>(item: JsonData, included: any[]): T {
-        const ModelClass = this.modelRegistry.models[item.type];
+        const ModelClass = this.modelMap[item.type];
         if (!ModelClass) {
             throw new Error(`No model found for type: ${item.type}`);
         }
 
-        const hydratedItem = new ModelClass(item) as T;
-        return this.hydrateRelationships(hydratedItem, included, ModelClass) as T;
+        const model = new ModelClass({
+            id: item.id,
+            type: item.type,
+            meta: item.meta,
+            links: item.links,
+            attributes: item.attributes,
+            relationships: item.relationships
+        }) as T;
+
+        if (item.relationships) {
+            this.hydrateRelationships(model, item.relationships, included, ModelClass);
+        }
+
+        return model;
     }
 
-    private hydrateRelationships<T extends Model>(
-        item: T,
+    private hydrateRelationships(
+        model: Model,
+        relationships: Record<string, any>,
         included: any[],
-        ModelClass: ModelConstructor<T>
-    ): T {
-        if (!ModelClass.relationships) return item;
+        ModelClass: new (data?: any) => Model
+    ): void {
+        if (!('relationships' in ModelClass)) return;
 
-        ModelClass.relationships.forEach((relationDef: RelationshipDefinition) => {
-            const relationData = item._relationships?.[relationDef.name]?.data;
-            if (!relationData) return;
+        const relationshipDefs = (ModelClass as any).relationships as RelationshipDefinition[];
+        if (!relationshipDefs) return;
+
+        for (const relationDef of relationshipDefs) {
+            const relationData = relationships[relationDef.name]?.data;
+            if (!relationData) continue;
 
             if (relationDef.type === 'array') {
-                (item as any)[relationDef.name] = Array.isArray(relationData)
-                    ? relationData.map(relation => this.hydrateRelation(relation, included))
+                (model as any)[relationDef.name] = Array.isArray(relationData)
+                    ? relationData.map(relation => this.findAndHydrateIncluded(relation, included))
                     : [];
             } else {
-                (item as any)[relationDef.name] = this.hydrateRelation(relationData, included);
+                (model as any)[relationDef.name] = this.findAndHydrateIncluded(relationData, included);
             }
-        });
-
-        return item;
+        }
     }
 
-    private hydrateRelation(relation: RelationData, included: any[]) {
-        const includedData = this.findMatchingIncluded(relation, included);
-        if (!includedData) return relation;
+    private findAndHydrateIncluded(relation: { id: string, type: string }, included: any[]): Model | null {
+        const includedData = included.find(inc =>
+            inc.id === relation.id && inc.type === relation.type
+        );
 
-        const ModelClass = this.modelRegistry.models[relation.type];
-        if (!ModelClass) return includedData;
+        if (!includedData) return null;
 
-        const hydratedModel = new ModelClass(includedData);
-        return this.hydrateRelationships(hydratedModel, included, ModelClass);
-    }
-
-    private findMatchingIncluded(relation: RelationData, included: any[]) {
-        return included?.find(inc => inc.id === relation.id && inc.type === relation.type);
+        return this.hydrateSingle(includedData, included);
     }
 }

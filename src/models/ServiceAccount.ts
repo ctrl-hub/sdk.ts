@@ -1,9 +1,7 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 import type { ServiceAccountKey } from '@models/ServiceAccountKey';
 
-@RegisterModel
 export class ServiceAccount extends BaseModel {
     declare public id: string;
     public type: string = 'service-accounts';

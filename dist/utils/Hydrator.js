@@ -1,9 +1,34 @@
-import { ModelRegistry } from './ModelRegistry';
+import { Equipment } from '@models/Equipment';
+import { EquipmentModel } from '@models/EquipmentModel';
+import { Form } from '@models/Form';
+import { FormCategory } from '@models/FormCategory';
+import { Group } from '@models/Group';
+import { Permission } from '@models/Permission';
+import { Role } from '@models/Role';
+import { ServiceAccount } from '@models/ServiceAccount';
+import { ServiceAccountKey } from '@models/ServiceAccountKey';
+import { Submission } from '@models/Submission';
+import { Vehicle } from '@models/Vehicle';
+import { VehicleModel } from '@models/VehicleModel';
+import { VehicleManufacturer } from '@models/VehicleManufacturer';
+import { VehicleSpecification } from '@models/VehicleSpecification';
 export class Hydrator {
-    modelRegistry;
-    constructor(modelRegistry) {
-        this.modelRegistry = modelRegistry;
-    }
+    modelMap = {
+        'equipment-items': Equipment,
+        'equipment-models': EquipmentModel,
+        'forms': Form,
+        'form_categories': FormCategory,
+        'groups': Group,
+        'permissions': Permission,
+        'roles': Role,
+        'service-accounts': ServiceAccount,
+        'service-account-keys': ServiceAccountKey,
+        'submissions': Submission,
+        'vehicles': Vehicle,
+        'vehicle-models': VehicleModel,
+        'vehicle-manufacturers': VehicleManufacturer,
+        'vehicle-specifications': VehicleSpecification
+    };
     hydrateResponse(data, included) {
         return Array.isArray(data)
             ? this.hydrateArray(data, included)
@@ -13,42 +38,47 @@ export class Hydrator {
         return items.map(item => this.hydrateSingle(item, included));
     }
     hydrateSingle(item, included) {
-        const ModelClass = this.modelRegistry.models[item.type];
+        const ModelClass = this.modelMap[item.type];
         if (!ModelClass) {
             throw new Error(`No model found for type: ${item.type}`);
         }
-        const hydratedItem = new ModelClass(item);
-        return this.hydrateRelationships(hydratedItem, included, ModelClass);
+        const model = new ModelClass({
+            id: item.id,
+            type: item.type,
+            meta: item.meta,
+            links: item.links,
+            attributes: item.attributes,
+            relationships: item.relationships
+        });
+        if (item.relationships) {
+            this.hydrateRelationships(model, item.relationships, included, ModelClass);
+        }
+        return model;
     }
-    hydrateRelationships(item, included, ModelClass) {
-        if (!ModelClass.relationships)
-            return item;
-        ModelClass.relationships.forEach((relationDef) => {
-            const relationData = item._relationships?.[relationDef.name]?.data;
+    hydrateRelationships(model, relationships, included, ModelClass) {
+        if (!('relationships' in ModelClass))
+            return;
+        const relationshipDefs = ModelClass.relationships;
+        if (!relationshipDefs)
+            return;
+        for (const relationDef of relationshipDefs) {
+            const relationData = relationships[relationDef.name]?.data;
             if (!relationData)
-                return;
+                continue;
             if (relationDef.type === 'array') {
-                item[relationDef.name] = Array.isArray(relationData)
-                    ? relationData.map(relation => this.hydrateRelation(relation, included))
+                model[relationDef.name] = Array.isArray(relationData)
+                    ? relationData.map(relation => this.findAndHydrateIncluded(relation, included))
                     : [];
             }
             else {
-                item[relationDef.name] = this.hydrateRelation(relationData, included);
+                model[relationDef.name] = this.findAndHydrateIncluded(relationData, included);
             }
-        });
-        return item;
+        }
     }
-    hydrateRelation(relation, included) {
-        const includedData = this.findMatchingIncluded(relation, included);
+    findAndHydrateIncluded(relation, included) {
+        const includedData = included.find(inc => inc.id === relation.id && inc.type === relation.type);
         if (!includedData)
-            return relation;
-        const ModelClass = this.modelRegistry.models[relation.type];
-        if (!ModelClass)
-            return includedData;
-        const hydratedModel = new ModelClass(includedData);
-        return this.hydrateRelationships(hydratedModel, included, ModelClass);
-    }
-    findMatchingIncluded(relation, included) {
-        return included?.find(inc => inc.id === relation.id && inc.type === relation.type);
+            return null;
+        return this.hydrateSingle(includedData, included);
     }
 }

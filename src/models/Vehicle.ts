@@ -1,9 +1,7 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { BaseModel } from '@models/BaseModel';
 
-@RegisterModel
 export class Vehicle extends BaseModel {
     public type: string = 'vehicles';
 

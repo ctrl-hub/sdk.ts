@@ -1,6 +1,4 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import { BaseModel } from '@models/BaseModel';
-@RegisterModel
 export class VehicleModel extends BaseModel {
     type = 'vehicle-models';
     name = '';

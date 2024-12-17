@@ -1,7 +1,5 @@
-import { RegisterModel } from '../utils/ModelRegistry';
 import { BaseModel } from '@models/BaseModel';
 import { VehicleModel } from '@models/VehicleModel';
-@RegisterModel
 export class VehicleSpecification extends BaseModel {
     type = 'vehicle-specifications';
     emissions = 0;
