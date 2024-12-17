@@ -12,10 +12,12 @@ import { Vehicle } from '@models/Vehicle';
 import { VehicleModel } from '@models/VehicleModel';
 import { VehicleManufacturer } from '@models/VehicleManufacturer';
 import { VehicleSpecification } from '@models/VehicleSpecification';
+import { EquipmentManufacturer } from '@models/EquipmentManufacturer';
 export class Hydrator {
     modelMap = {
         'equipment-items': Equipment,
         'equipment-models': EquipmentModel,
+        'equipment-manufacturers': EquipmentManufacturer,
         'forms': Form,
         'form_categories': FormCategory,
         'groups': Group,
