@@ -1,31 +1,21 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
-
-type Attributes = {
-    client_id: string;
-    enabled: boolean;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class ServiceAccountKey implements Model {
-    public id: string = '';
+export class ServiceAccountKey extends BaseModel {
     public type: string = 'service-account-keys';
-    public attributes: Attributes;
-    public meta: any = {};
-    public links: any = {};
-    public relationships?: any;
-    public included?: any;
 
-    constructor(data?: ServiceAccountKey) {
+    public client_id: string = '';
+    public enabled: boolean = false;
+
+    static relationships: RelationshipDefinition[] = [];
+
+    constructor(data?: any) {
+        super(data);
         this.id = data?.id ?? '';
-        this.attributes = {
-            client_id: data?.attributes?.client_id ?? '',
-            enabled: data?.attributes?.enabled ?? false,
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        this.client_id = data?.attributes?.client_id ?? '';
+        this.enabled = data?.attributes?.enabled ?? false;
     }
 
     static hydrate(data: any): ServiceAccountKey {

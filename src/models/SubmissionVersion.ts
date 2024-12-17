@@ -1,39 +1,28 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
-
-type SubmissionVersionAttributes = {
-    author: string;
-    form: string;
-    form_version: string;
-    reference: string;
-    status: string;
-    content: object;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class SubmissionVersion implements Model {
-    public id: string = '';
+export class SubmissionVersion extends BaseModel {
     public type: string = 'submission-versions';
-    public attributes: SubmissionVersionAttributes;
-    public meta: any = {};
-    public links: any = {};
-    public relationships?: any;
-    public included?: any;
 
-    constructor(data?: SubmissionVersion) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            author: data?.attributes?.author ?? '',
-            form: data?.attributes?.form ?? '',
-            form_version: data?.attributes?.form_version ?? '',
-            reference: data?.attributes?.reference ?? '',
-            status: data?.attributes?.status ?? '',
-            content: data?.attributes?.content ?? {},
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+    public author: string = '';
+    public form: string = '';
+    public form_version: string = '';
+    public reference: string = '';
+    public status: string = '';
+    public content: object = {};
+
+    static relationships: RelationshipDefinition[] = [];
+
+    constructor(data?: any) {
+        super(data);
+        this.author = data?.attributes?.author ?? '';
+        this.form = data?.attributes?.form ?? '';
+        this.form_version = data?.attributes?.form_version ?? '';
+        this.reference = data?.attributes?.reference ?? '';
+        this.status = data?.attributes?.status ?? '';
+        this.content = data?.attributes?.content ?? {};
     }
 
     static hydrate(data: any): SubmissionVersion {

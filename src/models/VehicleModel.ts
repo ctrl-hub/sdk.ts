@@ -1,32 +1,27 @@
-import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
-
-type VehicleModelAttributes = {
-    name: string;
-};
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 @RegisterModel
-export class VehicleModel implements Model {
-    public id: string = '';
+export class VehicleModel extends BaseModel {
     public type: string = 'vehicle-models';
-    public attributes: VehicleModelAttributes;
-    public meta: any = {};
-    public links: any = {};
-    public relationships?: any;
-    public included?: any;
 
-    constructor(data?: VehicleModel) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            name: data?.attributes?.name ?? '',
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+    public name: string = '';
+
+    static relationships: RelationshipDefinition[] = [
+        {
+            name: 'manufacturer',
+            type: 'single',
+            modelType: 'vehicle-manufacturers'
+        }
+    ];
+
+    constructor(data?: any) {
+        super(data);
+        this.name = data?.attributes?.name ?? '';
     }
 
-    static hydrate(data: VehicleModel): VehicleModel {
+    static hydrate(data: any): VehicleModel {
         return new VehicleModel(data);
     }
 }

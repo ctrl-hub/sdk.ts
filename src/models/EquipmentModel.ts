@@ -1,10 +1,7 @@
-import type { Model } from "../types/Model";
 import { RegisterModel } from '../utils/ModelRegistry';
-
-type EquipmentModelAttributes = {
-    name: string;
-    documentation: EquipmentModelDocumentation[];
-};
+import type { EquipmentManufacturer } from './EquipmentManufacturer';
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 type EquipmentModelDocumentation = {
     name: string;
@@ -13,28 +10,29 @@ type EquipmentModelDocumentation = {
 }
 
 @RegisterModel
-export class EquipmentModel implements Model {
-    public id: string = ''; 
+export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
-    public attributes: EquipmentModelAttributes;
-    public meta: any = {};
-    public links: any = {};
-    public relationships?: any;
-    public included?: any;
 
-    constructor(data?: EquipmentModel) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            name: data?.attributes?.name ?? '',
-            documentation: data?.attributes?.documentation ?? [],
-        };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+    public name: string = '';
+    public documentation: EquipmentModelDocumentation[] = [];
+
+    public manufacturer?: EquipmentManufacturer;
+
+    static relationships: RelationshipDefinition[] = [
+        {
+            name: 'manufacturer',
+            type: 'single',
+            modelType: 'equipment-manufacturers'
+        }
+    ];
+
+    constructor(data?: any) {
+        super(data);
+        this.name = data?.attributes?.name ?? '';
+        this.documentation = data?.attributes?.documentation ?? [];
     }
 
-    static hydrate(data: EquipmentModel): EquipmentModel {
+    static hydrate(data: any): EquipmentModel {
         return new EquipmentModel(data);
     }
 }

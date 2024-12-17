@@ -1,5 +1,6 @@
-import type { Model } from '../types/Model';
 import { RegisterModel } from '../utils/ModelRegistry';
+import type { RelationshipDefinition } from '../types/RelationshipDefinition';
+import { BaseModel } from '@models/BaseModel';
 
 // Update Attributes type to match the JSON structure
 type Actor = {
@@ -29,52 +30,37 @@ type Response = {
     status: number;
 };
 
-type Attributes = {
-    actor: Actor;
-    duration: number;
-    request: Request;
-    response: Response;
-};
-
 @RegisterModel
-export class Log implements Model {
-    public id: string = '';
+export class Log extends BaseModel {
     public type: string = 'logs';
-    public attributes: Attributes;
-    public meta: any = {};
-    public links: any = {};
-    public relationships?: any;
-    public included?: any;
 
-    constructor(data?: Log) {
-        this.id = data?.id ?? '';
-        this.attributes = {
-            actor: {
-                type: data?.attributes?.actor?.type ?? '',
-                id: data?.attributes?.actor?.id ?? '',
-            },
-            duration: data?.attributes?.duration ?? 0,
-            request: {
-                time: data?.attributes?.request?.time ?? '',
-                headers: data?.attributes?.request?.headers ?? {},
-                body: data?.attributes?.request?.body ?? '',
-                path: data?.attributes?.request?.path ?? '',
-                query: data?.attributes?.request?.query ?? {},
-                raw_query: data?.attributes?.request?.raw_query ?? '',
-                method: data?.attributes?.request?.method ?? '',
-                content_length: data?.attributes?.request?.content_length ?? 0,
-            },
-            response: {
-                time: data?.attributes?.response?.time ?? '',
-                body: data?.attributes?.response?.body ?? '',
-                headers: data?.attributes?.response?.headers ?? {},
-                status: data?.attributes?.response?.status ?? 0,
-            },
+    public actor: Actor;
+    public duration: number;
+    public request: Request;
+    public response: Response;
+
+    static relationships: RelationshipDefinition[] = [];
+
+    constructor(data?: any) {
+        super(data);
+        this.actor = data?.attributes?.actor ?? { type: '', id: '' };
+        this.duration = data?.attributes?.duration ?? 0;
+        this.request = data?.attributes?.request ?? {
+            time: '',
+            headers: {},
+            body: '',
+            path: '',
+            query: {},
+            raw_query: '',
+            method: '',
+            content_length: 0
         };
-        this.meta = data?.meta ?? {};
-        this.links = data?.links ?? {};
-        this.relationships = data?.relationships ?? {};
-        this.included = data?.included ?? {};
+        this.response = data?.attributes?.response ?? {
+            time: '',
+            body: '',
+            headers: {},
+            status: 0
+        };
     }
 
     static hydrate(data: any): Log {
