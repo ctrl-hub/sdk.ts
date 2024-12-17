@@ -19,14 +19,14 @@ describe('Role', () => {
                 },
             };
 
-            const role = Role.hydrate(data);
+            const role = new Role(data);
 
             expect(role.id).toBe(data.id);
-            expect(role.attributes.custom).toBe(true);
-            expect(role.attributes.name).toBe("Admin");
-            expect(role.attributes.description).toBe("Administrator role");
-            expect(role.attributes.launch_stage).toBe("beta");
-            expect(role.attributes.permissions).toEqual(["read", "write", "execute"]);
+            expect(role.custom).toBe(true);
+            expect(role.name).toBe("Admin");
+            expect(role.description).toBe("Administrator role");
+            expect(role.launch_stage).toBe("beta");
+            expect(role.permissions).toEqual(["read", "write", "execute"]);
             expect(role.meta).toEqual({ createdAt: data.meta.createdAt });
         });
 
@@ -37,27 +37,27 @@ describe('Role', () => {
                 meta: {},
             };
 
-            const role = Role.hydrate(data);
+            const role = new Role(data);
 
             expect(role.id).toBe(data.id);
-            expect(role.attributes.custom).toBe(false);
-            expect(role.attributes.name).toBe("");
-            expect(role.attributes.description).toBe("");
-            expect(role.attributes.launch_stage).toBe("");
-            expect(role.attributes.permissions).toEqual([]);
-            expect(role.meta).toEqual({});
+            expect(role.custom).toBe(false);
+            expect(role.name).toBe("");
+            expect(role.description).toBe("");
+            expect(role.launch_stage).toBe("");
+            expect(role.permissions).toEqual([]);
+            expect(role.meta).toEqual(undefined);
         });
 
         it('should return an instance with default values when no data is provided', () => {
-            const role = Role.hydrate(null);
+            const role = new Role(null);
 
             expect(role.id).toBe("");
-            expect(role.attributes.custom).toBe(false);
-            expect(role.attributes.name).toBe("");
-            expect(role.attributes.description).toBe("");
-            expect(role.attributes.launch_stage).toBe("");
-            expect(role.attributes.permissions).toEqual([]);
-            expect(role.meta).toEqual({});
+            expect(role.custom).toBe(false);
+            expect(role.name).toBe("");
+            expect(role.description).toBe("");
+            expect(role.launch_stage).toBe("");
+            expect(role.permissions).toEqual([]);
+            expect(role.meta).toEqual(undefined);
         });
     });
 });

@@ -20,11 +20,11 @@ describe('Submission', () => {
                 }
             };
 
-            const submission = Submission.hydrate(data);
+            const submission = new Submission(data);
 
             expect(submission.id).toBe(data.id);
-            expect(submission.attributes.reference).toBe(data.attributes.reference);
-            expect(submission.attributes.status).toBe(data.attributes.status);
+            expect(submission.reference).toBe(data.attributes.reference);
+            expect(submission.status).toBe(data.attributes.status);
             expect(submission.meta).toEqual(data.meta);
             expect(submission.links).toEqual(data.links);
         });
@@ -37,23 +37,23 @@ describe('Submission', () => {
                 links: {}
             };
 
-            const submission = Submission.hydrate(data);
+            const submission = new Submission(data);
 
             expect(submission.id).toBe(data.id);
-            expect(submission.attributes.reference).toBe("");
-            expect(submission.attributes.status).toBe("");
-            expect(submission.meta).toEqual({});
-            expect(submission.links).toEqual({});
+            expect(submission.reference).toBe("");
+            expect(submission.status).toBe("");
+            expect(submission.meta).toEqual(undefined);
+            expect(submission.links).toEqual(undefined);
         });
 
         it('should return an instance with default values when no data is provided', () => {
-            const submission = Submission.hydrate(null);
+            const submission = new Submission(null);
 
             expect(submission.id).toBe("");
-            expect(submission.attributes.reference).toBe("");
-            expect(submission.attributes.status).toBe("");
-            expect(submission.meta).toEqual({});
-            expect(submission.links).toEqual({});
+            expect(submission.reference).toBe("");
+            expect(submission.status).toBe("");
+            expect(submission.meta).toEqual(undefined);
+            expect(submission.links).toEqual(undefined);
         });
 
     });

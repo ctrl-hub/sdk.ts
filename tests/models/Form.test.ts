@@ -25,13 +25,13 @@ describe('Form', () => {
                 }
             };
 
-            const form = Form.hydrate(data);
+            const form = new Form(data);
 
             expect(form.id).toBe(data.id);
-            expect(form.attributes.name).toBe(data.attributes.name);
-            expect(form.attributes.description).toBe(data.attributes.description);
-            expect(form.attributes.field_mappings).toEqual(data.attributes.field_mappings);
-            expect(form.attributes.status).toBe(data.attributes.status);
+            expect(form.name).toBe(data.attributes.name);
+            expect(form.description).toBe(data.attributes.description);
+            expect(form.fieldMappings).toEqual(data.attributes.field_mappings);
+            expect(form.status).toBe(data.attributes.status);
             expect(form.meta).toEqual({ created_at: data.meta.created_at });
             expect(form.links).toEqual(data.links);
         });
@@ -43,27 +43,27 @@ describe('Form', () => {
                 meta: {}
             };
 
-            const form = Form.hydrate(data);
+            const form = new Form(data);
 
             expect(form.id).toBe(data.id);
-            expect(form.attributes.name).toBe("");
-            expect(form.attributes.description).toBe("");
-            expect(form.attributes.field_mappings).toEqual([]);
-            expect(form.attributes.status).toBe("");
-            expect(form.meta).toEqual({});
-            expect(form.links).toEqual({});
+            expect(form.name).toBe("");
+            expect(form.description).toBe("");
+            expect(form.fieldMappings).toEqual([]);
+            expect(form.status).toBe("");
+            expect(form.meta).toEqual(undefined);
+            expect(form.links).toEqual(undefined);
         });
 
         it('should return an instance with default values when no data is provided', () => {
-            const form = Form.hydrate(null);
+            const form = new Form(null);
 
             expect(form.id).toBe("");
-            expect(form.attributes.name).toBe("");
-            expect(form.attributes.description).toBe("");
-            expect(form.attributes.field_mappings).toEqual([]);
-            expect(form.attributes.status).toBe("");
-            expect(form.meta).toEqual({});
-            expect(form.links).toEqual({});
+            expect(form.name).toBe("");
+            expect(form.description).toBe("");
+            expect(form.fieldMappings).toEqual([]);
+            expect(form.status).toBe("");
+            expect(form.meta).toEqual(undefined);
+            expect(form.links).toEqual(undefined);
         });
     });
 });

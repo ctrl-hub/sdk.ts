@@ -15,10 +15,10 @@ describe('Permission', () => {
                 },
             };
 
-            const permission = Permission.hydrate(data);
+            const permission = new Permission(data);
 
             expect(permission.id).toBe(data.id);
-            expect(permission.attributes.description).toBe(data.attributes.description);
+            expect(permission.description).toBe(data.attributes.description);
             expect(permission.meta).toEqual({ createdAt: data.meta.createdAt });
         });
 
@@ -29,19 +29,19 @@ describe('Permission', () => {
                 meta: {},
             };
 
-            const permission = Permission.hydrate(data);
+            const permission = new Permission(data);
 
             expect(permission.id).toBe(data.id);
-            expect(permission.attributes.description).toBe("");
-            expect(permission.meta).toEqual({});
+            expect(permission.description).toBe("");
+            expect(permission.meta).toEqual(undefined);
         });
 
         it('should return an instance with default values when no data is provided', () => {
-            const permission = Permission.hydrate(null);
+            const permission = new Permission(null);
 
             expect(permission.id).toBe("");
-            expect(permission.attributes.description).toBe("");
-            expect(permission.meta).toEqual({});
+            expect(permission.description).toBe("");
+            expect(permission.meta).toEqual(undefined);
         });
     });
 });

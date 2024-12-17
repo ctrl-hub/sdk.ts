@@ -15,13 +15,13 @@ describe('ServiceAccount', () => {
             meta: { createdAt: "2023-01-01" }
         };
 
-        const serviceAccount = ServiceAccount.hydrate(data, null);
+        const serviceAccount = new ServiceAccount(data);
 
         expect(serviceAccount.id).toBe(data.id);
-        expect(serviceAccount.attributes.name).toBe(data.attributes.name);
-        expect(serviceAccount.attributes.description).toBe(data.attributes.description);
-        expect(serviceAccount.attributes.email).toBe(data.attributes.email);
-        expect(serviceAccount.attributes.enabled).toBe(data.attributes.enabled);
+        expect(serviceAccount.name).toBe(data.attributes.name);
+        expect(serviceAccount.description).toBe(data.attributes.description);
+        expect(serviceAccount.email).toBe(data.attributes.email);
+        expect(serviceAccount.enabled).toBe(data.attributes.enabled);
         expect(serviceAccount.meta).toEqual({ createdAt: data.meta.createdAt });
     });
 
@@ -33,14 +33,14 @@ describe('ServiceAccount', () => {
             }
         };
 
-        const serviceAccount = ServiceAccount.hydrate(data, null);
+        const serviceAccount = new ServiceAccount(data);
 
         expect(serviceAccount.id).toBe(data.id);
-        expect(serviceAccount.attributes.name).toBe(data.attributes.name);
-        expect(serviceAccount.attributes.description).toBe("");
-        expect(serviceAccount.attributes.email).toBe("");
-        expect(serviceAccount.attributes.enabled).toBe(false);
-        expect(serviceAccount.meta).toEqual({});
+        expect(serviceAccount.name).toBe(data.attributes.name);
+        expect(serviceAccount.description).toBe("");
+        expect(serviceAccount.email).toBe("");
+        expect(serviceAccount.enabled).toBe(false);
+        expect(serviceAccount.meta).toEqual(undefined);
     });
 
 });

@@ -8,9 +8,8 @@ describe('ServiceAccountKey', () => {
 
         expect(serviceAccountKey.id).toBe('');
         expect(serviceAccountKey.type).toBe('service-account-keys');
-        expect(serviceAccountKey.attributes.client_id).toBe('');
-        expect(serviceAccountKey.meta).toEqual({});
-        expect(serviceAccountKey.relationships).toEqual([]);
+        expect(serviceAccountKey.client_id).toBe('');
+        expect(serviceAccountKey.meta).toEqual(undefined);
     });
 
     describe('hydrate', () => {
@@ -23,10 +22,10 @@ describe('ServiceAccountKey', () => {
                 meta: { createdAt: "2023-01-01" }
             };
 
-            const serviceAccountKey = ServiceAccountKey.hydrate(data, null);
+            const serviceAccountKey = new ServiceAccountKey(data);
 
             expect(serviceAccountKey.id).toBe(data.id);
-            expect(serviceAccountKey.attributes.client_id).toBe(data.attributes.client_id);
+            expect(serviceAccountKey.client_id).toBe(data.attributes.client_id);
             expect(serviceAccountKey.meta).toEqual(data.meta);
         });
 
@@ -36,10 +35,10 @@ describe('ServiceAccountKey', () => {
                 attributes: {}
             };
 
-            const serviceAccountKey = ServiceAccountKey.hydrate(data, null);
+            const serviceAccountKey = new ServiceAccountKey(data);
 
             expect(serviceAccountKey.id).toBe(data.id);
-            expect(serviceAccountKey.attributes.client_id).toBe("");
+            expect(serviceAccountKey.client_id).toBe("");
         });
     });
 });
