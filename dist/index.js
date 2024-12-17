@@ -851,7 +851,15 @@ class ClientConfig {
 class Equipment extends BaseModel {
   type = "equipment-items";
   serial = "";
-  model;
+  model = "";
+  getApiMapping() {
+    return {
+      attributes: ["serial"],
+      relationships: {
+        model: "equipment-models"
+      }
+    };
+  }
   static relationships = [
     {
       name: "model",
@@ -862,6 +870,7 @@ class Equipment extends BaseModel {
   constructor(data) {
     super(data);
     this.serial = data?.attributes?.serial ?? "";
+    this.model = "";
   }
   static hydrate(data) {
     return new Equipment(data);
@@ -993,6 +1002,11 @@ class ServiceAccount extends BaseModel {
   description = "";
   email = "";
   enabled = false;
+  getApiMapping() {
+    return {
+      attributes: ["name", "description"]
+    };
+  }
   static relationships = [
     {
       name: "keys",
@@ -1004,8 +1018,12 @@ class ServiceAccount extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
-    this.email = data?.attributes?.email ?? "";
-    this.enabled = data?.attributes?.enabled ?? false;
+    if (data?.attributes?.email) {
+      this.email = data?.attributes?.email;
+    }
+    if (data?.attributes?.enabled) {
+      this.enabled = data?.attributes?.enabled;
+    }
   }
   static hydrate(data) {
     return new ServiceAccount(data);

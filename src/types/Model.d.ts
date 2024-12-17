@@ -1,5 +1,5 @@
 export interface Model {
-    id: string;
+    id?: string;
     type: string;
     meta?: any;
     links?: any;

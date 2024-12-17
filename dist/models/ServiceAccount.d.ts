@@ -4,8 +4,11 @@ export declare class ServiceAccount extends BaseModel {
     type: string;
     name: string;
     description: string;
-    email: string;
-    enabled: boolean;
+    email?: string;
+    enabled?: boolean;
+    getApiMapping(): {
+        attributes: string[];
+    };
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     static hydrate(data: any): ServiceAccount;

@@ -9,7 +9,16 @@ export class Equipment extends BaseModel {
 
     public serial: string = '';
 
-    public model?: EquipmentModel;
+    public model?: EquipmentModel | string = '';
+
+    getApiMapping() {
+        return {
+            attributes: ['serial'],
+            relationships: {
+                model: 'equipment-models'
+            }
+        };
+    }
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -22,6 +31,7 @@ export class Equipment extends BaseModel {
     constructor(data?: any) {
         super(data);
         this.serial = data?.attributes?.serial ?? '';
+        this.model = '';
     }
 
     static hydrate(data: any): Equipment {

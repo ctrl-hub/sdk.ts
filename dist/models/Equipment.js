@@ -4,7 +4,15 @@ import { BaseModel } from '@models/BaseModel';
 export class Equipment extends BaseModel {
     type = 'equipment-items';
     serial = '';
-    model;
+    model = '';
+    getApiMapping() {
+        return {
+            attributes: ['serial'],
+            relationships: {
+                model: 'equipment-models'
+            }
+        };
+    }
     static relationships = [
         {
             name: 'model',
@@ -15,6 +23,7 @@ export class Equipment extends BaseModel {
     constructor(data) {
         super(data);
         this.serial = data?.attributes?.serial ?? '';
+        this.model = '';
     }
     static hydrate(data) {
         return new Equipment(data);
