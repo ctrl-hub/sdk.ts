@@ -7,7 +7,13 @@ export declare class Vehicle extends BaseModel {
     vin: string;
     description: string;
     colour: string;
-    specification?: VehicleSpecification;
+    getApiMapping(): {
+        attributes: string[];
+        relationships: {
+            specification: string;
+        };
+    };
+    specification?: VehicleSpecification | string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     static hydrate(data: any): Vehicle;

@@ -1,5 +1,6 @@
 export class BaseModel {
     id = '';
+    type = '';
     meta;
     links;
     included;

@@ -23,7 +23,45 @@ export class BaseService extends RequestBuilder {
             data: hydratedData
         };
     }
-    async create(payload) {
+    async create(model) {
+        let modelType = model.type;
+        let ModelClass = this.modelRegistry.models[modelType];
+        let payload;
+        if ('getApiMapping' in ModelClass.prototype) {
+            const mapping = ModelClass.prototype.getApiMapping();
+            payload = {
+                data: {
+                    type: model.type,
+                    attributes: {}
+                }
+            };
+            mapping.attributes.forEach((attr) => {
+                payload.data.attributes[attr] = model[attr];
+            });
+            if (mapping.relationships) {
+                payload.data.relationships = {};
+                Object.entries(mapping.relationships).forEach(([key, type]) => {
+                    const relationshipValue = model[key];
+                    if (relationshipValue) {
+                        payload.data.relationships[key] = {
+                            data: {
+                                type,
+                                id: relationshipValue
+                            }
+                        };
+                    }
+                });
+            }
+        }
+        else {
+            let { type, id, ...rest } = model;
+            payload = {
+                data: {
+                    type: model.type,
+                    attributes: rest
+                }
+            };
+        }
         return await this.client.makePostRequest(this.endpoint, payload);
     }
 }

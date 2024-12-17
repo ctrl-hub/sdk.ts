@@ -8,7 +8,15 @@ export class Vehicle extends BaseModel {
     vin = '';
     description = '';
     colour = '';
-    specification;
+    getApiMapping() {
+        return {
+            attributes: ['registration', 'vin', 'description', 'colour'],
+            relationships: {
+                specification: 'vehicle-specifications'
+            }
+        };
+    }
+    specification = '';
     static relationships = [
         {
             name: 'specification',
@@ -22,6 +30,7 @@ export class Vehicle extends BaseModel {
         this.vin = data?.attributes?.vin ?? '';
         this.description = data?.attributes?.description ?? '';
         this.colour = data?.attributes?.colour ?? '';
+        this.specification = '';
     }
     static hydrate(data) {
         return new Vehicle(data);

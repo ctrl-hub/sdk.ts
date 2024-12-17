@@ -15,5 +15,5 @@ export declare class BaseService<T extends Model> extends RequestBuilder {
     get(param: string): Promise<InternalResponse<T>>;
     get(param: string, options?: RequestOptionsType): Promise<InternalResponse<T>>;
     get(param: RequestOptionsType): Promise<InternalResponse<T[]>>;
-    create(payload: any): Promise<InternalResponse<T>>;
+    create(model: Model): Promise<InternalResponse<T>>;
 }

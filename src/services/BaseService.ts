@@ -43,7 +43,63 @@ export class BaseService<T extends Model> extends RequestBuilder {
         } as InternalResponse<T | T[]>;
     }
 
-    async create(payload: any): Promise<InternalResponse<T>> {
+    async create(model: Model): Promise<InternalResponse<T>> {
+        let modelType = model.type;
+        let ModelClass = this.modelRegistry.models[modelType];
+        let payload: {
+            data: {
+                type: string;
+                attributes: Record<string, any>;
+                relationships?: Record<string, {
+                    data: {
+                        type: string;
+                        id: string;
+                    }
+                }>;
+            }
+        };
+
+        if ('getApiMapping' in ModelClass.prototype) {
+            const mapping = ModelClass.prototype.getApiMapping() as {
+                attributes: string[];
+                relationships: Record<string, string>;
+            };
+
+            payload = {
+                data: {
+                    type: model.type,
+                    attributes: {}
+                }
+            };
+
+            mapping.attributes.forEach((attr: string) => {
+                payload.data.attributes[attr] = (model as Record<string, any>)[attr];
+            });
+
+            if (mapping.relationships) {
+                payload.data.relationships = {};
+                Object.entries(mapping.relationships).forEach(([key, type]: [string, string]) => {
+                    const relationshipValue = (model as Record<string, any>)[key];
+                    if (relationshipValue) {
+                        payload.data.relationships![key] = {
+                            data: {
+                                type,
+                                id: relationshipValue
+                            }
+                        };
+                    }
+                });
+            }
+        } else {
+            let {type, id, ...rest} = model;
+            payload = {
+                data: {
+                    type: model.type,
+                    attributes: rest
+                }
+            };
+        }
+
         return await this.client.makePostRequest(this.endpoint, payload);
     }
 

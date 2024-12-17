@@ -1,5 +1,6 @@
 import { RegisterModel } from '../utils/ModelRegistry';
 import { BaseModel } from '@models/BaseModel';
+import { VehicleModel } from '@models/VehicleModel';
 @RegisterModel
 export class VehicleSpecification extends BaseModel {
     type = 'vehicle-specifications';
@@ -9,6 +10,7 @@ export class VehicleSpecification extends BaseModel {
     transmission = '';
     year = 0;
     documentation = [];
+    model;
     static relationships = [
         {
             name: 'model',
@@ -24,6 +26,7 @@ export class VehicleSpecification extends BaseModel {
         this.transmission = data?.attributes?.transmission ?? '';
         this.year = data?.attributes?.year ?? 0;
         this.documentation = data?.attributes?.documentation ?? [];
+        this.model = new VehicleModel();
     }
     static hydrate(data) {
         return new VehicleSpecification(data);

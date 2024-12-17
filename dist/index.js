@@ -285,7 +285,44 @@ class BaseService extends RequestBuilder {
       data: hydratedData
     };
   }
-  async create(payload) {
+  async create(model) {
+    let modelType = model.type;
+    let ModelClass = this.modelRegistry.models[modelType];
+    let payload;
+    if ("getApiMapping" in ModelClass.prototype) {
+      const mapping = ModelClass.prototype.getApiMapping();
+      payload = {
+        data: {
+          type: model.type,
+          attributes: {}
+        }
+      };
+      mapping.attributes.forEach((attr) => {
+        payload.data.attributes[attr] = model[attr];
+      });
+      if (mapping.relationships) {
+        payload.data.relationships = {};
+        Object.entries(mapping.relationships).forEach(([key, type]) => {
+          const relationshipValue = model[key];
+          if (relationshipValue) {
+            payload.data.relationships[key] = {
+              data: {
+                type,
+                id: relationshipValue
+              }
+            };
+          }
+        });
+      }
+    } else {
+      let { type, id, ...rest } = model;
+      payload = {
+        data: {
+          type: model.type,
+          attributes: rest
+        }
+      };
+    }
     return await this.client.makePostRequest(this.endpoint, payload);
   }
 }
@@ -314,6 +351,7 @@ class PermissionsService extends BaseService {
 // src/models/BaseModel.ts
 class BaseModel {
   id = "";
+  type = "";
   meta;
   links;
   included;
@@ -556,6 +594,7 @@ class VehicleSpecification extends BaseModel {
   transmission = "";
   year = 0;
   documentation = [];
+  model;
   static relationships = [
     {
       name: "model",
@@ -571,6 +610,7 @@ class VehicleSpecification extends BaseModel {
     this.transmission = data?.attributes?.transmission ?? "";
     this.year = data?.attributes?.year ?? 0;
     this.documentation = data?.attributes?.documentation ?? [];
+    this.model = new VehicleModel;
   }
   static hydrate(data) {
     return new VehicleSpecification(data);
@@ -1029,7 +1069,15 @@ class Vehicle extends BaseModel {
   vin = "";
   description = "";
   colour = "";
-  specification;
+  getApiMapping() {
+    return {
+      attributes: ["registration", "vin", "description", "colour"],
+      relationships: {
+        specification: "vehicle-specifications"
+      }
+    };
+  }
+  specification = "";
   static relationships = [
     {
       name: "specification",
@@ -1043,6 +1091,7 @@ class Vehicle extends BaseModel {
     this.vin = data?.attributes?.vin ?? "";
     this.description = data?.attributes?.description ?? "";
     this.colour = data?.attributes?.colour ?? "";
+    this.specification = "";
   }
   static hydrate(data) {
     return new Vehicle(data);
