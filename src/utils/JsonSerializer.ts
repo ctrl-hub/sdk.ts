@@ -22,8 +22,6 @@ export class JsonApiSerializer {
                 }
             };
 
-            console.log(model);
-
             mapping.attributes?.forEach((attr: string) => {
                 let toAdd = (model as any)[attr];
                 console.log(attr + ' ' + toAdd);

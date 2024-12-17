@@ -43,8 +43,6 @@ export class BaseService<T extends Model> extends RequestBuilder {
 
     async create(model: Model): Promise<InternalResponse<T>> {
         const payload = JsonApiSerializer.buildCreatePayload(model);
-        console.log(JSON.stringify(model));
-        console.log(JSON.stringify(payload));
         return await this.client.makePostRequest(this.endpoint, payload);
     }
 

@@ -599,7 +599,6 @@ class JsonApiSerializer {
           relationships: {}
         }
       };
-      console.log(model);
       mapping.attributes?.forEach((attr) => {
         let toAdd = model[attr];
         console.log(attr + " " + toAdd);
@@ -652,8 +651,6 @@ class BaseService extends RequestBuilder {
   }
   async create(model) {
     const payload = JsonApiSerializer.buildCreatePayload(model);
-    console.log(JSON.stringify(model));
-    console.log(JSON.stringify(payload));
     return await this.client.makePostRequest(this.endpoint, payload);
   }
 }
