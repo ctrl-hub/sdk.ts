@@ -36,6 +36,10 @@ export class Hydrator {
         'vehicle-specifications': VehicleSpecification
     };
 
+    public getModelMap = () => {
+        return this.modelMap;
+    }
+
     hydrateResponse<T extends Model>(data: JsonData | JsonData[], included: any[]): T | T[] {
         return Array.isArray(data)
             ? this.hydrateArray<T>(data, included)

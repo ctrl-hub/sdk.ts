@@ -22,7 +22,8 @@ export class BaseService extends RequestBuilder {
         };
     }
     async create(model) {
-        const payload = JsonApiSerializer.buildCreatePayload(model);
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildCreatePayload(model);
         return await this.client.makePostRequest(this.endpoint, payload);
     }
 }

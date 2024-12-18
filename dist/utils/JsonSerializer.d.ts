@@ -1,15 +1,22 @@
 import type { Model } from '../types/Model';
-export declare class JsonApiSerializer {
-    static buildCreatePayload(model: Model): {
-        data: {
-            type: string;
-            attributes: Record<string, any>;
-            relationships?: Record<string, {
-                data: {
-                    type: string;
-                    id: string;
-                };
-            }>;
-        };
+import type { JsonApiMapping } from '../types/JsonApiMapping';
+type JsonApiRelationship = {
+    data: {
+        type: string;
+        id: string;
     };
+};
+type JsonApiPayload = {
+    data: {
+        type: string;
+        attributes: Record<string, any>;
+        relationships?: Record<string, JsonApiRelationship>;
+    };
+};
+export declare class JsonApiSerializer {
+    protected modelMap: Record<string, new (...args: any[]) => Model>;
+    constructor(modelMap: Record<string, new (...args: any[]) => Model>);
+    buildCreatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
+    private buildDefaultPayload;
 }
+export {};

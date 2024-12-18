@@ -1,8 +1,9 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { BaseModel } from '@models/BaseModel';
+import type { JsonApiMapping } from '../types/JsonApiMapping';
 
-export class Vehicle extends BaseModel {
+export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'vehicles';
 
     public registration: string = '';

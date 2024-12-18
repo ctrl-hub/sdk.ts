@@ -31,6 +31,9 @@ export class Hydrator {
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification
     };
+    getModelMap = () => {
+        return this.modelMap;
+    };
     hydrateResponse(data, included) {
         return Array.isArray(data)
             ? this.hydrateArray(data, included)

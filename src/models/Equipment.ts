@@ -1,8 +1,9 @@
 import type { EquipmentModel } from './EquipmentModel';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { JsonApiMapping } from '../types/JsonApiMapping';
 
-export class Equipment extends BaseModel {
+export class Equipment extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'equipment-items';
 
     public serial: string = '';

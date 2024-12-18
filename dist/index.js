@@ -480,6 +480,9 @@ class Hydrator {
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification
   };
+  getModelMap = () => {
+    return this.modelMap;
+  };
   hydrateResponse(data, included) {
     return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
   }
@@ -589,9 +592,20 @@ class RequestBuilder {
 
 // src/utils/JsonSerializer.ts
 class JsonApiSerializer {
-  static buildCreatePayload(model) {
-    if ("jsonApiMapping" in model) {
-      const mapping = model.jsonApiMapping();
+  modelMap;
+  constructor(modelMap) {
+    this.modelMap = modelMap;
+  }
+  buildCreatePayload(model) {
+    const ModelClass = this.modelMap[model.type];
+    if (!ModelClass) {
+      console.warn(`No model class found for type: ${model.type}`);
+      return this.buildDefaultPayload(model);
+    }
+    const prototype = ModelClass.prototype;
+    if (typeof prototype.jsonApiMapping === "function") {
+      const mapping = prototype.jsonApiMapping.call(model);
+      console.log("Mapping:", mapping);
       const payload = {
         data: {
           type: model.type,
@@ -599,18 +613,21 @@ class JsonApiSerializer {
           relationships: {}
         }
       };
-      mapping.attributes?.forEach((attr) => {
-        let toAdd = model[attr];
-        console.log(attr + " " + toAdd);
-        payload.data.attributes[attr] = model[attr];
-      });
+      if (mapping.attributes) {
+        mapping.attributes.forEach((attr) => {
+          const value = model[attr];
+          if (value !== undefined && value !== "") {
+            payload.data.attributes[attr] = value;
+          }
+        });
+      }
       if (mapping.relationships) {
-        Object.entries(mapping.relationships).forEach(([key, type2]) => {
+        Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
           const relationshipValue = model[key];
-          if (relationshipValue) {
+          if (relationshipValue && typeof relationshipType === "string") {
             payload.data.relationships[key] = {
               data: {
-                type: type2,
+                type: relationshipType,
                 id: relationshipValue
               }
             };
@@ -619,7 +636,10 @@ class JsonApiSerializer {
       }
       return payload;
     }
-    const { type, id, ...attributes } = model;
+    return this.buildDefaultPayload(model);
+  }
+  buildDefaultPayload(model) {
+    const { type, id, meta, links, included, _relationships, ...attributes } = model;
     return {
       data: {
         type: model.type,
@@ -650,7 +670,8 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model) {
-    const payload = JsonApiSerializer.buildCreatePayload(model);
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
 }

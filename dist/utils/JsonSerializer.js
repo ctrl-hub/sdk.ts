@@ -1,7 +1,18 @@
 export class JsonApiSerializer {
-    static buildCreatePayload(model) {
-        if ('jsonApiMapping' in model) {
-            const mapping = model.jsonApiMapping();
+    modelMap;
+    constructor(modelMap) {
+        this.modelMap = modelMap;
+    }
+    buildCreatePayload(model) {
+        const ModelClass = this.modelMap[model.type];
+        if (!ModelClass) {
+            console.warn(`No model class found for type: ${model.type}`);
+            return this.buildDefaultPayload(model);
+        }
+        const prototype = ModelClass.prototype;
+        if (typeof prototype.jsonApiMapping === 'function') {
+            const mapping = prototype.jsonApiMapping.call(model);
+            console.log('Mapping:', mapping);
             const payload = {
                 data: {
                     type: model.type,
@@ -9,18 +20,21 @@ export class JsonApiSerializer {
                     relationships: {}
                 }
             };
-            mapping.attributes?.forEach((attr) => {
-                let toAdd = model[attr];
-                console.log(attr + ' ' + toAdd);
-                payload.data.attributes[attr] = model[attr];
-            });
+            if (mapping.attributes) {
+                mapping.attributes.forEach((attr) => {
+                    const value = model[attr];
+                    if (value !== undefined && value !== '') {
+                        payload.data.attributes[attr] = value;
+                    }
+                });
+            }
             if (mapping.relationships) {
-                Object.entries(mapping.relationships).forEach(([key, type]) => {
+                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
                     const relationshipValue = model[key];
-                    if (relationshipValue) {
+                    if (relationshipValue && typeof relationshipType === 'string') {
                         payload.data.relationships[key] = {
                             data: {
-                                type,
+                                type: relationshipType,
                                 id: relationshipValue
                             }
                         };
@@ -29,8 +43,10 @@ export class JsonApiSerializer {
             }
             return payload;
         }
-        // default to using all attributes (anything that's not type or id)
-        const { type, id, ...attributes } = model;
+        return this.buildDefaultPayload(model);
+    }
+    buildDefaultPayload(model) {
+        const { type, id, meta, links, included, _relationships, ...attributes } = model;
         return {
             data: {
                 type: model.type,
