@@ -5,7 +5,7 @@ type JsonApiRelationship = {
     data: {
         type: string;
         id: string;
-    }
+    };
 };
 
 type JsonApiPayload = {
@@ -13,7 +13,7 @@ type JsonApiPayload = {
         type: string;
         attributes: Record<string, any>;
         relationships?: Record<string, JsonApiRelationship>;
-    }
+    };
 };
 
 export class JsonApiSerializer {
@@ -35,14 +35,13 @@ export class JsonApiSerializer {
 
         if (typeof prototype.jsonApiMapping === 'function') {
             const mapping = prototype.jsonApiMapping.call(model);
-            console.log('Mapping:', mapping);
 
             const payload: JsonApiPayload = {
                 data: {
                     type: model.type,
                     attributes: {},
-                    relationships: {}
-                }
+                    relationships: {},
+                },
             };
 
             if (mapping.attributes) {
@@ -61,8 +60,8 @@ export class JsonApiSerializer {
                         payload.data.relationships![key] = {
                             data: {
                                 type: relationshipType,
-                                id: relationshipValue
-                            }
+                                id: relationshipValue,
+                            },
                         };
                     }
                 });
@@ -75,12 +74,12 @@ export class JsonApiSerializer {
     }
 
     private buildDefaultPayload(model: Model): JsonApiPayload {
-        const {type, id, meta, links, included, _relationships, ...attributes} = model;
+        const { type, id, meta, links, included, _relationships, ...attributes } = model;
         return {
             data: {
                 type: model.type,
-                attributes
-            }
+                attributes,
+            },
         };
     }
 }

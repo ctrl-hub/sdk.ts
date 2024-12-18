@@ -605,7 +605,6 @@ class JsonApiSerializer {
     const prototype = ModelClass.prototype;
     if (typeof prototype.jsonApiMapping === "function") {
       const mapping = prototype.jsonApiMapping.call(model);
-      console.log("Mapping:", mapping);
       const payload = {
         data: {
           type: model.type,

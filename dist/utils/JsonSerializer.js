@@ -12,13 +12,12 @@ export class JsonApiSerializer {
         const prototype = ModelClass.prototype;
         if (typeof prototype.jsonApiMapping === 'function') {
             const mapping = prototype.jsonApiMapping.call(model);
-            console.log('Mapping:', mapping);
             const payload = {
                 data: {
                     type: model.type,
                     attributes: {},
-                    relationships: {}
-                }
+                    relationships: {},
+                },
             };
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr) => {
@@ -35,8 +34,8 @@ export class JsonApiSerializer {
                         payload.data.relationships[key] = {
                             data: {
                                 type: relationshipType,
-                                id: relationshipValue
-                            }
+                                id: relationshipValue,
+                            },
                         };
                     }
                 });
@@ -50,8 +49,8 @@ export class JsonApiSerializer {
         return {
             data: {
                 type: model.type,
-                attributes
-            }
+                attributes,
+            },
         };
     }
 }
