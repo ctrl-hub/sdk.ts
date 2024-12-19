@@ -6,28 +6,28 @@ export class Vehicle extends BaseModel {
     vin = '';
     description = '';
     colour = '';
+    specification = '';
     jsonApiMapping() {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
             relationships: {
-                specification: 'vehicle-specifications'
-            }
+                specification: 'vehicle-specifications',
+            },
         };
     }
-    specification = '';
     static relationships = [
         {
             name: 'specification',
             type: 'single',
-            modelType: 'vehicle-specifications'
-        }
+            modelType: 'vehicle-specifications',
+        },
     ];
     constructor(data) {
         super(data);
-        this.registration = data?.attributes?.registration ?? '';
-        this.vin = data?.attributes?.vin ?? '';
-        this.description = data?.attributes?.description ?? '';
-        this.colour = data?.attributes?.colour ?? '';
-        this.specification = '';
+        this.registration = data?.attributes?.registration ?? data?.registration ?? '';
+        this.vin = data?.attributes?.vin ?? data?.vin ?? '';
+        this.description = data?.attributes?.description ?? data?.description ?? '';
+        this.colour = data?.attributes?.colour ?? data?.colour ?? '';
+        this.specification = data?.relationships?.specification?.id ?? data?.specification ?? '';
     }
 }

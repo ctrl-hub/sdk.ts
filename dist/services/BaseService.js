@@ -1,5 +1,5 @@
-import { Client } from "../Client";
-import { Hydrator } from "../utils/Hydrator";
+import { Client } from '../Client';
+import { Hydrator } from '../utils/Hydrator';
 import { RequestBuilder } from '../utils/RequestBuilder';
 import { JsonApiSerializer } from '@utils/JsonSerializer';
 export class BaseService extends RequestBuilder {
@@ -18,12 +18,17 @@ export class BaseService extends RequestBuilder {
         const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
         return {
             ...resp,
-            data: hydratedData
+            data: hydratedData,
         };
     }
     async create(model) {
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
         return await this.client.makePostRequest(this.endpoint, payload);
+    }
+    async update(id, model) {
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildUpdatePayload(model);
+        return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
     }
 }

@@ -133,6 +133,7 @@ class BaseModel {
   static relationships = [];
   constructor(data) {
     this.id = data?.id ?? "";
+    this.type = data?.type ?? "";
     if (data?.meta && Object.keys(data.meta).length > 0) {
       this.meta = data.meta;
     }
@@ -193,8 +194,8 @@ class Equipment extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.serial = data?.attributes?.serial ?? "";
-    this.model = "";
+    this.serial = data?.attributes?.serial ?? data?.serial ?? "";
+    this.model = data?.relationships?.model?.id ?? data?.model ?? "";
   }
 }
 
@@ -239,7 +240,7 @@ class Form extends BaseModel {
 
 // src/models/FormCategory.ts
 class FormCategory extends BaseModel {
-  type = "form_categories";
+  type = "form-categories";
   name = "";
   static relationships = [];
   constructor(data) {
@@ -367,6 +368,7 @@ class Vehicle extends BaseModel {
   vin = "";
   description = "";
   colour = "";
+  specification = "";
   jsonApiMapping() {
     return {
       attributes: ["registration", "vin", "description", "colour"],
@@ -375,7 +377,6 @@ class Vehicle extends BaseModel {
       }
     };
   }
-  specification = "";
   static relationships = [
     {
       name: "specification",
@@ -385,11 +386,11 @@ class Vehicle extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.registration = data?.attributes?.registration ?? "";
-    this.vin = data?.attributes?.vin ?? "";
-    this.description = data?.attributes?.description ?? "";
-    this.colour = data?.attributes?.colour ?? "";
-    this.specification = "";
+    this.registration = data?.attributes?.registration ?? data?.registration ?? "";
+    this.vin = data?.attributes?.vin ?? data?.vin ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.colour = data?.attributes?.colour ?? data?.colour ?? "";
+    this.specification = data?.relationships?.specification?.id ?? data?.specification ?? "";
   }
 }
 
@@ -468,7 +469,7 @@ class Hydrator {
     "equipment-models": EquipmentModel,
     "equipment-manufacturers": EquipmentManufacturer,
     forms: Form,
-    form_categories: FormCategory,
+    "form-categories": FormCategory,
     groups: Group,
     permissions: Permission,
     roles: Role,
@@ -637,6 +638,48 @@ class JsonApiSerializer {
     }
     return this.buildDefaultPayload(model);
   }
+  buildUpdatePayload(model) {
+    const ModelClass = this.modelMap[model.type];
+    if (!ModelClass) {
+      console.warn(`No model class found for type: ${model.type}`);
+      return this.buildDefaultPayload(model);
+    }
+    const prototype = ModelClass.prototype;
+    if (typeof prototype.jsonApiMapping === "function") {
+      const mapping = prototype.jsonApiMapping.call(model);
+      const payload = {
+        data: {
+          id: model.id,
+          type: model.type,
+          attributes: {},
+          relationships: {}
+        }
+      };
+      if (mapping.attributes) {
+        mapping.attributes.forEach((attr) => {
+          const value = model[attr];
+          if (value !== undefined && value !== "") {
+            payload.data.attributes[attr] = value;
+          }
+        });
+      }
+      if (mapping.relationships) {
+        Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
+          const relationshipValue = model[key];
+          if (relationshipValue && typeof relationshipType === "string") {
+            payload.data.relationships[key] = {
+              data: {
+                type: relationshipType,
+                id: relationshipValue.id
+              }
+            };
+          }
+        });
+      }
+      return payload;
+    }
+    return this.buildDefaultPayload(model);
+  }
   buildDefaultPayload(model) {
     const { type, id, meta, links, included, _relationships, ...attributes } = model;
     return {
@@ -672,6 +715,11 @@ class BaseService extends RequestBuilder {
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
+  }
+  async update(id, model) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildUpdatePayload(model);
+    return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
   }
 }
 
@@ -1027,6 +1075,29 @@ class Client {
       const fetchResponse = await fetch(url, {
         credentials: "include",
         headers
+      });
+      let json = await fetchResponse.json();
+      return Requests.buildInternalResponse(fetchResponse, json);
+    } catch (error) {
+      return Requests.buildInternalErrorResponse(error);
+    }
+  }
+  async makePatchRequest(baseEndpoint, body, param) {
+    await this.ensureAuthenticated();
+    let url = Requests.buildRequestURL(baseEndpoint, param);
+    url = this.substituteOrganisation(url);
+    let headers = {
+      "Content-Type": "application/json"
+    };
+    if (this.bearerToken) {
+      headers["Authorization"] = `Bearer ${this.bearerToken}`;
+    }
+    try {
+      const fetchResponse = await fetch(url, {
+        method: "PATCH",
+        headers,
+        credentials: "include",
+        body: JSON.stringify(body)
       });
       let json = await fetchResponse.json();
       return Requests.buildInternalResponse(fetchResponse, json);

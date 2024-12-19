@@ -1,21 +1,21 @@
-import type { ClientConfigInterface} from "./ClientConfig";
-import { RequestOptions } from "./utils/RequestOptions";
-import { Requests } from "./utils/Requests";
-import { FormCategoriesService } from "./services/FormCategoriesService";
-import { RolesService } from "./services/RolesService";
-import { PermissionsService } from "./services/PermissionsService";
-import { SubmissionsService } from "./services/SubmissionsService";
-import { FormsService } from "./services/FormsService";
-import { ServiceAccountsService } from "./services/ServiceAccountService";
-import { ServiceAccountKeysService } from "./services/ServiceAccountKeysService";
-import type {InternalResponse} from "./types/Response";
-import {GroupsService} from "./services/GroupService";
-import { VehiclesService } from "./services/VehiclesService";
-import { EquipmentService } from "./services/EquipmentService";
-import { VehicleManufacturersService } from "@services/VehicleManufacturersService";
-import { VehicleModelsService } from "@services/VehicleModelsService";
-import { EquipmentManufacturersService } from "@services/EquipmentManufacturersService";
-import { EquipmentModelsService } from "@services/EquipmentModelsService";
+import type { ClientConfigInterface } from './ClientConfig';
+import { RequestOptions } from './utils/RequestOptions';
+import { Requests } from './utils/Requests';
+import { FormCategoriesService } from './services/FormCategoriesService';
+import { RolesService } from './services/RolesService';
+import { PermissionsService } from './services/PermissionsService';
+import { SubmissionsService } from './services/SubmissionsService';
+import { FormsService } from './services/FormsService';
+import { ServiceAccountsService } from './services/ServiceAccountService';
+import { ServiceAccountKeysService } from './services/ServiceAccountKeysService';
+import type { InternalResponse } from './types/Response';
+import { GroupsService } from './services/GroupService';
+import { VehiclesService } from './services/VehiclesService';
+import { EquipmentService } from './services/EquipmentService';
+import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
+import { VehicleModelsService } from '@services/VehicleModelsService';
+import { EquipmentManufacturersService } from '@services/EquipmentManufacturersService';
+import { EquipmentModelsService } from '@services/EquipmentModelsService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -26,7 +26,7 @@ export class Client {
 
     constructor(config: ClientConfigInterface) {
         this.config = config;
-        this.organisation = "";
+        this.organisation = '';
 
         if (config.clientId && config.clientSecret && config.authDomain) {
             this.tokenPromise = this.getToken();
@@ -37,16 +37,16 @@ export class Client {
         const url = this.config.authDomain || '';
 
         const params = new URLSearchParams();
-        params.append("grant_type", "client_credentials");
-        params.append("client_id", this.config.clientId || '');
-        params.append("client_secret", this.config.clientSecret || '');
+        params.append('grant_type', 'client_credentials');
+        params.append('client_id', this.config.clientId || '');
+        params.append('client_secret', this.config.clientSecret || '');
 
         const response = await fetch(url + '/oauth2/token', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
             },
-            body: params.toString()
+            body: params.toString(),
         });
 
         let tokenJson = await response.json();
@@ -123,17 +123,15 @@ export class Client {
         this.config.organisationId = organisation;
     }
 
-  substituteOrganisation(url: string): string {
-    return `${this.config.baseDomain}${url.replace(":orgId", this.config.organisationId.toString())}`;
-  }
+    substituteOrganisation(url: string): string {
+        return `${this.config.baseDomain}${url.replace(':orgId', this.config.organisationId.toString())}`;
+    }
 
-    async makeDeleteRequest(
-        endpoint: string,
-    ): Promise<any> {
+    async makeDeleteRequest(endpoint: string): Promise<any> {
         await this.ensureAuthenticated();
 
-    let url = Requests.buildRequestURL(endpoint);
-    url = this.substituteOrganisation(url);
+        let url = Requests.buildRequestURL(endpoint);
+        url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -157,15 +155,11 @@ export class Client {
         }
     }
 
-    async makePostRequest(
-        baseEndpoint: string,
-        body?: any,
-        param?: string | RequestOptions | null,
-    ): Promise<any> {
+    async makePostRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any> {
         await this.ensureAuthenticated();
 
-    let url = Requests.buildRequestURL(baseEndpoint, param);
-    url = this.substituteOrganisation(url);
+        let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -190,14 +184,11 @@ export class Client {
         }
     }
 
-    async makeGetRequest(
-        baseEndpoint: string,
-        param?: string | RequestOptions,
-    ): Promise<InternalResponse> {
+    async makeGetRequest(baseEndpoint: string, param?: string | RequestOptions): Promise<InternalResponse> {
         await this.ensureAuthenticated();
 
-    let url = Requests.buildRequestURL(baseEndpoint, param);
-    url = this.substituteOrganisation(url);
+        let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
 
         let headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -210,8 +201,8 @@ export class Client {
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: "include", // @todo only required for cookie based auth,
-                headers: headers
+                credentials: 'include', // @todo only required for cookie based auth,
+                headers: headers,
             });
             let json = await fetchResponse.json();
             return Requests.buildInternalResponse(fetchResponse, json);
@@ -220,4 +211,32 @@ export class Client {
         }
     }
 
+    async makePatchRequest(baseEndpoint: string, body?: any, param?: string | RequestOptions | null): Promise<any> {
+        await this.ensureAuthenticated();
+
+        let url = Requests.buildRequestURL(baseEndpoint, param);
+        url = this.substituteOrganisation(url);
+
+        let headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (this.bearerToken) {
+            headers['Authorization'] = `Bearer ${this.bearerToken}`;
+        }
+
+        try {
+            const fetchResponse = await fetch(url, {
+                method: 'PATCH',
+                headers: headers,
+                credentials: 'include',
+                body: JSON.stringify(body),
+            });
+
+            let json = await fetchResponse.json();
+            return Requests.buildInternalResponse(fetchResponse, json);
+        } catch (error) {
+            return Requests.buildInternalErrorResponse(error);
+        }
+    }
 }

@@ -8,6 +8,7 @@ type JsonApiRelationship = {
 };
 type JsonApiPayload = {
     data: {
+        id?: string;
         type: string;
         attributes: Record<string, any>;
         relationships?: Record<string, JsonApiRelationship>;
@@ -17,6 +18,7 @@ export declare class JsonApiSerializer {
     protected modelMap: Record<string, new (...args: any[]) => Model>;
     constructor(modelMap: Record<string, new (...args: any[]) => Model>);
     buildCreatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
+    buildUpdatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
     private buildDefaultPayload;
 }
 export {};

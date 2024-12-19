@@ -2,7 +2,7 @@ import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 
 export class FormCategory extends BaseModel {
-    public type: string = 'form_categories';
+    public type: string = 'form-categories';
 
     public name: string = '';
 
@@ -12,5 +12,4 @@ export class FormCategory extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
     }
-
 }

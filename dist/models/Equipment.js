@@ -7,20 +7,20 @@ export class Equipment extends BaseModel {
         return {
             attributes: ['serial'],
             relationships: {
-                model: 'equipment-models'
-            }
+                model: 'equipment-models',
+            },
         };
     }
     static relationships = [
         {
             name: 'model',
             type: 'single',
-            modelType: 'equipment-models'
-        }
+            modelType: 'equipment-models',
+        },
     ];
     constructor(data) {
         super(data);
-        this.serial = data?.attributes?.serial ?? '';
-        this.model = '';
+        this.serial = data?.attributes?.serial ?? data?.serial ?? '';
+        this.model = data?.relationships?.model?.id ?? data?.model ?? '';
     }
 }

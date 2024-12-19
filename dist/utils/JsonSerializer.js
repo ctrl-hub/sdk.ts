@@ -44,6 +44,48 @@ export class JsonApiSerializer {
         }
         return this.buildDefaultPayload(model);
     }
+    buildUpdatePayload(model) {
+        const ModelClass = this.modelMap[model.type];
+        if (!ModelClass) {
+            console.warn(`No model class found for type: ${model.type}`);
+            return this.buildDefaultPayload(model);
+        }
+        const prototype = ModelClass.prototype;
+        if (typeof prototype.jsonApiMapping === 'function') {
+            const mapping = prototype.jsonApiMapping.call(model);
+            const payload = {
+                data: {
+                    id: model.id,
+                    type: model.type,
+                    attributes: {},
+                    relationships: {},
+                },
+            };
+            if (mapping.attributes) {
+                mapping.attributes.forEach((attr) => {
+                    const value = model[attr];
+                    if (value !== undefined && value !== '') {
+                        payload.data.attributes[attr] = value;
+                    }
+                });
+            }
+            if (mapping.relationships) {
+                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
+                    const relationshipValue = model[key];
+                    if (relationshipValue && typeof relationshipType === 'string') {
+                        payload.data.relationships[key] = {
+                            data: {
+                                type: relationshipType,
+                                id: relationshipValue.id,
+                            },
+                        };
+                    }
+                });
+            }
+            return payload;
+        }
+        return this.buildDefaultPayload(model);
+    }
     buildDefaultPayload(model) {
         const { type, id, meta, links, included, _relationships, ...attributes } = model;
         return {

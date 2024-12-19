@@ -18,26 +18,24 @@ export class Hydrator {
         'equipment-items': Equipment,
         'equipment-models': EquipmentModel,
         'equipment-manufacturers': EquipmentManufacturer,
-        'forms': Form,
-        'form_categories': FormCategory,
-        'groups': Group,
-        'permissions': Permission,
-        'roles': Role,
+        forms: Form,
+        'form-categories': FormCategory,
+        groups: Group,
+        permissions: Permission,
+        roles: Role,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
-        'submissions': Submission,
-        'vehicles': Vehicle,
+        submissions: Submission,
+        vehicles: Vehicle,
         'vehicle-models': VehicleModel,
         'vehicle-manufacturers': VehicleManufacturer,
-        'vehicle-specifications': VehicleSpecification
+        'vehicle-specifications': VehicleSpecification,
     };
     getModelMap = () => {
         return this.modelMap;
     };
     hydrateResponse(data, included) {
-        return Array.isArray(data)
-            ? this.hydrateArray(data, included)
-            : this.hydrateSingle(data, included);
+        return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
     }
     hydrateArray(items, included) {
         return items.map(item => this.hydrateSingle(item, included));
@@ -53,7 +51,7 @@ export class Hydrator {
             meta: item.meta,
             links: item.links,
             attributes: item.attributes,
-            relationships: item.relationships
+            relationships: item.relationships,
         });
         if (item.relationships) {
             this.hydrateRelationships(model, item.relationships, included, ModelClass);

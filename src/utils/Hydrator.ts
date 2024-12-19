@@ -22,28 +22,26 @@ export class Hydrator {
         'equipment-items': Equipment,
         'equipment-models': EquipmentModel,
         'equipment-manufacturers': EquipmentManufacturer,
-        'forms': Form,
-        'form_categories': FormCategory,
-        'groups': Group,
-        'permissions': Permission,
-        'roles': Role,
+        forms: Form,
+        'form-categories': FormCategory,
+        groups: Group,
+        permissions: Permission,
+        roles: Role,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
-        'submissions': Submission,
-        'vehicles': Vehicle,
+        submissions: Submission,
+        vehicles: Vehicle,
         'vehicle-models': VehicleModel,
         'vehicle-manufacturers': VehicleManufacturer,
-        'vehicle-specifications': VehicleSpecification
+        'vehicle-specifications': VehicleSpecification,
     };
 
     public getModelMap = () => {
         return this.modelMap;
-    }
+    };
 
     hydrateResponse<T extends Model>(data: JsonData | JsonData[], included: any[]): T | T[] {
-        return Array.isArray(data)
-            ? this.hydrateArray<T>(data, included)
-            : this.hydrateSingle<T>(data, included);
+        return Array.isArray(data) ? this.hydrateArray<T>(data, included) : this.hydrateSingle<T>(data, included);
     }
 
     private hydrateArray<T extends Model>(items: JsonData[], included: any[]): T[] {
@@ -62,7 +60,7 @@ export class Hydrator {
             meta: item.meta,
             links: item.links,
             attributes: item.attributes,
-            relationships: item.relationships
+            relationships: item.relationships,
         }) as T;
 
         if (item.relationships) {
@@ -76,7 +74,7 @@ export class Hydrator {
         model: Model,
         relationships: Record<string, any>,
         included: any[],
-        ModelClass: new (data?: any) => Model
+        ModelClass: new (data?: any) => Model,
     ): void {
         if (!('relationships' in ModelClass)) return;
 
@@ -97,10 +95,8 @@ export class Hydrator {
         }
     }
 
-    private findAndHydrateIncluded(relation: { id: string, type: string }, included: any[]): Model | null {
-        const includedData = included.find(inc =>
-            inc.id === relation.id && inc.type === relation.type
-        );
+    private findAndHydrateIncluded(relation: { id: string; type: string }, included: any[]): Model | null {
+        const includedData = included.find(inc => inc.id === relation.id && inc.type === relation.type);
 
         if (!includedData) return null;
 

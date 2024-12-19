@@ -8,6 +8,7 @@ export class BaseModel {
     static relationships = [];
     constructor(data) {
         this.id = data?.id ?? '';
+        this.type = data?.type ?? '';
         // Only set optional properties if they have content
         if (data?.meta && Object.keys(data.meta).length > 0) {
             this.meta = data.meta;

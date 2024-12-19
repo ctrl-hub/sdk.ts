@@ -14,6 +14,7 @@ export abstract class BaseModel implements Model {
 
     constructor(data?: any) {
         this.id = data?.id ?? '';
+        this.type = data?.type ?? '';
 
         // Only set optional properties if they have content
         if (data?.meta && Object.keys(data.meta).length > 0) {

@@ -1,6 +1,6 @@
 import { BaseModel } from '@models/BaseModel';
 export class FormCategory extends BaseModel {
-    type = 'form_categories';
+    type = 'form-categories';
     name = '';
     static relationships = [];
     constructor(data) {

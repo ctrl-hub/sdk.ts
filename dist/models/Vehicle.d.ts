@@ -8,13 +8,13 @@ export declare class Vehicle extends BaseModel implements Partial<JsonApiMapping
     vin: string;
     description: string;
     colour: string;
+    specification?: VehicleSpecification | string;
     jsonApiMapping(): {
         attributes: string[];
         relationships: {
             specification: string;
         };
     };
-    specification?: VehicleSpecification | string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
 }

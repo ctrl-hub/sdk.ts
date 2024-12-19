@@ -14,8 +14,8 @@ export class Equipment extends BaseModel implements Partial<JsonApiMapping> {
         return {
             attributes: ['serial'],
             relationships: {
-                model: 'equipment-models'
-            }
+                model: 'equipment-models',
+            },
         };
     }
 
@@ -23,14 +23,13 @@ export class Equipment extends BaseModel implements Partial<JsonApiMapping> {
         {
             name: 'model',
             type: 'single',
-            modelType: 'equipment-models'
-        }
+            modelType: 'equipment-models',
+        },
     ];
 
     constructor(data?: any) {
         super(data);
-        this.serial = data?.attributes?.serial ?? '';
-        this.model = '';
+        this.serial = data?.attributes?.serial ?? data?.serial ?? '';
+        this.model = data?.relationships?.model?.id ?? data?.model ?? '';
     }
-
 }
