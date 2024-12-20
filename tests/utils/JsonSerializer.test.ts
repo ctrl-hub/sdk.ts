@@ -2,8 +2,12 @@ import { describe, it, expect } from "bun:test";
 import { JsonApiSerializer } from "@utils/JsonSerializer";
 import { Equipment } from "@models/Equipment";
 import { FormCategory } from '../../src';
+import { Hydrator } from '../../src/utils/Hydrator';
 
 describe('JsonApiSerializer', () => {
+
+    const hydrator = new Hydrator();
+
     describe('buildCreatePayload', () => {
         it('should transform equipment input to correct JSONAPI format', () => {
 
@@ -11,7 +15,7 @@ describe('JsonApiSerializer', () => {
             equipment.serial = "TestSerial";
             equipment.model = "a354c5cc-2c9a-44fa-80f6-de3d97946ccb";
 
-            const payload = JsonApiSerializer.buildCreatePayload(equipment);
+            const payload = (new JsonApiSerializer(hydrator.getModelMap())).buildCreatePayload(equipment);
 
             let expectedPayload = {
                 data: {
@@ -38,11 +42,11 @@ describe('JsonApiSerializer', () => {
             const formCategory = new FormCategory();
             formCategory.name = "Test Category";
 
-            const payload = JsonApiSerializer.buildCreatePayload(formCategory);
+            const payload = (new JsonApiSerializer(hydrator.getModelMap())).buildCreatePayload(formCategory);
 
             const expectedPayload = {
                 data: {
-                    type: "form_categories",
+                    type: "form-categories",
                     attributes: {
                         name: "Test Category"
                     }
