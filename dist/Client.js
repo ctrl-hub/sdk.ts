@@ -14,6 +14,7 @@ import { VehicleManufacturersService } from '@services/VehicleManufacturersServi
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { EquipmentManufacturersService } from '@services/EquipmentManufacturersService';
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
+import { PropertiesService } from '@services/PropertiesService';
 export class Client {
     config;
     organisation;
@@ -92,6 +93,9 @@ export class Client {
     }
     equipmentModels() {
         return new EquipmentModelsService(this);
+    }
+    properties() {
+        return new PropertiesService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;

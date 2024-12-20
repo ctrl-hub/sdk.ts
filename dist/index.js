@@ -462,6 +462,25 @@ class EquipmentManufacturer extends BaseModel {
   }
 }
 
+// src/models/Property.ts
+class Property extends BaseModel {
+  type = "properties";
+  custom = false;
+  name = "";
+  description = "";
+  launch_stage = "";
+  permissions = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.custom = data?.attributes?.custom ?? false;
+    this.name = data?.attributes?.name ?? "";
+    this.description = data?.attributes?.description ?? "";
+    this.launch_stage = data?.attributes?.launch_stage ?? "";
+    this.permissions = data?.attributes?.permissions ?? [];
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -479,7 +498,8 @@ class Hydrator {
     vehicles: Vehicle,
     "vehicle-models": VehicleModel,
     "vehicle-manufacturers": VehicleManufacturer,
-    "vehicle-specifications": VehicleSpecification
+    "vehicle-specifications": VehicleSpecification,
+    properties: Property
   };
   getModelMap = () => {
     return this.modelMap;
@@ -930,6 +950,20 @@ class EquipmentModelsService extends BaseService {
   }
 }
 
+// src/services/PropertiesService.ts
+class PropertiesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/governance/properties");
+  }
+  async byUprn(uprn) {
+    if (!Array.isArray(uprn)) {
+      return await this.client.makeGetRequest(`${this.endpoint}/${uprn}`);
+    }
+    const filter = "?" + uprn.map((value) => `filter[uprn]=${encodeURIComponent(value)}`).join("&");
+    return await this.client.makeGetRequest(`${this.endpoint}${filter}`);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1009,6 +1043,9 @@ class Client {
   }
   equipmentModels() {
     return new EquipmentModelsService(this);
+  }
+  properties() {
+    return new PropertiesService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

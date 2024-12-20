@@ -16,6 +16,7 @@ import { VehicleManufacturersService } from '@services/VehicleManufacturersServi
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { EquipmentManufacturersService } from '@services/EquipmentManufacturersService';
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
+import { PropertiesService } from '@services/PropertiesService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -117,6 +118,10 @@ export class Client {
 
     public equipmentModels(): EquipmentModelsService {
         return new EquipmentModelsService(this);
+    }
+
+    public properties(): PropertiesService {
+        return new PropertiesService(this);
     }
 
     setOrganisationSlug(organisation: string) {

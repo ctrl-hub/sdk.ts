@@ -16,6 +16,7 @@ import { VehicleModel } from '@models/VehicleModel';
 import { VehicleManufacturer } from '@models/VehicleManufacturer';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { EquipmentManufacturer } from '@models/EquipmentManufacturer';
+import { Property } from '@models/Property';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -34,6 +35,7 @@ export class Hydrator {
         'vehicle-models': VehicleModel,
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification,
+        'properties': Property,
     };
 
     public getModelMap = () => {
