@@ -199,6 +199,16 @@ class Equipment extends BaseModel {
   }
 }
 
+// src/models/EquipmentCategory.ts
+class EquipmentCategory extends BaseModel {
+  type = "equipment-categories";
+  name = "";
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
 // src/models/EquipmentModel.ts
 class EquipmentModel extends BaseModel {
   type = "equipment-models";
@@ -394,6 +404,16 @@ class Vehicle extends BaseModel {
   }
 }
 
+// src/models/VehicleCategory.ts
+class VehicleCategory extends BaseModel {
+  type = "vehicle-categories";
+  name = "";
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
 // src/models/VehicleModel.ts
 class VehicleModel extends BaseModel {
   type = "vehicle-models";
@@ -484,6 +504,7 @@ class Property extends BaseModel {
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
+    "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
     "equipment-models": EquipmentModel,
     "equipment-manufacturers": EquipmentManufacturer,
@@ -496,6 +517,7 @@ class Hydrator {
     "service-account-keys": ServiceAccountKey,
     submissions: Submission,
     vehicles: Vehicle,
+    "vehicle-categories": VehicleCategory,
     "vehicle-models": VehicleModel,
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
@@ -930,6 +952,13 @@ class VehicleModelsService extends BaseService {
   }
 }
 
+// src/services/VehicleCategoriesService.ts
+class VehicleCategoriesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/vehicles/categories");
+  }
+}
+
 // src/services/EquipmentManufacturersService.ts
 class EquipmentManufacturersService extends BaseService {
   constructor(client) {
@@ -940,6 +969,13 @@ class EquipmentManufacturersService extends BaseService {
     const resp = await this.client.makeGetRequest(modelsEndpoint);
     resp.data = resp.data.map((model) => new EquipmentModel(model));
     return resp;
+  }
+}
+
+// src/services/EquipmentCategoriesService.ts
+class EquipmentCategoriesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/equipment/categories");
   }
 }
 
@@ -1032,6 +1068,9 @@ class Client {
   vehicleManufacturers() {
     return new VehicleManufacturersService(this);
   }
+  vehicleCategories() {
+    return new VehicleCategoriesService(this);
+  }
   vehicleModels() {
     return new VehicleModelsService(this);
   }
@@ -1043,6 +1082,9 @@ class Client {
   }
   equipmentModels() {
     return new EquipmentModelsService(this);
+  }
+  equipmentCategories() {
+    return new EquipmentCategoriesService(this);
   }
   properties() {
     return new PropertiesService(this);

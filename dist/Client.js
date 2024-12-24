@@ -12,7 +12,9 @@ import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
+import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
 import { EquipmentManufacturersService } from '@services/EquipmentManufacturersService';
+import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService';
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 export class Client {
@@ -82,6 +84,9 @@ export class Client {
     vehicleManufacturers() {
         return new VehicleManufacturersService(this);
     }
+    vehicleCategories() {
+        return new VehicleCategoriesService(this);
+    }
     vehicleModels() {
         return new VehicleModelsService(this);
     }
@@ -93,6 +98,9 @@ export class Client {
     }
     equipmentModels() {
         return new EquipmentModelsService(this);
+    }
+    equipmentCategories() {
+        return new EquipmentCategoriesService(this);
     }
     properties() {
         return new PropertiesService(this);

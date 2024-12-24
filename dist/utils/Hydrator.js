@@ -1,4 +1,5 @@
 import { Equipment } from '@models/Equipment';
+import { EquipmentCategory } from '@models/EquipmentCategory';
 import { EquipmentModel } from '@models/EquipmentModel';
 import { Form } from '@models/Form';
 import { FormCategory } from '@models/FormCategory';
@@ -9,6 +10,7 @@ import { ServiceAccount } from '@models/ServiceAccount';
 import { ServiceAccountKey } from '@models/ServiceAccountKey';
 import { Submission } from '@models/Submission';
 import { Vehicle } from '@models/Vehicle';
+import { VehicleCategory } from '@models/VehicleCategory';
 import { VehicleModel } from '@models/VehicleModel';
 import { VehicleManufacturer } from '@models/VehicleManufacturer';
 import { VehicleSpecification } from '@models/VehicleSpecification';
@@ -16,6 +18,7 @@ import { EquipmentManufacturer } from '@models/EquipmentManufacturer';
 import { Property } from '@models/Property';
 export class Hydrator {
     modelMap = {
+        'equipment-categories': EquipmentCategory,
         'equipment-items': Equipment,
         'equipment-models': EquipmentModel,
         'equipment-manufacturers': EquipmentManufacturer,
@@ -28,10 +31,11 @@ export class Hydrator {
         'service-account-keys': ServiceAccountKey,
         submissions: Submission,
         vehicles: Vehicle,
+        'vehicle-categories': VehicleCategory,
         'vehicle-models': VehicleModel,
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification,
-        'properties': Property,
+        properties: Property,
     };
     getModelMap = () => {
         return this.modelMap;
