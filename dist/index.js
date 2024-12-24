@@ -1201,6 +1201,7 @@ class ClientConfig {
   }
 }
 export {
+  VehicleSpecification,
   VehicleModel,
   VehicleManufacturer,
   VehicleCategory,

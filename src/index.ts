@@ -24,3 +24,4 @@ export { Vehicle } from './models/Vehicle';
 export { VehicleModel } from './models/VehicleModel';
 export { VehicleCategory } from './models/VehicleCategory';
 export { VehicleManufacturer } from './models/VehicleManufacturer';
+export { VehicleSpecification } from './models/VehicleSpecification';
