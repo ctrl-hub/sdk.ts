@@ -1203,6 +1203,7 @@ class ClientConfig {
 export {
   VehicleModel,
   VehicleManufacturer,
+  VehicleCategory,
   Vehicle,
   SubmissionVersion,
   Submission,
@@ -1217,6 +1218,7 @@ export {
   Form,
   EquipmentModel,
   EquipmentManufacturer,
+  EquipmentCategory,
   Equipment,
   ClientConfig,
   Client

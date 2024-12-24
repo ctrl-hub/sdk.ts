@@ -6,6 +6,7 @@ export type { InternalResponse } from './types/Response';
  * Models
  */
 export { Equipment } from './models/Equipment';
+export { EquipmentCategory } from './models/EquipmentCategory';
 export { EquipmentModel } from './models/EquipmentModel';
 export { EquipmentManufacturer } from './models/EquipmentManufacturer';
 export { Form } from './models/Form';
@@ -20,4 +21,5 @@ export { Submission } from './models/Submission';
 export { SubmissionVersion } from './models/SubmissionVersion';
 export { Vehicle } from './models/Vehicle';
 export { VehicleModel } from './models/VehicleModel';
+export { VehicleCategory } from './models/VehicleCategory';
 export { VehicleManufacturer } from './models/VehicleManufacturer';
