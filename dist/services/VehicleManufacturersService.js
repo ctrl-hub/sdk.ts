@@ -7,9 +7,14 @@ export class VehicleManufacturersService extends BaseService {
         super(client, "/v3/assets/vehicles/manufacturers");
     }
     async models(manufacturerId) {
-        const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models`;
+        const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models?include=categories`;
         const resp = await this.client.makeGetRequest(modelsEndpoint);
-        resp.data = resp.data.map((model) => new VehicleModel(model));
+        resp.data = resp.data.map((modelData) => {
+            return new VehicleModel({
+                ...modelData,
+                included: resp.included
+            });
+        });
         return resp;
     }
 }

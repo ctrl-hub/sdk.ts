@@ -418,16 +418,28 @@ class VehicleCategory extends BaseModel {
 class VehicleModel extends BaseModel {
   type = "vehicle-models";
   name = "";
+  categories = [];
   static relationships = [
     {
       name: "manufacturer",
       type: "single",
       modelType: "vehicle-manufacturers"
+    },
+    {
+      name: "categories",
+      type: "array",
+      modelType: "vehicle-categories"
     }
   ];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
+    this.categories = [];
+    const categoryData = data?.relationships?.categories?.data ?? [];
+    this.categories = categoryData.map((category) => ({
+      id: category.id,
+      name: this.included?.find((inc) => inc.type === "vehicle-categories" && inc.id === category.id)?.attributes?.name || ""
+    }));
   }
 }
 
@@ -932,9 +944,14 @@ class VehicleManufacturersService extends BaseService {
     super(client, "/v3/assets/vehicles/manufacturers");
   }
   async models(manufacturerId) {
-    const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models`;
+    const modelsEndpoint = `${this.endpoint}/${manufacturerId}/models?include=categories`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
-    resp.data = resp.data.map((model) => new VehicleModel(model));
+    resp.data = resp.data.map((modelData) => {
+      return new VehicleModel({
+        ...modelData,
+        included: resp.included
+      });
+    });
     return resp;
   }
 }
