@@ -13,4 +13,9 @@ export class EquipmentManufacturer extends BaseModel {
         this.name = data?.attributes?.name ?? '';
     }
 
+    jsonApiMapping() {
+        return {
+            attributes: ['name'],
+        };
+    }
 }
