@@ -7,4 +7,9 @@ export class VehicleManufacturer extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
     }
+    jsonApiMapping() {
+        return {
+            attributes: ['name'],
+        };
+    }
 }

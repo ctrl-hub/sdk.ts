@@ -6,4 +6,9 @@ export class VehicleCategory extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
     }
+    jsonApiMapping() {
+        return {
+            attributes: ['name'],
+        };
+    }
 }

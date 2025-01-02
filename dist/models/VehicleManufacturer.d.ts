@@ -5,4 +5,7 @@ export declare class VehicleManufacturer extends BaseModel {
     name: string;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
+    jsonApiMapping(): {
+        attributes: string[];
+    };
 }

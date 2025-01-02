@@ -207,6 +207,11 @@ class EquipmentCategory extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
   }
+  jsonApiMapping() {
+    return {
+      attributes: ["name"]
+    };
+  }
 }
 
 // src/models/EquipmentModel.ts
@@ -412,6 +417,11 @@ class VehicleCategory extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
   }
+  jsonApiMapping() {
+    return {
+      attributes: ["name"]
+    };
+  }
 }
 
 // src/models/VehicleModel.ts
@@ -452,6 +462,11 @@ class VehicleManufacturer extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? "";
   }
+  jsonApiMapping() {
+    return {
+      attributes: ["name"]
+    };
+  }
 }
 
 // src/models/VehicleSpecification.ts
@@ -491,6 +506,11 @@ class EquipmentManufacturer extends BaseModel {
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name"]
+    };
   }
 }
 

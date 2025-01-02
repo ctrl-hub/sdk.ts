@@ -6,4 +6,9 @@ export class EquipmentCategory extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
     }
+    jsonApiMapping() {
+        return {
+            attributes: ['name'],
+        };
+    }
 }
