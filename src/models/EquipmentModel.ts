@@ -9,10 +9,18 @@ type EquipmentModelDocumentation = {
     link: string;
 }
 
+type EquipmentModelSpecification = {
+    vibration: {
+        magnitude: number;
+    };
+}
+
 export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
 
     public name: string = '';
+    public description: string = '';
+    public specification: EquipmentModelSpecification;
     public categories: EquipmentCategory[] = [];
     public documentation: EquipmentModelDocumentation[] = [];
 
@@ -34,8 +42,11 @@ export class EquipmentModel extends BaseModel {
     constructor(data?: any) {
         super(data);
         this.name = data?.attributes?.name ?? '';
+        this.description = data?.attributes?.description ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
         this.categories = [];
+
+        this.specification = data?.attributes?.specification ?? {};
 
         const categoryData = data?.relationships?.categories?.data ?? [];
 

@@ -7,9 +7,16 @@ type EquipmentModelDocumentation = {
     description: string;
     link: string;
 };
+type EquipmentModelSpecification = {
+    vibration: {
+        magnitude: number;
+    };
+};
 export declare class EquipmentModel extends BaseModel {
     type: string;
     name: string;
+    description: string;
+    specification: EquipmentModelSpecification;
     categories: EquipmentCategory[];
     documentation: EquipmentModelDocumentation[];
     manufacturer?: EquipmentManufacturer;
