@@ -218,6 +218,7 @@ class EquipmentCategory extends BaseModel {
 class EquipmentModel extends BaseModel {
   type = "equipment-models";
   name = "";
+  categories = [];
   documentation = [];
   manufacturer;
   static relationships = [
@@ -225,12 +226,23 @@ class EquipmentModel extends BaseModel {
       name: "manufacturer",
       type: "single",
       modelType: "equipment-manufacturers"
+    },
+    {
+      name: "categories",
+      type: "array",
+      modelType: "equipment-categories"
     }
   ];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
     this.documentation = data?.attributes?.documentation ?? [];
+    this.categories = [];
+    const categoryData = data?.relationships?.categories?.data ?? [];
+    this.categories = categoryData.map((category) => ({
+      id: category.id,
+      name: this.included?.find((inc) => inc.type === "equipment-categories" && inc.id === category.id)?.attributes?.name || ""
+    }));
   }
 }
 
@@ -1002,9 +1014,14 @@ class EquipmentManufacturersService extends BaseService {
     super(client, "/v3/assets/equipment/manufacturers");
   }
   async models(id) {
-    const modelsEndpoint = `${this.endpoint}/${id}/models`;
+    const modelsEndpoint = `${this.endpoint}/${id}/models?include=categories`;
     const resp = await this.client.makeGetRequest(modelsEndpoint);
-    resp.data = resp.data.map((model) => new EquipmentModel(model));
+    resp.data = resp.data.map((modelData) => {
+      return new EquipmentModel({
+        ...modelData,
+        included: resp.included
+      });
+    });
     return resp;
   }
 }

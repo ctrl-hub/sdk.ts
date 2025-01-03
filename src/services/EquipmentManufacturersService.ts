@@ -10,9 +10,16 @@ export class EquipmentManufacturersService extends BaseService<EquipmentManufact
     }
 
     async models(id: string): Promise<InternalResponse<EquipmentModel[]>> {
-        const modelsEndpoint = `${this.endpoint}/${id}/models`;
+        const modelsEndpoint = `${this.endpoint}/${id}/models?include=categories`;
         const resp = await this.client.makeGetRequest(modelsEndpoint);
-        resp.data = resp.data.map((model: any) => new EquipmentModel(model));
+
+        resp.data = resp.data.map((modelData: any) => {
+            return new EquipmentModel({
+                ...modelData,
+                included: resp.included
+            });
+        });
+
         return resp;
     }
 }

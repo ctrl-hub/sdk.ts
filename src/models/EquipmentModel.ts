@@ -1,6 +1,7 @@
 import type { EquipmentManufacturer } from './EquipmentManufacturer';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { EquipmentCategory } from '@models/EquipmentCategory';
 
 type EquipmentModelDocumentation = {
     name: string;
@@ -12,6 +13,7 @@ export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
 
     public name: string = '';
+    public categories: EquipmentCategory[] = [];
     public documentation: EquipmentModelDocumentation[] = [];
 
     public manufacturer?: EquipmentManufacturer;
@@ -21,6 +23,11 @@ export class EquipmentModel extends BaseModel {
             name: 'manufacturer',
             type: 'single',
             modelType: 'equipment-manufacturers'
+        },
+        {
+            name: 'categories',
+            type: 'array',
+            modelType: 'equipment-categories'
         }
     ];
 
@@ -28,6 +35,16 @@ export class EquipmentModel extends BaseModel {
         super(data);
         this.name = data?.attributes?.name ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
+        this.categories = [];
+
+        const categoryData = data?.relationships?.categories?.data ?? [];
+
+        this.categories = categoryData.map((category: any) => ({
+            id: category.id,
+            name: this.included?.find((inc: any) =>
+                inc.type === 'equipment-categories' && inc.id === category.id
+            )?.attributes?.name || ''
+        }));
     }
 
 }
