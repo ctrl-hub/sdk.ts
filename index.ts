@@ -64,16 +64,14 @@ import { Vehicle } from './src/models/Vehicle';
 let client = new Client({
     organisationId: "ctrl-hub",
     baseDomain: "https://api.ctrl-hub.dev",
-    clientId: 'd2cb057a-8896-4a48-85a1-60178f133dd9',
-    clientSecret: 'R1NY7Zurgq.zSGCI5UoHxxq4y3',
+    clientId: '399354ec-12d2-4df3-b09c-05d91d6f17a7',
+    clientSecret: 'xnrwu2BQOXKPKIiTUvMLcU8-jW',
     authDomain: 'https://auth.ctrl-hub.dev'
 });
 
-let resp = await client.submissions().get({
-    limit: 2,
-});
+let resp = await client.vehicles().motRecords("705ec18e-5c15-4d02-83c8-5c75c97cb157");
 
-console.log(resp.data.length);
+console.log(resp.data);
 
 // let resp = await client.submissions().get()
 // console.log(resp.data.length);

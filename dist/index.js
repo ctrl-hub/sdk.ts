@@ -549,6 +549,87 @@ class Property extends BaseModel {
   }
 }
 
+// src/models/VehicleInventoryCheck.ts
+class VehicleInventoryCheck extends BaseModel {
+  type = "vehicle-inventory-checks";
+  inspected_at = "";
+  items = [];
+  jsonApiMapping() {
+    return {
+      attributes: ["registration", "vin", "description", "colour"],
+      relationships: {
+        specification: "vehicle-specifications"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "equipment",
+      type: "array",
+      modelType: "equipment-items"
+    },
+    {
+      name: "author",
+      type: "single",
+      modelType: "users"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.inspected_at = data?.attributes?.inspected_at ?? data?.inspected_at ?? "";
+    this.items = data?.attributes?.items ?? [];
+  }
+}
+
+// src/models/User.ts
+class User extends BaseModel {
+  type = "users";
+  firstName = "";
+  lastName = "";
+  jsonApiMapping() {
+    return {
+      attributes: ["registration", "vin", "description", "colour"],
+      relationships: {
+        specification: "vehicle-specifications"
+      }
+    };
+  }
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.firstName = data?.attributes?.profile?.personal?.first_name ?? data.firstName ?? "";
+    this.lastName = data?.attributes?.profile?.personal?.last_name ?? data.lastName ?? "";
+  }
+}
+
+// src/models/MotRecord.ts
+class MotRecord extends BaseModel {
+  type = "vehicle-mot-records";
+  completedDate = "";
+  dataSource = "";
+  defects = [];
+  expiryDate = "";
+  odometer = {
+    type: "read",
+    unit: "kilometers",
+    value: 0
+  };
+  result = "";
+  jsonApiMapping() {
+    return {};
+  }
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.completedDate = data?.attributes.completed_date ?? data?.completedDate;
+    this.dataSource = data?.attributes.data_source ?? data?.dateSource;
+    this.defects = data?.attributes.defects ?? data?.defects;
+    this.expiryDate = data?.attributes.expiry_date ?? data?.expiryDate;
+    this.odometer = data?.attributes.odometer ?? data?.odometer;
+    this.result = data?.attributes.result ?? data?.result;
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -569,7 +650,10 @@ class Hydrator {
     "vehicle-models": VehicleModel,
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
-    properties: Property
+    properties: Property,
+    "vehicle-inventory-checks": VehicleInventoryCheck,
+    users: User,
+    "vehicle-mot-records": MotRecord
   };
   getModelMap = () => {
     return this.modelMap;
@@ -976,6 +1060,21 @@ class VehiclesService extends BaseService {
       }
     };
     return await this.client.makePostRequest(enquiryEndpoint, body);
+  }
+  async inventoryChecks(vehicleId) {
+    const includes = "?include=author,equipment,equipment.model,equipment.model.categories,equipment.model.manufacturer";
+    const inventoryChecksEndpoint = `${this.endpoint}/${vehicleId}/inventory-checks${includes}`;
+    const resp = await this.client.makeGetRequest(inventoryChecksEndpoint);
+    const hydrator = new Hydrator;
+    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
+    return resp;
+  }
+  async motRecords(vehicleId) {
+    const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
+    const resp = await this.client.makeGetRequest(motRecordsEndpoint);
+    const hydrator = new Hydrator;
+    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
+    return resp;
   }
 }
 

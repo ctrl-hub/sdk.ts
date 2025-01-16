@@ -16,6 +16,9 @@ import { VehicleManufacturer } from '@models/VehicleManufacturer';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { EquipmentManufacturer } from '@models/EquipmentManufacturer';
 import { Property } from '@models/Property';
+import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
+import { User } from '@models/User';
+import { MotRecord } from '@models/MotRecord';
 export class Hydrator {
     modelMap = {
         'equipment-categories': EquipmentCategory,
@@ -36,6 +39,9 @@ export class Hydrator {
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification,
         properties: Property,
+        'vehicle-inventory-checks': VehicleInventoryCheck,
+        'users': User,
+        'vehicle-mot-records': MotRecord,
     };
     getModelMap = () => {
         return this.modelMap;

@@ -2,6 +2,9 @@ import {Client} from "Client";
 import {BaseService} from "./BaseService";
 import {Vehicle} from "../models/Vehicle";
 import type { InternalResponse } from '../types/Response';
+import { VehicleInventoryCheck } from "@models/VehicleInventoryCheck";
+import { Hydrator } from "@utils/Hydrator";
+import type { MotRecord } from "@models/MotRecord";
 
 export class VehiclesService extends BaseService<Vehicle> {
     constructor(client: Client) {
@@ -21,5 +24,26 @@ export class VehiclesService extends BaseService<Vehicle> {
         }
 
         return await this.client.makePostRequest(enquiryEndpoint, body);
+    }
+
+    async inventoryChecks(vehicleId: string): Promise<InternalResponse<VehicleInventoryCheck[]>> {
+        const includes = '?include=author,equipment,equipment.model,equipment.model.categories,equipment.model.manufacturer';
+        const inventoryChecksEndpoint = `${this.endpoint}/${vehicleId}/inventory-checks${includes}`;
+        const resp = await this.client.makeGetRequest(inventoryChecksEndpoint);
+
+        const hydrator = new Hydrator();
+        resp.data = hydrator.hydrateResponse(resp.data, resp.included)
+
+        return resp;
+    }
+
+    async motRecords(vehicleId: string): Promise<InternalResponse<MotRecord[]>> {
+        const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
+        const resp = await this.client.makeGetRequest(motRecordsEndpoint);
+
+        const hydrator = new Hydrator();
+        resp.data = hydrator.hydrateResponse(resp.data, resp.included)
+
+        return resp;
     }
 }
