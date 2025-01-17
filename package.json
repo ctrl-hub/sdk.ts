@@ -4,7 +4,7 @@
         "type": "git",
         "url": "https://github.com/ctrl-hub/sdk.ts"
     },
-    "version": "0.1.85",
+    "version": "0.1.86",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
