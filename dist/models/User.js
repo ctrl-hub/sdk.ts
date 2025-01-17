@@ -3,6 +3,7 @@ export class User extends BaseModel {
     type = 'users';
     firstName = '';
     lastName = '';
+    email = '';
     jsonApiMapping() {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
@@ -16,6 +17,7 @@ export class User extends BaseModel {
         super(data);
         this.firstName = data?.attributes?.profile?.personal?.first_name ?? data.firstName ?? '';
         this.lastName = data?.attributes?.profile?.personal?.last_name ?? data.lastName ?? '';
+        this.email = data?.attributes?.email ?? data.email ?? '';
         // this.vin = data?.attributes?.vin ?? data?.vin ?? '';
         // this.description = data?.attributes?.description ?? data?.description ?? '';
         // this.colour = data?.attributes?.colour ?? data?.colour ?? '';

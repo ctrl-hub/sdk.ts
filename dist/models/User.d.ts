@@ -5,6 +5,7 @@ export declare class User extends BaseModel implements Partial<JsonApiMapping> {
     type: string;
     firstName: string;
     lastName: string;
+    email: string;
     jsonApiMapping(): {
         attributes: string[];
         relationships: {

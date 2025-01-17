@@ -584,6 +584,7 @@ class User extends BaseModel {
   type = "users";
   firstName = "";
   lastName = "";
+  email = "";
   jsonApiMapping() {
     return {
       attributes: ["registration", "vin", "description", "colour"],
@@ -597,6 +598,7 @@ class User extends BaseModel {
     super(data);
     this.firstName = data?.attributes?.profile?.personal?.first_name ?? data.firstName ?? "";
     this.lastName = data?.attributes?.profile?.personal?.last_name ?? data.lastName ?? "";
+    this.email = data?.attributes?.email ?? data.email ?? "";
   }
 }
 
