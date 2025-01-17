@@ -56,5 +56,6 @@ export declare class User extends BaseModel implements Partial<JsonApiMapping> {
     };
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
+    label: () => string;
 }
 export {};

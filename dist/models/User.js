@@ -83,4 +83,10 @@ export class User extends BaseModel {
             };
         }
     }
+    label = () => {
+        if (this.profile.personal.first_name && this.profile.personal.last_name) {
+            return this.profile.personal.first_name + ' ' + this.profile.personal.last_name;
+        }
+        return this.email;
+    };
 }

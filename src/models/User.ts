@@ -146,4 +146,11 @@ export class User extends BaseModel implements Partial<JsonApiMapping> {
             };
         }
     }
+
+    label = () => {
+        if (this.profile.personal.first_name && this.profile.personal.last_name) {
+            return this.profile.personal.first_name + ' ' + this.profile.personal.last_name;
+        }
+        return this.email;
+    }
 }
