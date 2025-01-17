@@ -1,6 +1,5 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import { VehicleModel } from '@models/VehicleModel';
 type VehicleModelDocumentation = {
     name: string;
     description: string;
@@ -9,12 +8,11 @@ type VehicleModelDocumentation = {
 export declare class VehicleSpecification extends BaseModel {
     type: string;
     emissions: number;
-    engine: string;
-    fuel: string;
-    transmission: string;
+    engine_capacity: string;
+    fuel_type: string;
     year: number;
+    wheelplan: string;
     documentation: VehicleModelDocumentation[];
-    model: VehicleModel;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
 }

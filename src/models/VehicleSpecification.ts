@@ -1,6 +1,5 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import { VehicleModel } from '@models/VehicleModel';
 
 type VehicleModelDocumentation = {
     name: string;
@@ -12,13 +11,11 @@ export class VehicleSpecification extends BaseModel {
     public type: string = 'vehicle-specifications';
 
     public emissions: number = 0;
-    public engine: string = '';
-    public fuel: string = '';
-    public transmission: string = '';
+    public engine_capacity: string = '';
+    public fuel_type: string = '';
     public year: number = 0;
+    public wheelplan: string = '';
     public documentation: VehicleModelDocumentation[] = [];
-
-    public model: VehicleModel;
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -31,12 +28,11 @@ export class VehicleSpecification extends BaseModel {
     constructor(data?: any) {
         super(data);
         this.emissions = data?.attributes?.emissions ?? 0;
-        this.engine = data?.attributes?.engine ?? '';
-        this.fuel = data?.attributes?.fuel ?? '';
-        this.transmission = data?.attributes?.transmission ?? '';
+        this.engine_capacity = data?.attributes?.engine_capacity ?? '';
+        this.fuel_type = data?.attributes?.fuel_type ?? '';
         this.year = data?.attributes?.year ?? 0;
+        this.wheelplan = data?.attributes?.wheelplan ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
-        this.model = new VehicleModel();
     }
 
 }

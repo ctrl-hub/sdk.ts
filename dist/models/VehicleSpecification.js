@@ -1,14 +1,12 @@
 import { BaseModel } from '@models/BaseModel';
-import { VehicleModel } from '@models/VehicleModel';
 export class VehicleSpecification extends BaseModel {
     type = 'vehicle-specifications';
     emissions = 0;
-    engine = '';
-    fuel = '';
-    transmission = '';
+    engine_capacity = '';
+    fuel_type = '';
     year = 0;
+    wheelplan = '';
     documentation = [];
-    model;
     static relationships = [
         {
             name: 'model',
@@ -19,11 +17,10 @@ export class VehicleSpecification extends BaseModel {
     constructor(data) {
         super(data);
         this.emissions = data?.attributes?.emissions ?? 0;
-        this.engine = data?.attributes?.engine ?? '';
-        this.fuel = data?.attributes?.fuel ?? '';
-        this.transmission = data?.attributes?.transmission ?? '';
+        this.engine_capacity = data?.attributes?.engine_capacity ?? '';
+        this.fuel_type = data?.attributes?.fuel_type ?? '';
         this.year = data?.attributes?.year ?? 0;
+        this.wheelplan = data?.attributes?.wheelplan ?? '';
         this.documentation = data?.attributes?.documentation ?? [];
-        this.model = new VehicleModel();
     }
 }
