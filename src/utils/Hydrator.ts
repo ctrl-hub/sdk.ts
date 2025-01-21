@@ -22,6 +22,7 @@ import { Property } from '@models/Property';
 import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
+import { VehicleStatus } from '@models/VehicleStatus';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -46,6 +47,7 @@ export class Hydrator {
         'vehicle-inventory-checks': VehicleInventoryCheck,
         'users': User,
         'vehicle-mot-records': MotRecord,
+        'vehicle-statuses': VehicleStatus,
     };
 
     public getModelMap = () => {

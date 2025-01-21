@@ -19,6 +19,7 @@ import { Property } from '@models/Property';
 import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
+import { VehicleStatus } from '@models/VehicleStatus';
 export class Hydrator {
     modelMap = {
         'equipment-categories': EquipmentCategory,
@@ -42,6 +43,7 @@ export class Hydrator {
         'vehicle-inventory-checks': VehicleInventoryCheck,
         'users': User,
         'vehicle-mot-records': MotRecord,
+        'vehicle-statuses': VehicleStatus,
     };
     getModelMap = () => {
         return this.modelMap;
