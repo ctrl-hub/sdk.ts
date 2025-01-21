@@ -7,11 +7,13 @@ export class Vehicle extends BaseModel {
     description = '';
     colour = '';
     specification = '';
+    status = '';
     jsonApiMapping() {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
             relationships: {
                 specification: 'vehicle-specifications',
+                status: 'vehicle-statuses'
             },
         };
     }
@@ -34,5 +36,6 @@ export class Vehicle extends BaseModel {
         this.description = data?.attributes?.description ?? data?.description ?? '';
         this.colour = data?.attributes?.colour ?? data?.colour ?? '';
         this.specification = data?.relationships?.specification?.id ?? data?.specification ?? '';
+        this.status = data?.relationships?.status?.id ?? data?.status ?? '';
     }
 }
