@@ -19,6 +19,7 @@ import { EquipmentManufacturersService } from '@services/EquipmentManufacturersS
 import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService';
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
+import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -46,6 +47,7 @@ export declare class Client {
     equipmentCategories(): EquipmentCategoriesService;
     properties(): PropertiesService;
     vehicleStatuses(): VehicleStatusesService;
+    vehicleModelSpecifications(): VehicleModelSpecificationService;
     setOrganisationSlug(organisation: string): void;
     substituteOrganisation(url: string): string;
     makeDeleteRequest(endpoint: string): Promise<any>;

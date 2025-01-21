@@ -6,11 +6,16 @@ export class BaseService extends RequestBuilder {
     client;
     endpoint;
     hydrator;
+    jsonApiSerializer;
     constructor(client, endpoint) {
         super();
         this.client = client;
         this.endpoint = endpoint;
         this.hydrator = new Hydrator();
+        this.jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    }
+    convertToJsonApi(model) {
+        return this.jsonApiSerializer.buildCreatePayload(model);
     }
     async get(param, options) {
         const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
@@ -21,7 +26,8 @@ export class BaseService extends RequestBuilder {
             data: hydratedData,
         };
     }
-    async create(model) {
+    async create(model, params) {
+        if (params) { }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
         return await this.client.makePostRequest(this.endpoint, payload);

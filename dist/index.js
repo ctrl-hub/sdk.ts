@@ -502,6 +502,11 @@ class VehicleSpecification extends BaseModel {
   year = 0;
   wheelplan = "";
   documentation = [];
+  jsonApiMapping() {
+    return {
+      attributes: ["emissions", "engine_capacity", "fuel_type", "year", "wheelplan", "documentation"]
+    };
+  }
   static relationships = [
     {
       name: "model",
@@ -511,11 +516,11 @@ class VehicleSpecification extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.emissions = data?.attributes?.emissions ?? 0;
-    this.engine_capacity = data?.attributes?.engine_capacity ?? "";
-    this.fuel_type = data?.attributes?.fuel_type ?? "";
-    this.year = data?.attributes?.year ?? 0;
-    this.wheelplan = data?.attributes?.wheelplan ?? "";
+    this.emissions = data?.attributes?.emissions ?? data?.emissions ?? 0;
+    this.engine_capacity = data?.attributes?.engine_capacity ?? data?.engine_capacity ?? "";
+    this.fuel_type = data?.attributes?.fuel_type ?? data?.fuel_type ?? "";
+    this.year = data?.attributes?.year ?? data?.year ?? 0;
+    this.wheelplan = data?.attributes?.wheelplan ?? data?.wheelplan ?? "";
     this.documentation = data?.attributes?.documentation ?? [];
   }
 }
@@ -963,11 +968,16 @@ class BaseService extends RequestBuilder {
   client;
   endpoint;
   hydrator;
+  jsonApiSerializer;
   constructor(client, endpoint) {
     super();
     this.client = client;
     this.endpoint = endpoint;
     this.hydrator = new Hydrator;
+    this.jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+  }
+  convertToJsonApi(model) {
+    return this.jsonApiSerializer.buildCreatePayload(model);
   }
   async get(param, options) {
     const { endpoint, requestOptions } = this.buildRequestParams(this.endpoint, param, options);
@@ -978,7 +988,9 @@ class BaseService extends RequestBuilder {
       data: hydratedData
     };
   }
-  async create(model) {
+  async create(model, params) {
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
@@ -1269,6 +1281,18 @@ class PropertiesService extends BaseService {
   }
 }
 
+// src/services/VehicleModelSpecificationService.ts
+class VehicleModelSpecificationService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/assets/vehicles/manufacturers");
+  }
+  create(model, params) {
+    const { manufacturerId, modelId } = params;
+    const endpoint = this.endpoint + `/${manufacturerId}/models/${modelId}/specifications`;
+    return this.client.makePostRequest(endpoint, this.convertToJsonApi(model));
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1360,6 +1384,9 @@ class Client {
   }
   vehicleStatuses() {
     return new VehicleStatusesService(this);
+  }
+  vehicleModelSpecifications() {
+    return new VehicleModelSpecificationService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

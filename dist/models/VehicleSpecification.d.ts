@@ -1,3 +1,4 @@
+import type { JsonApiMapping } from 'types/JsonApiMapping';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 type VehicleModelDocumentation = {
@@ -5,7 +6,7 @@ type VehicleModelDocumentation = {
     description: string;
     link: string;
 };
-export declare class VehicleSpecification extends BaseModel {
+export declare class VehicleSpecification extends BaseModel implements Partial<JsonApiMapping> {
     type: string;
     emissions: number;
     engine_capacity: string;
@@ -13,6 +14,9 @@ export declare class VehicleSpecification extends BaseModel {
     year: number;
     wheelplan: string;
     documentation: VehicleModelDocumentation[];
+    jsonApiMapping(): {
+        attributes: string[];
+    };
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
 }

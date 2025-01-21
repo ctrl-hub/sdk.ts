@@ -20,6 +20,7 @@ import { EquipmentManufacturersService } from '@services/EquipmentManufacturersS
 import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService';
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
+import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -137,6 +138,10 @@ export class Client {
 
     public vehicleStatuses(): VehicleStatusesService {
         return new VehicleStatusesService(this);
+    }
+
+    public vehicleModelSpecifications(): VehicleModelSpecificationService {
+        return new VehicleModelSpecificationService(this);
     }
 
     setOrganisationSlug(organisation: string) {
