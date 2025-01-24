@@ -727,6 +727,17 @@ class VehicleStatus extends BaseModel {
   }
 }
 
+// src/models/FormVersion.ts
+class FormVersion extends BaseModel {
+  type = "form-version";
+  name = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? "";
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -751,7 +762,8 @@ class Hydrator {
     "vehicle-inventory-checks": VehicleInventoryCheck,
     users: User,
     "vehicle-mot-records": MotRecord,
-    "vehicle-statuses": VehicleStatus
+    "vehicle-statuses": VehicleStatus,
+    "form-versions": FormVersion
   };
   getModelMap = () => {
     return this.modelMap;
