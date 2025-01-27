@@ -26,6 +26,7 @@ import { VehicleStatus } from '@models/VehicleStatus';
 import { FormVersion } from '@models/FormVersion';
 import { Customer } from '@models/Customer';
 import { CustomerInteraction } from '@models/CustomerInteraction';
+import { Team } from '@models/Team';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -37,23 +38,24 @@ export class Hydrator {
         'equipment-manufacturers': EquipmentManufacturer,
         forms: Form,
         'form-categories': FormCategory,
+        'form-versions': FormVersion,
         groups: Group,
         permissions: Permission,
+        properties: Property,
         roles: Role,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
         submissions: Submission,
+        teams: Team,
+        users: User,
         vehicles: Vehicle,
         'vehicle-categories': VehicleCategory,
         'vehicle-models': VehicleModel,
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification,
-        properties: Property,
         'vehicle-inventory-checks': VehicleInventoryCheck,
-        users: User,
         'vehicle-mot-records': MotRecord,
         'vehicle-statuses': VehicleStatus,
-        'form-versions': FormVersion,
     };
 
     public getModelMap = () => {

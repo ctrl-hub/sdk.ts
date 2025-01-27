@@ -738,32 +738,125 @@ class FormVersion extends BaseModel {
   }
 }
 
+// src/models/Customer.ts
+class Customer extends BaseModel {
+  type = "customers";
+  name = "";
+  telephone = "";
+  email = "";
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "telephone", "email"],
+      relationships: {
+        model: "customer-interactions"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "model",
+      type: "array",
+      modelType: "customer-interactions"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.telephone = data?.attributes?.telephone ?? data?.telephone ?? "";
+    this.email = data?.attributes?.email ?? data?.email ?? "";
+  }
+}
+
+// src/models/CustomerInteraction.ts
+class CustomerInteraction extends BaseModel {
+  type = "customer-interactions";
+  method;
+  direction;
+  date_time = "";
+  contacted = false;
+  status = "";
+  notes = "";
+  representative;
+  jsonApiMapping() {
+    return {
+      attributes: ["method", "direction", "date_time", "contacted", "status", "notes"],
+      relationships: {
+        representative: "users"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "representative",
+      type: "single",
+      modelType: "users"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.method = data?.attributes?.method ?? data?.method ?? "";
+    this.direction = data?.attributes?.direction ?? data?.direction ?? "";
+    this.date_time = data?.attributes?.date_time ?? data?.date_time ?? "";
+    this.contacted = data?.attributes?.contacted ?? data?.contacted ?? false;
+    this.status = data?.attributes?.status ?? data?.status ?? "";
+    this.notes = data?.attributes?.notes ?? data?.notes ?? "";
+  }
+}
+
+// src/models/Team.ts
+class Team extends BaseModel {
+  type = "teams";
+  name = "";
+  jsonApiMapping() {
+    return {
+      attributes: ["name"],
+      relationships: {
+        members: "users"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "members",
+      type: "array",
+      modelType: "users"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
+    customers: Customer,
+    "customer-interactions": CustomerInteraction,
     "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
     "equipment-models": EquipmentModel,
     "equipment-manufacturers": EquipmentManufacturer,
     forms: Form,
     "form-categories": FormCategory,
+    "form-versions": FormVersion,
     groups: Group,
     permissions: Permission,
+    properties: Property,
     roles: Role,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
     submissions: Submission,
+    teams: Team,
+    users: User,
     vehicles: Vehicle,
     "vehicle-categories": VehicleCategory,
     "vehicle-models": VehicleModel,
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
-    properties: Property,
     "vehicle-inventory-checks": VehicleInventoryCheck,
-    users: User,
     "vehicle-mot-records": MotRecord,
-    "vehicle-statuses": VehicleStatus,
-    "form-versions": FormVersion
+    "vehicle-statuses": VehicleStatus
   };
   getModelMap = () => {
     return this.modelMap;
@@ -788,6 +881,8 @@ class Hydrator {
       relationships: item.relationships
     });
     if (item.relationships) {
+      console.log("relationships exist");
+      console.log("relationships included", included);
       this.hydrateRelationships(model, item.relationships, included, ModelClass);
     }
     return model;
@@ -1305,6 +1400,45 @@ class VehicleModelSpecificationService extends BaseService {
   }
 }
 
+// src/services/CustomersService.ts
+class CustomersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/customers");
+  }
+  async interactions(param, options) {
+    const interactionsEndpoint = `${this.endpoint}/${param}/interactions`;
+    const { endpoint, requestOptions } = this.buildRequestParams(interactionsEndpoint, options);
+    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
+    console.log(resp.included);
+    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    console.log("hydrated", hydratedData);
+    return {
+      ...resp,
+      data: hydratedData
+    };
+  }
+}
+
+// src/services/CustomerInteractionsService.ts
+class CustomerInteractionsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/customers");
+  }
+  async create(model, customerId) {
+    const enquiryEndpoint = `${this.endpoint}/${customerId}/interactions`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildCreatePayload(model);
+    return await this.client.makePostRequest(enquiryEndpoint, payload);
+  }
+}
+
+// src/services/TeamsService.ts
+class TeamsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/people/teams");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1349,6 +1483,12 @@ class Client {
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
   }
+  customers() {
+    return new CustomersService(this);
+  }
+  customerInteractions() {
+    return new CustomerInteractionsService(this);
+  }
   serviceAccounts() {
     return new ServiceAccountsService(this);
   }
@@ -1357,6 +1497,9 @@ class Client {
   }
   forms() {
     return new FormsService(this);
+  }
+  teams() {
+    return new TeamsService(this);
   }
   submissions() {
     return new SubmissionsService(this);
@@ -1517,6 +1660,7 @@ export {
   VehicleManufacturer,
   VehicleCategory,
   Vehicle,
+  Team,
   SubmissionVersion,
   Submission,
   ServiceAccountKey,
@@ -1532,6 +1676,8 @@ export {
   EquipmentManufacturer,
   EquipmentCategory,
   Equipment,
+  CustomerInteraction,
+  Customer,
   ClientConfig,
   Client
 };

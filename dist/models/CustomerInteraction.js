@@ -1,20 +1,13 @@
-import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
-import type { User } from './User';
-
-export class CustomerInteraction extends BaseModel implements Partial<JsonApiMapping> {
-    public type: string = 'customer-interactions';
-
-    public method: 'letter' | 'email' | 'telephone' | 'sms';
-    public direction: 'inbound' | 'outbound';
-    public date_time: string = '';
-    public contacted: boolean = false;
-    public status: string = '';
-    public notes: string = '';
-
-    public representative?: User;
-
+export class CustomerInteraction extends BaseModel {
+    type = 'customer-interactions';
+    method;
+    direction;
+    date_time = '';
+    contacted = false;
+    status = '';
+    notes = '';
+    representative;
     jsonApiMapping() {
         return {
             attributes: ['method', 'direction', 'date_time', 'contacted', 'status', 'notes'],
@@ -23,18 +16,15 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
             },
         };
     }
-
-    static relationships: RelationshipDefinition[] = [
+    static relationships = [
         {
             name: 'representative',
             type: 'single',
             modelType: 'users',
         },
     ];
-
-    constructor(data?: any) {
+    constructor(data) {
         super(data);
-
         this.method = data?.attributes?.method ?? data?.method ?? '';
         this.direction = data?.attributes?.direction ?? data?.direction ?? '';
         this.date_time = data?.attributes?.date_time ?? data?.date_time ?? '';

@@ -1,5 +1,5 @@
-import { RequestOptions } from "./RequestOptions";
-import type { InternalResponse } from "../types/Response";
+import { RequestOptions } from './RequestOptions';
+import type { InternalResponse } from '../types/Response';
 export declare class Requests {
     static buildRequestURL(baseEndpoint: string, param?: string | RequestOptions | null): string;
     static buildInternalResponse(fetchResponse: any, json: any): InternalResponse;

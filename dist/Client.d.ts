@@ -20,6 +20,9 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
+import { CustomersService } from '@services/CustomersService';
+import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
+import { TeamsService } from '@services/TeamsService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -31,9 +34,12 @@ export declare class Client {
     ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
     serviceAccountKeys(): ServiceAccountKeysService;
+    customers(): CustomersService;
+    customerInteractions(): CustomerInteractionsService;
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;
     forms(): FormsService;
+    teams(): TeamsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
     groups(): GroupsService;

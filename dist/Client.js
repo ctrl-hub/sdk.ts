@@ -19,6 +19,9 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
+import { CustomersService } from '@services/CustomersService';
+import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
+import { TeamsService } from '@services/TeamsService';
 export class Client {
     config;
     organisation;
@@ -62,6 +65,12 @@ export class Client {
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);
     }
+    customers() {
+        return new CustomersService(this);
+    }
+    customerInteractions() {
+        return new CustomerInteractionsService(this);
+    }
     serviceAccounts() {
         return new ServiceAccountsService(this);
     }
@@ -70,6 +79,9 @@ export class Client {
     }
     forms() {
         return new FormsService(this);
+    }
+    teams() {
+        return new TeamsService(this);
     }
     submissions() {
         return new SubmissionsService(this);

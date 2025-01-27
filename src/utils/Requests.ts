@@ -1,8 +1,7 @@
-import {RequestOptions} from "./RequestOptions";
-import type {InternalResponse} from "../types/Response";
+import { RequestOptions } from './RequestOptions';
+import type { InternalResponse } from '../types/Response';
 
 export class Requests {
-
     public static buildRequestURL(baseEndpoint: string, param?: string | RequestOptions | null): string {
         let endpoint = baseEndpoint;
         if (param instanceof RequestOptions) {
@@ -26,7 +25,7 @@ export class Requests {
                 client: [],
                 network: [],
                 api: json?.errors || [],
-            }
+            },
         };
     }
 
@@ -43,8 +42,7 @@ export class Requests {
             },
             meta: null,
             links: {},
-            included: []
+            included: [],
         };
     }
-
 }
