@@ -76,8 +76,6 @@ export class Hydrator {
             relationships: item.relationships,
         });
         if (item.relationships) {
-            console.log('relationships exist');
-            console.log('relationships included', included);
             this.hydrateRelationships(model, item.relationships, included, ModelClass);
         }
         return model;

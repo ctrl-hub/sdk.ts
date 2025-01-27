@@ -14,7 +14,7 @@ export class Customer extends BaseModel {
     }
     static relationships = [
         {
-            name: 'model',
+            name: 'representative',
             type: 'array',
             modelType: 'customer-interactions',
         },

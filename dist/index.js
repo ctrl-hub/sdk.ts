@@ -754,7 +754,7 @@ class Customer extends BaseModel {
   }
   static relationships = [
     {
-      name: "model",
+      name: "representative",
       type: "array",
       modelType: "customer-interactions"
     }
@@ -881,8 +881,6 @@ class Hydrator {
       relationships: item.relationships
     });
     if (item.relationships) {
-      console.log("relationships exist");
-      console.log("relationships included", included);
       this.hydrateRelationships(model, item.relationships, included, ModelClass);
     }
     return model;
@@ -1409,9 +1407,7 @@ class CustomersService extends BaseService {
     const interactionsEndpoint = `${this.endpoint}/${param}/interactions`;
     const { endpoint, requestOptions } = this.buildRequestParams(interactionsEndpoint, options);
     let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-    console.log(resp.included);
     const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-    console.log("hydrated", hydratedData);
     return {
       ...resp,
       data: hydratedData

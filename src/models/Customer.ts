@@ -20,7 +20,7 @@ export class Customer extends BaseModel implements Partial<JsonApiMapping> {
 
     static relationships: RelationshipDefinition[] = [
         {
-            name: 'model',
+            name: 'representative',
             type: 'array',
             modelType: 'customer-interactions',
         },
