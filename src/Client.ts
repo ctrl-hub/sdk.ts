@@ -21,6 +21,8 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
+import { CustomersService } from '@services/CustomersService';
+import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -74,6 +76,14 @@ export class Client {
 
     public serviceAccountKeys(): ServiceAccountKeysService {
         return new ServiceAccountKeysService(this);
+    }
+
+    public customers(): CustomersService {
+        return new CustomersService(this);
+    }
+
+    public customerInteractions(): CustomerInteractionsService {
+        return new CustomerInteractionsService(this);
     }
 
     public serviceAccounts(): ServiceAccountsService {

@@ -6,6 +6,8 @@ export type { InternalResponse } from './types/Response';
 /**
  * Models
  */
+export { Customer } from './models/Customer';
+export { CustomerInteraction } from './models/CustomerInteraction';
 export { Equipment } from './models/Equipment';
 export { EquipmentCategory } from './models/EquipmentCategory';
 export { EquipmentModel } from './models/EquipmentModel';
@@ -20,6 +22,7 @@ export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Submission } from './models/Submission';
 export { SubmissionVersion } from './models/SubmissionVersion';
+export { Team } from './models/Team';
 export { Vehicle } from './models/Vehicle';
 export { VehicleModel } from './models/VehicleModel';
 export { VehicleCategory } from './models/VehicleCategory';
