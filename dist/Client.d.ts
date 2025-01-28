@@ -10,7 +10,6 @@ import { ServiceAccountKeysService } from './services/ServiceAccountKeysService'
 import type { InternalResponse } from './types/Response';
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
-import { VehicleStatusesService } from '@services/VehicleStatusesService';
 import { EquipmentService } from './services/EquipmentService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
@@ -52,7 +51,6 @@ export declare class Client {
     equipmentModels(): EquipmentModelsService;
     equipmentCategories(): EquipmentCategoriesService;
     properties(): PropertiesService;
-    vehicleStatuses(): VehicleStatusesService;
     vehicleModelSpecifications(): VehicleModelSpecificationService;
     setOrganisationSlug(organisation: string): void;
     substituteOrganisation(url: string): string;
