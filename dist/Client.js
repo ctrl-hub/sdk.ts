@@ -9,7 +9,6 @@ import { ServiceAccountsService } from './services/ServiceAccountService';
 import { ServiceAccountKeysService } from './services/ServiceAccountKeysService';
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
-import { VehicleStatusesService } from '@services/VehicleStatusesService';
 import { EquipmentService } from './services/EquipmentService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
@@ -106,9 +105,6 @@ export class Client {
     }
     properties() {
         return new PropertiesService(this);
-    }
-    vehicleStatuses() {
-        return new VehicleStatusesService(this);
     }
     vehicleModelSpecifications() {
         return new VehicleModelSpecificationService(this);

@@ -22,7 +22,6 @@ import { Property } from '@models/Property';
 import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
-import { VehicleStatus } from '@models/VehicleStatus';
 import { FormVersion } from '@models/FormVersion';
 
 export class Hydrator {
@@ -48,7 +47,6 @@ export class Hydrator {
         'vehicle-inventory-checks': VehicleInventoryCheck,
         'users': User,
         'vehicle-mot-records': MotRecord,
-        'vehicle-statuses': VehicleStatus,
         'form-versions': FormVersion,
     };
 

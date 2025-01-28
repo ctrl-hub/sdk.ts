@@ -403,10 +403,9 @@ class Vehicle extends BaseModel {
   status = "";
   jsonApiMapping() {
     return {
-      attributes: ["registration", "vin", "description", "colour"],
+      attributes: ["registration", "vin", "description", "colour", "status"],
       relationships: {
-        specification: "vehicle-specifications",
-        status: "vehicle-statuses"
+        specification: "vehicle-specifications"
       }
     };
   }
@@ -415,11 +414,6 @@ class Vehicle extends BaseModel {
       name: "specification",
       type: "single",
       modelType: "vehicle-specifications"
-    },
-    {
-      name: "status",
-      type: "single",
-      modelType: "vehicle-statuses"
     }
   ];
   constructor(data) {
@@ -429,7 +423,7 @@ class Vehicle extends BaseModel {
     this.description = data?.attributes?.description ?? data?.description ?? "";
     this.colour = data?.attributes?.colour ?? data?.colour ?? "";
     this.specification = data?.relationships?.specification?.id ?? data?.specification ?? "";
-    this.status = data?.relationships?.status?.id ?? data?.status ?? "";
+    this.status = data?.attributes?.status ?? data?.status ?? "";
   }
 }
 
@@ -713,20 +707,6 @@ class MotRecord extends BaseModel {
   }
 }
 
-// src/models/VehicleStatus.ts
-class VehicleStatus extends BaseModel {
-  type = "vehicle-statuses";
-  name = "";
-  jsonApiMapping() {
-    return {};
-  }
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? data?.name ?? "";
-  }
-}
-
 // src/models/FormVersion.ts
 class FormVersion extends BaseModel {
   type = "form-version";
@@ -762,7 +742,6 @@ class Hydrator {
     "vehicle-inventory-checks": VehicleInventoryCheck,
     users: User,
     "vehicle-mot-records": MotRecord,
-    "vehicle-statuses": VehicleStatus,
     "form-versions": FormVersion
   };
   getModelMap = () => {
@@ -1195,13 +1174,6 @@ class VehiclesService extends BaseService {
   }
 }
 
-// src/services/VehicleStatusesService.ts
-class VehicleStatusesService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/assets/vehicles/statuses");
-  }
-}
-
 // src/services/EquipmentService.ts
 class EquipmentService extends BaseService {
   constructor(client) {
@@ -1393,9 +1365,6 @@ class Client {
   }
   properties() {
     return new PropertiesService(this);
-  }
-  vehicleStatuses() {
-    return new VehicleStatusesService(this);
   }
   vehicleModelSpecifications() {
     return new VehicleModelSpecificationService(this);

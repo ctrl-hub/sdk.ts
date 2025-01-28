@@ -2,7 +2,6 @@ import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { BaseModel } from '@models/BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
-import type { VehicleStatus } from './VehicleStatus';
 
 export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'vehicles';
@@ -13,14 +12,13 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
     public colour: string = '';
 
     public specification?: VehicleSpecification | string = '';
-    public status?: VehicleStatus | string = '';
+    public status?: string = '';
 
     jsonApiMapping() {
         return {
-            attributes: ['registration', 'vin', 'description', 'colour'],
+            attributes: ['registration', 'vin', 'description', 'colour', 'status'],
             relationships: {
                 specification: 'vehicle-specifications',
-                status: 'vehicle-statuses'
             },
         };
     }
@@ -30,11 +28,6 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
             name: 'specification',
             type: 'single',
             modelType: 'vehicle-specifications',
-        },
-        {
-            name: 'status',
-            type: 'single',
-            modelType: 'vehicle-statuses'
         }
     ];
 
@@ -45,6 +38,6 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
         this.description = data?.attributes?.description ?? data?.description ?? '';
         this.colour = data?.attributes?.colour ?? data?.colour ?? '';
         this.specification = data?.relationships?.specification?.id ?? data?.specification ?? '';
-        this.status = data?.relationships?.status?.id ?? data?.status ?? '';
+        this.status = data?.attributes?.status ?? data?.status ?? '';
     }
 }
