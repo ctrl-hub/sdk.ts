@@ -21,6 +21,9 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
+import { CustomersService } from '@services/CustomersService';
+import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
+import { TeamsService } from '@services/TeamsService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -76,6 +79,14 @@ export class Client {
         return new ServiceAccountKeysService(this);
     }
 
+    public customers(): CustomersService {
+        return new CustomersService(this);
+    }
+
+    public customerInteractions(): CustomerInteractionsService {
+        return new CustomerInteractionsService(this);
+    }
+
     public serviceAccounts(): ServiceAccountsService {
         return new ServiceAccountsService(this);
     }
@@ -86,6 +97,10 @@ export class Client {
 
     public forms(): FormsService {
         return new FormsService(this);
+    }
+
+    public teams(): TeamsService {
+        return new TeamsService(this);
     }
 
     public submissions(): SubmissionsService {

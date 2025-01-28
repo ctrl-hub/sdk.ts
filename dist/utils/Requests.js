@@ -1,4 +1,4 @@
-import { RequestOptions } from "./RequestOptions";
+import { RequestOptions } from './RequestOptions';
 export class Requests {
     static buildRequestURL(baseEndpoint, param) {
         let endpoint = baseEndpoint;
@@ -23,7 +23,7 @@ export class Requests {
                 client: [],
                 network: [],
                 api: json?.errors || [],
-            }
+            },
         };
     }
     static buildInternalErrorResponse(error) {
@@ -39,7 +39,7 @@ export class Requests {
             },
             meta: null,
             links: {},
-            included: []
+            included: [],
         };
     }
 }

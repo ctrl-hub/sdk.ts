@@ -27,7 +27,8 @@ export class BaseService extends RequestBuilder {
         };
     }
     async create(model, params) {
-        if (params) { }
+        if (params) {
+        }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
         return await this.client.makePostRequest(this.endpoint, payload);

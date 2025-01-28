@@ -21,7 +21,7 @@ export class BaseService<T extends Model> extends RequestBuilder {
     }
 
     convertToJsonApi(model: Model) {
-        return this.jsonApiSerializer.buildCreatePayload(model)
+        return this.jsonApiSerializer.buildCreatePayload(model);
     }
 
     // Overloads for get method
@@ -42,7 +42,8 @@ export class BaseService<T extends Model> extends RequestBuilder {
     }
 
     async create(model: T, params?: unknown): Promise<InternalResponse<T>> {
-        if (params) {}
+        if (params) {
+        }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
         return await this.client.makePostRequest(this.endpoint, payload);
