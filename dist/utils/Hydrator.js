@@ -19,7 +19,6 @@ import { Property } from '@models/Property';
 import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
-import { VehicleStatus } from '@models/VehicleStatus';
 import { FormVersion } from '@models/FormVersion';
 import { Customer } from '@models/Customer';
 import { CustomerInteraction } from '@models/CustomerInteraction';
@@ -51,7 +50,6 @@ export class Hydrator {
         'vehicle-specifications': VehicleSpecification,
         'vehicle-inventory-checks': VehicleInventoryCheck,
         'vehicle-mot-records': MotRecord,
-        'vehicle-statuses': VehicleStatus,
     };
     getModelMap = () => {
         return this.modelMap;
