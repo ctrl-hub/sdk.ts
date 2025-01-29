@@ -7,9 +7,15 @@ export class CustomerInteractionsService extends BaseService {
         super(client, '/v3/orgs/:orgId/customers');
     }
     async create(model, customerId) {
-        const enquiryEndpoint = `${this.endpoint}/${customerId}/interactions`;
+        const interactionEndpoint = `${this.endpoint}/${customerId}/interactions`;
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
-        return await this.client.makePostRequest(enquiryEndpoint, payload);
+        return await this.client.makePostRequest(interactionEndpoint, payload);
+    }
+    async update(id, model, customerId) {
+        const interactionEndpoint = `${this.endpoint}/${customerId}/interactions/${id}`;
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildUpdatePayload(model);
+        return await this.client.makePatchRequest(interactionEndpoint, payload);
     }
 }
