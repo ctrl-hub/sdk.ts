@@ -49,7 +49,9 @@ export class BaseService<T extends Model> extends RequestBuilder {
         return await this.client.makePostRequest(this.endpoint, payload);
     }
 
-    async update(id: string, model: Model): Promise<InternalResponse<T>> {
+    async update(id: string, model: Model, params?: unknown): Promise<InternalResponse<T>> {
+        if (params) {
+        }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildUpdatePayload(model);
         return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
