@@ -325,6 +325,24 @@ class Role extends BaseModel {
   }
 }
 
+// src/models/ServiceAccountKey.ts
+class ServiceAccountKey extends BaseModel {
+  type = "service-account-keys";
+  client_id = "";
+  enabled = false;
+  created_at;
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.id = data?.id ?? "";
+    this.enabled = data?.attributes?.enabled ?? data?.enabled ?? false;
+    let raw_created_at = data?.attributes?.created_at ?? data?.created_at ?? null;
+    if (raw_created_at) {
+      this.created_at = new Date(raw_created_at);
+    }
+  }
+}
+
 // src/models/ServiceAccount.ts
 class ServiceAccount extends BaseModel {
   type = "service-accounts";
@@ -338,33 +356,16 @@ class ServiceAccount extends BaseModel {
       attributes: ["name", "description"]
     };
   }
-  static relationships = [
-    {
-      name: "keys",
-      type: "array",
-      modelType: "service-account-keys"
-    }
-  ];
+  static relationships = [];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.email = data?.attributes?.email ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
-  }
-}
-
-// src/models/ServiceAccountKey.ts
-class ServiceAccountKey extends BaseModel {
-  type = "service-account-keys";
-  client_id = "";
-  enabled = false;
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.id = data?.id ?? "";
-    this.client_id = data?.attributes?.client_id ?? "";
-    this.enabled = data?.attributes?.enabled ?? false;
+    if (data?.attributes?.keys) {
+      this.keys = data.attributes.keys.map((key) => new ServiceAccountKey(key));
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { ServiceAccountKey } from '@models/ServiceAccountKey';
+import { ServiceAccountKey } from '@models/ServiceAccountKey';
 
 export class ServiceAccount extends BaseModel {
     declare public id: string;
@@ -19,13 +19,7 @@ export class ServiceAccount extends BaseModel {
         };
     }
 
-    static relationships: RelationshipDefinition[] = [
-        {
-            name: 'keys',
-            type: 'array',
-            modelType: 'service-account-keys'
-        }
-    ];
+    static relationships: RelationshipDefinition[] = [];
 
     constructor(data?: any) {
         super(data);
@@ -34,6 +28,11 @@ export class ServiceAccount extends BaseModel {
         this.description = data?.attributes?.description ?? '';
         this.email = data?.attributes?.email ?? '';
         this.enabled = data?.attributes?.enabled ?? false;
+
+        if (data?.attributes?.keys) {
+            this.keys = data.attributes.keys.map((key: any) => new ServiceAccountKey(key));
+        }
+
     }
 
 }

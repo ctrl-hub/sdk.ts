@@ -1,6 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { ServiceAccountKey } from '@models/ServiceAccountKey';
+import { ServiceAccountKey } from '@models/ServiceAccountKey';
 export declare class ServiceAccount extends BaseModel {
     id: string;
     type: string;
