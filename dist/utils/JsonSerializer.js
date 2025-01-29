@@ -76,7 +76,7 @@ export class JsonApiSerializer {
                         payload.data.relationships[key] = {
                             data: {
                                 type: relationshipType,
-                                id: relationshipValue,
+                                id: relationshipValue.id ?? relationshipValue,
                             },
                         };
                     }
