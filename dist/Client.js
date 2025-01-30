@@ -79,8 +79,8 @@ export class Client {
     customers() {
         return new CustomersService(this);
     }
-    customerInteractions() {
-        return new CustomerInteractionsService(this);
+    customerInteractions(customerId) {
+        return new CustomerInteractionsService(this, customerId);
     }
     serviceAccounts() {
         return new ServiceAccountsService(this);

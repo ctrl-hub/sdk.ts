@@ -1461,34 +1461,12 @@ class CustomersService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/customers");
   }
-  async interactions(param, options) {
-    const interactionsEndpoint = `${this.endpoint}/${param}/interactions`;
-    const { endpoint, requestOptions } = this.buildRequestParams(interactionsEndpoint, options);
-    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-    return {
-      ...resp,
-      data: hydratedData
-    };
-  }
 }
 
 // src/services/CustomerInteractionsService.ts
 class CustomerInteractionsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/customers");
-  }
-  async create(model, customerId) {
-    const interactionEndpoint = `${this.endpoint}/${customerId}/interactions`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildCreatePayload(model);
-    return await this.client.makePostRequest(interactionEndpoint, payload);
-  }
-  async update(id, model, customerId) {
-    const interactionEndpoint = `${this.endpoint}/${customerId}/interactions/${id}`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildUpdatePayload(model);
-    return await this.client.makePatchRequest(interactionEndpoint, payload);
+  constructor(client, customerId) {
+    super(client, `/v3/orgs/:orgId/customers/${customerId}/interactions`);
   }
 }
 
@@ -1576,8 +1554,8 @@ class Client {
   customers() {
     return new CustomersService(this);
   }
-  customerInteractions() {
-    return new CustomerInteractionsService(this);
+  customerInteractions(customerId) {
+    return new CustomerInteractionsService(this, customerId);
   }
   serviceAccounts() {
     return new ServiceAccountsService(this);

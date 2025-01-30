@@ -40,7 +40,7 @@ export declare class Client {
     operations(schemeId: string, workOrderId: string): OperationsService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
-    customerInteractions(): CustomerInteractionsService;
+    customerInteractions(customerId: string): CustomerInteractionsService;
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;
     forms(): FormsService;
