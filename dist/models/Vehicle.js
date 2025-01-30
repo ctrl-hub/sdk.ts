@@ -26,6 +26,11 @@ export class Vehicle extends BaseModel {
             name: 'assignee',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'equipment',
+            type: 'array',
+            modelType: 'equipment',
         }
     ];
     constructor(data) {

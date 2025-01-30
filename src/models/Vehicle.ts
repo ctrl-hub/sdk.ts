@@ -33,6 +33,11 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
             name: 'assignee',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'equipment',
+            type: 'array',
+            modelType: 'equipment',
         }
     ];
 
