@@ -8,6 +8,8 @@ export declare class WorkOrder extends BaseModel {
     status: string;
     start_date: string;
     end_date: string;
+    uprns: Array<number>;
+    usrns: Array<number>;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     jsonApiMapping(): {

@@ -857,6 +857,8 @@ class WorkOrder extends BaseModel {
   status = "";
   start_date = "";
   end_date = "";
+  uprns = [];
+  usrns = [];
   static relationships = [
     {
       name: "operations",
@@ -869,9 +871,11 @@ class WorkOrder extends BaseModel {
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.code = data?.attributes?.code ?? data?.code ?? "";
     this.description = data?.attributes?.description ?? data?.description ?? "";
-    this.status = data?.attributes?.status ?? data?.description ?? "";
-    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
-    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.status ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
+    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? "";
+    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? "";
   }
   jsonApiMapping() {
     return {
@@ -1741,15 +1745,19 @@ class Operation extends BaseModel {
   status = "";
   start_date = "";
   end_date = "";
+  uprns = [];
+  usrns = [];
   static relationships = [];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.code = data?.attributes?.code ?? data?.code ?? "";
     this.description = data?.attributes?.description ?? data?.description ?? "";
-    this.status = data?.attributes?.status ?? data?.description ?? "";
-    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
-    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.status ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
+    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? "";
+    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? "";
   }
   jsonApiMapping() {
     return {
