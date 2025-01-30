@@ -1,19 +1,13 @@
 import { BaseModel } from '@models/BaseModel';
-export class Scheme extends BaseModel {
-    type = 'schemes';
+export class WorkOrder extends BaseModel {
+    type = 'operations';
     name = '';
     code = '';
     description = '';
     status = '';
     start_date = '';
     end_date = '';
-    static relationships = [
-        {
-            name: 'work_orders',
-            type: 'array',
-            modelType: 'work-orders',
-        },
-    ];
+    static relationships = [];
     constructor(data) {
         super(data);
         this.name = data?.attributes?.name ?? data?.name ?? '';

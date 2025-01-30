@@ -19,6 +19,8 @@ export { Log } from './models/Log';
 export { Permission } from './models/Permission';
 export { Role } from './models/Role';
 export { Scheme } from './models/Scheme';
+export { WorkOrder } from './models/WorkOrder';
+export { Operation } from './models/Operation';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Submission } from './models/Submission';

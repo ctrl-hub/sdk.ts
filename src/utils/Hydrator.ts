@@ -27,6 +27,8 @@ import { Customer } from '@models/Customer';
 import { CustomerInteraction } from '@models/CustomerInteraction';
 import { Team } from '@models/Team';
 import { Scheme } from '@models/Scheme';
+import { WorkOrder } from '@models/WorkOrder';
+import { Operation } from 'index';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -40,6 +42,7 @@ export class Hydrator {
         'form-categories': FormCategory,
         'form-versions': FormVersion,
         groups: Group,
+        operations: Operation,
         permissions: Permission,
         properties: Property,
         roles: Role,
@@ -56,6 +59,7 @@ export class Hydrator {
         'vehicle-specifications': VehicleSpecification,
         'vehicle-inventory-checks': VehicleInventoryCheck,
         'vehicle-mot-records': MotRecord,
+        'work-orders': WorkOrder,
     };
 
     public getModelMap = () => {

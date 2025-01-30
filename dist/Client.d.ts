@@ -23,6 +23,8 @@ import { CustomersService } from '@services/CustomersService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
+import { WorkOrdersService } from '@services/WorkOrdersService';
+import { OperationsService } from '@services/OperationsService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -34,6 +36,8 @@ export declare class Client {
     ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
     schemes(): SchemesService;
+    workOrders(): WorkOrdersService;
+    operations(): OperationsService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
     customerInteractions(): CustomerInteractionsService;

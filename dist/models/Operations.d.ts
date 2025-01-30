@@ -1,6 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-export declare class Scheme extends BaseModel {
+export declare class WorkOrder extends BaseModel {
     type: string;
     name: string;
     code: string;

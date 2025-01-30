@@ -22,6 +22,8 @@ import { CustomersService } from '@services/CustomersService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
+import { WorkOrdersService } from '@services/WorkOrdersService';
+import { OperationsService } from '@services/OperationsService';
 export class Client {
     config;
     organisation;
@@ -64,6 +66,12 @@ export class Client {
     }
     schemes() {
         return new SchemesService(this);
+    }
+    workOrders() {
+        return new WorkOrdersService(this);
+    }
+    operations() {
+        return new OperationsService(this);
     }
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);

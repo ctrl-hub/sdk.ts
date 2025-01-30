@@ -821,15 +821,61 @@ class Scheme extends BaseModel {
   type = "schemes";
   name = "";
   code = "";
-  static relationships = [];
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  static relationships = [
+    {
+      name: "work_orders",
+      type: "array",
+      modelType: "work-orders"
+    }
+  ];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.description ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
   }
   jsonApiMapping() {
     return {
-      attributes: ["name", "code"]
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
+    };
+  }
+}
+
+// src/models/WorkOrder.ts
+class WorkOrder extends BaseModel {
+  type = "work-orders";
+  name = "";
+  code = "";
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  static relationships = [
+    {
+      name: "operations",
+      type: "array",
+      modelType: "operations"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.description ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
     };
   }
 }
@@ -847,6 +893,7 @@ class Hydrator {
     "form-categories": FormCategory,
     "form-versions": FormVersion,
     groups: Group,
+    operations: Operation,
     permissions: Permission,
     properties: Property,
     roles: Role,
@@ -862,7 +909,8 @@ class Hydrator {
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
     "vehicle-inventory-checks": VehicleInventoryCheck,
-    "vehicle-mot-records": MotRecord
+    "vehicle-mot-records": MotRecord,
+    "work-orders": WorkOrder
   };
   getModelMap = () => {
     return this.modelMap;
@@ -1449,6 +1497,64 @@ class SchemesService extends BaseService {
   }
 }
 
+// src/services/WorkOrdersService.ts
+class WorkOrdersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/governance/schemes");
+  }
+  async get(schemeId, options) {
+    const workOrdersEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
+    const { endpoint, requestOptions } = this.buildRequestParams(workOrdersEndpoint, options);
+    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
+    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    return {
+      ...resp,
+      data: hydratedData
+    };
+  }
+  async create(model, schemeId) {
+    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildCreatePayload(model);
+    return await this.client.makePostRequest(interactionEndpoint, payload);
+  }
+  async update(id, model, schemeId) {
+    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders/${id}`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildUpdatePayload(model);
+    return await this.client.makePatchRequest(interactionEndpoint, payload);
+  }
+}
+
+// src/services/OperationsService.ts
+class OperationsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/governance/schemes");
+  }
+  async get(schemeId, options) {
+    const workOrdersEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
+    const { endpoint, requestOptions } = this.buildRequestParams(workOrdersEndpoint, options);
+    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
+    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    return {
+      ...resp,
+      data: hydratedData
+    };
+  }
+  async create(model, schemeId) {
+    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildCreatePayload(model);
+    return await this.client.makePostRequest(interactionEndpoint, payload);
+  }
+  async update(id, model, schemeId) {
+    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders/${id}`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildUpdatePayload(model);
+    return await this.client.makePatchRequest(interactionEndpoint, payload);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1492,6 +1598,12 @@ class Client {
   }
   schemes() {
     return new SchemesService(this);
+  }
+  workOrders() {
+    return new WorkOrdersService(this);
+  }
+  operations() {
+    return new OperationsService(this);
   }
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
@@ -1664,7 +1776,33 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
+// src/models/Operation.ts
+class Operation extends BaseModel {
+  type = "operations";
+  name = "";
+  code = "";
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.description ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
+    };
+  }
+}
 export {
+  WorkOrder,
   VehicleSpecification,
   VehicleModel,
   VehicleManufacturer,
@@ -1679,6 +1817,7 @@ export {
   Role,
   RequestOptions,
   Permission,
+  Operation,
   Log,
   Group,
   FormCategory,

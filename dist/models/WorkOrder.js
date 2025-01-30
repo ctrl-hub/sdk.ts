@@ -1,6 +1,6 @@
 import { BaseModel } from '@models/BaseModel';
-export class Scheme extends BaseModel {
-    type = 'schemes';
+export class WorkOrder extends BaseModel {
+    type = 'work-orders';
     name = '';
     code = '';
     description = '';
@@ -9,9 +9,9 @@ export class Scheme extends BaseModel {
     end_date = '';
     static relationships = [
         {
-            name: 'work_orders',
+            name: 'operations',
             type: 'array',
-            modelType: 'work-orders',
+            modelType: 'operations',
         },
     ];
     constructor(data) {
