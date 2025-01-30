@@ -97,8 +97,8 @@ export class Client {
         return new CustomersService(this);
     }
 
-    public customerInteractions(): CustomerInteractionsService {
-        return new CustomerInteractionsService(this);
+    public customerInteractions(customerId: string): CustomerInteractionsService {
+        return new CustomerInteractionsService(this, customerId);
     }
 
     public serviceAccounts(): ServiceAccountsService {
