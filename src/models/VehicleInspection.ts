@@ -54,6 +54,7 @@ export class VehicleInspection extends BaseModel implements Partial<JsonApiMappi
             ],
             relationships: {
                 author: 'author',
+                vehicle: 'vehicle',
             },
         };
     }
@@ -63,6 +64,11 @@ export class VehicleInspection extends BaseModel implements Partial<JsonApiMappi
             name: 'author',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'vehicle',
+            type: 'single',
+            modelType: 'vehicles',
         },
     ];
 

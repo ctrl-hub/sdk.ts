@@ -38,6 +38,17 @@ export class VehiclesService extends BaseService<Vehicle> {
         return resp;
     }
 
+    async inspectionsByOrganisation(): Promise<InternalResponse<VehicleInspection[]>> {
+        const includes = '?include=author,vehicle';
+        const inspectionsEndpoint = `${this.endpoint}/inspections${includes}`;
+        const resp = await this.client.makeGetRequest(inspectionsEndpoint);
+
+        const hydrator = new Hydrator();
+        resp.data = hydrator.hydrateResponse(resp.data, resp.included)
+
+        return resp;
+    }
+
     async inspections(vehicleId: string): Promise<InternalResponse<VehicleInspection[]>> {
         const includes = '?include=author';
         const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections${includes}`;
