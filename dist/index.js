@@ -325,6 +325,24 @@ class Role extends BaseModel {
   }
 }
 
+// src/models/ServiceAccountKey.ts
+class ServiceAccountKey extends BaseModel {
+  type = "service-account-keys";
+  client_id = "";
+  enabled = false;
+  created_at;
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.id = data?.id ?? "";
+    this.enabled = data?.attributes?.enabled ?? data?.enabled ?? false;
+    let raw_created_at = data?.attributes?.created_at ?? data?.created_at ?? null;
+    if (raw_created_at) {
+      this.created_at = new Date(raw_created_at);
+    }
+  }
+}
+
 // src/models/ServiceAccount.ts
 class ServiceAccount extends BaseModel {
   type = "service-accounts";
@@ -338,33 +356,16 @@ class ServiceAccount extends BaseModel {
       attributes: ["name", "description"]
     };
   }
-  static relationships = [
-    {
-      name: "keys",
-      type: "array",
-      modelType: "service-account-keys"
-    }
-  ];
+  static relationships = [];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? "";
     this.description = data?.attributes?.description ?? "";
     this.email = data?.attributes?.email ?? "";
     this.enabled = data?.attributes?.enabled ?? false;
-  }
-}
-
-// src/models/ServiceAccountKey.ts
-class ServiceAccountKey extends BaseModel {
-  type = "service-account-keys";
-  client_id = "";
-  enabled = false;
-  static relationships = [];
-  constructor(data) {
-    super(data);
-    this.id = data?.id ?? "";
-    this.client_id = data?.attributes?.client_id ?? "";
-    this.enabled = data?.attributes?.enabled ?? false;
+    if (data?.attributes?.keys) {
+      this.keys = data.attributes.keys.map((key) => new ServiceAccountKey(key));
+    }
   }
 }
 
@@ -724,9 +725,10 @@ class Customer extends BaseModel {
   name = "";
   telephone = "";
   email = "";
+  property = "";
   jsonApiMapping() {
     return {
-      attributes: ["name", "telephone", "email"],
+      attributes: ["name", "telephone", "email", "property"],
       relationships: {
         model: "customer-interactions"
       }
@@ -737,6 +739,11 @@ class Customer extends BaseModel {
       name: "representative",
       type: "array",
       modelType: "customer-interactions"
+    },
+    {
+      name: "properties",
+      type: "array",
+      modelType: "properties"
     }
   ];
   constructor(data) {
@@ -744,6 +751,7 @@ class Customer extends BaseModel {
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.telephone = data?.attributes?.telephone ?? data?.telephone ?? "";
     this.email = data?.attributes?.email ?? data?.email ?? "";
+    this.property = data?.attributes?.property ?? data?.property ?? "";
   }
 }
 
@@ -1026,7 +1034,7 @@ class JsonApiSerializer {
             payload.data.relationships[key] = {
               data: {
                 type: relationshipType,
-                id: relationshipValue
+                id: relationshipValue.id ?? relationshipValue
               }
             };
           }
@@ -1079,7 +1087,9 @@ class BaseService extends RequestBuilder {
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
-  async update(id, model) {
+  async update(id, model, params) {
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -1393,10 +1403,16 @@ class CustomerInteractionsService extends BaseService {
     super(client, "/v3/orgs/:orgId/customers");
   }
   async create(model, customerId) {
-    const enquiryEndpoint = `${this.endpoint}/${customerId}/interactions`;
+    const interactionEndpoint = `${this.endpoint}/${customerId}/interactions`;
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
-    return await this.client.makePostRequest(enquiryEndpoint, payload);
+    return await this.client.makePostRequest(interactionEndpoint, payload);
+  }
+  async update(id, model, customerId) {
+    const interactionEndpoint = `${this.endpoint}/${customerId}/interactions/${id}`;
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildUpdatePayload(model);
+    return await this.client.makePatchRequest(interactionEndpoint, payload);
   }
 }
 

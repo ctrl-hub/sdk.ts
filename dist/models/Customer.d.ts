@@ -6,6 +6,7 @@ export declare class Customer extends BaseModel implements Partial<JsonApiMappin
     name: string;
     telephone: string;
     email: string;
+    property: string;
     jsonApiMapping(): {
         attributes: string[];
         relationships: {
