@@ -22,6 +22,7 @@ import { VehicleModelSpecificationService } from '@services/VehicleModelSpecific
 import { CustomersService } from '@services/CustomersService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
+import { SchemesService } from '@services/SchemesService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -32,6 +33,7 @@ export declare class Client {
     getToken(): Promise<void>;
     ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
+    schemes(): SchemesService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
     customerInteractions(): CustomerInteractionsService;

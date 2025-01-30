@@ -26,6 +26,7 @@ import { FormVersion } from '@models/FormVersion';
 import { Customer } from '@models/Customer';
 import { CustomerInteraction } from '@models/CustomerInteraction';
 import { Team } from '@models/Team';
+import { Scheme } from '@models/Scheme';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -42,6 +43,7 @@ export class Hydrator {
         permissions: Permission,
         properties: Property,
         roles: Role,
+        schemes: Scheme,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
         submissions: Submission,

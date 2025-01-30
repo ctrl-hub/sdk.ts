@@ -17,6 +17,7 @@ export { Group } from './models/Group';
 export { Log } from './models/Log';
 export { Permission } from './models/Permission';
 export { Role } from './models/Role';
+export { Scheme } from './models/Scheme';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
 export { Submission } from './models/Submission';

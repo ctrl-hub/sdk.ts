@@ -816,6 +816,24 @@ class Team extends BaseModel {
   }
 }
 
+// src/models/Scheme.ts
+class Scheme extends BaseModel {
+  type = "schemes";
+  name = "";
+  code = "";
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code"]
+    };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -832,6 +850,7 @@ class Hydrator {
     permissions: Permission,
     properties: Property,
     roles: Role,
+    schemes: Scheme,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
     submissions: Submission,
@@ -1423,6 +1442,13 @@ class TeamsService extends BaseService {
   }
 }
 
+// src/services/SchemesService.ts
+class SchemesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/governance/schemes");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1463,6 +1489,9 @@ class Client {
   }
   roles() {
     return new RolesService(this);
+  }
+  schemes() {
+    return new SchemesService(this);
   }
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
@@ -1646,6 +1675,7 @@ export {
   Submission,
   ServiceAccountKey,
   ServiceAccount,
+  Scheme,
   Role,
   RequestOptions,
   Permission,
