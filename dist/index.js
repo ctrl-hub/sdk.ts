@@ -816,6 +816,74 @@ class Team extends BaseModel {
   }
 }
 
+// src/models/Scheme.ts
+class Scheme extends BaseModel {
+  type = "schemes";
+  name = "";
+  code = "";
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  static relationships = [
+    {
+      name: "work_orders",
+      type: "array",
+      modelType: "work-orders"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.description ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.description ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.description ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
+    };
+  }
+}
+
+// src/models/WorkOrder.ts
+class WorkOrder extends BaseModel {
+  type = "work-orders";
+  name = "";
+  code = "";
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  uprns = [];
+  usrns = [];
+  static relationships = [
+    {
+      name: "operations",
+      type: "array",
+      modelType: "operations"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.status ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
+    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? "";
+    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
+    };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -829,9 +897,11 @@ class Hydrator {
     "form-categories": FormCategory,
     "form-versions": FormVersion,
     groups: Group,
+    operations: Operation,
     permissions: Permission,
     properties: Property,
     roles: Role,
+    schemes: Scheme,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
     submissions: Submission,
@@ -843,7 +913,8 @@ class Hydrator {
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
     "vehicle-inventory-checks": VehicleInventoryCheck,
-    "vehicle-mot-records": MotRecord
+    "vehicle-mot-records": MotRecord,
+    "work-orders": WorkOrder
   };
   getModelMap = () => {
     return this.modelMap;
@@ -1423,6 +1494,27 @@ class TeamsService extends BaseService {
   }
 }
 
+// src/services/SchemesService.ts
+class SchemesService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/governance/schemes");
+  }
+}
+
+// src/services/WorkOrdersService.ts
+class WorkOrdersService extends BaseService {
+  constructor(client, schemeId) {
+    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders`);
+  }
+}
+
+// src/services/OperationsService.ts
+class OperationsService extends BaseService {
+  constructor(client, schemeId, workOrderId) {
+    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1463,6 +1555,15 @@ class Client {
   }
   roles() {
     return new RolesService(this);
+  }
+  schemes() {
+    return new SchemesService(this);
+  }
+  workOrders(schemeId) {
+    return new WorkOrdersService(this, schemeId);
+  }
+  operations(schemeId, workOrderId) {
+    return new OperationsService(this, schemeId, workOrderId);
   }
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
@@ -1635,7 +1736,37 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
+// src/models/Operation.ts
+class Operation extends BaseModel {
+  type = "operations";
+  name = "";
+  code = "";
+  description = "";
+  status = "";
+  start_date = "";
+  end_date = "";
+  uprns = [];
+  usrns = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.status = data?.attributes?.status ?? data?.status ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
+    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? "";
+    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? "";
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "status", "start_date", "end_date"]
+    };
+  }
+}
 export {
+  WorkOrder,
   VehicleSpecification,
   VehicleModel,
   VehicleManufacturer,
@@ -1646,9 +1777,11 @@ export {
   Submission,
   ServiceAccountKey,
   ServiceAccount,
+  Scheme,
   Role,
   RequestOptions,
   Permission,
+  Operation,
   Log,
   Group,
   FormCategory,

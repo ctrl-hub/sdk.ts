@@ -21,6 +21,9 @@ import { VehicleModelSpecificationService } from '@services/VehicleModelSpecific
 import { CustomersService } from '@services/CustomersService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
+import { SchemesService } from '@services/SchemesService';
+import { WorkOrdersService } from '@services/WorkOrdersService';
+import { OperationsService } from '@services/OperationsService';
 export class Client {
     config;
     organisation;
@@ -60,6 +63,15 @@ export class Client {
     }
     roles() {
         return new RolesService(this);
+    }
+    schemes() {
+        return new SchemesService(this);
+    }
+    workOrders(schemeId) {
+        return new WorkOrdersService(this, schemeId);
+    }
+    operations(schemeId, workOrderId) {
+        return new OperationsService(this, schemeId, workOrderId);
     }
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);
