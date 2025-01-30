@@ -36,8 +36,8 @@ export declare class Client {
     ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
     schemes(): SchemesService;
-    workOrders(): WorkOrdersService;
-    operations(): OperationsService;
+    workOrders(schemeId: string): WorkOrdersService;
+    operations(schemeId: string, workOrderId: string): OperationsService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
     customerInteractions(): CustomerInteractionsService;

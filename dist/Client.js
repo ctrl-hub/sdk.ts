@@ -67,11 +67,11 @@ export class Client {
     schemes() {
         return new SchemesService(this);
     }
-    workOrders() {
-        return new WorkOrdersService(this);
+    workOrders(schemeId) {
+        return new WorkOrdersService(this, schemeId);
     }
-    operations() {
-        return new OperationsService(this);
+    operations(schemeId, workOrderId) {
+        return new OperationsService(this, schemeId, workOrderId);
     }
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);

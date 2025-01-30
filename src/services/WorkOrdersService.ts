@@ -1,43 +1,9 @@
 import { Client } from "Client";
 import { BaseService } from "./BaseService";
-import type { InternalResponse, JsonData } from "types/Response";
 import type { WorkOrder } from "@models/WorkOrder";
-import type { RequestOptionsType } from "@utils/RequestOptions";
-import { JsonApiSerializer } from "@utils/JsonSerializer";
 
 export class WorkOrdersService extends BaseService<WorkOrder> {
-    constructor(client: Client) {
-        super(client, "/v3/orgs/:orgId/governance/schemes");
-    }
-
-    async get(): Promise<InternalResponse<WorkOrder[]>>;
-    async get(workOrderId: string, schemeId?: string): Promise<InternalResponse<WorkOrder>>;
-    async get(workOrderId: string, options?: RequestOptionsType, schemeId?: string): Promise<InternalResponse<WorkOrder>>;
-    async get(workOrderId: RequestOptionsType, schemeId?: string): Promise<InternalResponse<WorkOrder[]>>;
-    async get(workOrderId?: string | RequestOptionsType, options?: RequestOptionsType, schemeId?: string): Promise<InternalResponse<WorkOrder | WorkOrder[]>> {
-        const workOrdersEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-        const { endpoint, requestOptions } = this.buildRequestParams(workOrdersEndpoint, options);
-        let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-
-        const hydratedData = this.hydrator.hydrateResponse<WorkOrder>(resp.data as JsonData | JsonData[], resp.included || []);
-
-        return {
-            ...resp,
-            data: hydratedData,
-        } as InternalResponse<WorkOrder | WorkOrder[]>;
-    }
-
-    async create(model: WorkOrder, schemeId: string): Promise<InternalResponse<WorkOrder>> {
-        const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-        const payload = jsonApiSerializer.buildCreatePayload(model);
-        return await this.client.makePostRequest(interactionEndpoint, payload);
-    }
-
-    async update(id: string, model: WorkOrder, schemeId: string): Promise<InternalResponse<WorkOrder>> {
-        const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders/${id}`;
-        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-        const payload = jsonApiSerializer.buildUpdatePayload(model);
-        return await this.client.makePatchRequest(interactionEndpoint, payload);
+    constructor(client: Client, schemeId: string) {
+        super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders`);
     }
 }

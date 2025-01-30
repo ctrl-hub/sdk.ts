@@ -1499,59 +1499,15 @@ class SchemesService extends BaseService {
 
 // src/services/WorkOrdersService.ts
 class WorkOrdersService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/governance/schemes");
-  }
-  async get(schemeId, options) {
-    const workOrdersEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-    const { endpoint, requestOptions } = this.buildRequestParams(workOrdersEndpoint, options);
-    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-    return {
-      ...resp,
-      data: hydratedData
-    };
-  }
-  async create(model, schemeId) {
-    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildCreatePayload(model);
-    return await this.client.makePostRequest(interactionEndpoint, payload);
-  }
-  async update(id, model, schemeId) {
-    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders/${id}`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildUpdatePayload(model);
-    return await this.client.makePatchRequest(interactionEndpoint, payload);
+  constructor(client, schemeId) {
+    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders`);
   }
 }
 
 // src/services/OperationsService.ts
 class OperationsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/governance/schemes");
-  }
-  async get(schemeId, options) {
-    const workOrdersEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-    const { endpoint, requestOptions } = this.buildRequestParams(workOrdersEndpoint, options);
-    let resp = await this.client.makeGetRequest(endpoint, requestOptions);
-    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-    return {
-      ...resp,
-      data: hydratedData
-    };
-  }
-  async create(model, schemeId) {
-    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildCreatePayload(model);
-    return await this.client.makePostRequest(interactionEndpoint, payload);
-  }
-  async update(id, model, schemeId) {
-    const interactionEndpoint = `${this.endpoint}/${schemeId}/work-orders/${id}`;
-    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
-    const payload = jsonApiSerializer.buildUpdatePayload(model);
-    return await this.client.makePatchRequest(interactionEndpoint, payload);
+  constructor(client, schemeId, workOrderId) {
+    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
   }
 }
 
@@ -1599,11 +1555,11 @@ class Client {
   schemes() {
     return new SchemesService(this);
   }
-  workOrders() {
-    return new WorkOrdersService(this);
+  workOrders(schemeId) {
+    return new WorkOrdersService(this, schemeId);
   }
-  operations() {
-    return new OperationsService(this);
+  operations(schemeId, workOrderId) {
+    return new OperationsService(this, schemeId, workOrderId);
   }
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);

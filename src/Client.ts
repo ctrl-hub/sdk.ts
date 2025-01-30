@@ -81,12 +81,12 @@ export class Client {
         return new SchemesService(this);
     }
 
-    public workOrders(): WorkOrdersService {
-        return new WorkOrdersService(this);
+    public workOrders(schemeId: string): WorkOrdersService {
+        return new WorkOrdersService(this, schemeId);
     }
 
-    public operations(): OperationsService {
-        return new OperationsService(this);
+    public operations(schemeId: string, workOrderId: string): OperationsService {
+        return new OperationsService(this, schemeId, workOrderId);
     }
 
     public serviceAccountKeys(): ServiceAccountKeysService {
