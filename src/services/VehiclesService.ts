@@ -60,6 +60,17 @@ export class VehiclesService extends BaseService<Vehicle> {
         return resp;
     }
 
+    async inspection(vehicleId: string, inspectionId: string): Promise<InternalResponse<VehicleInspection[]>> {
+        const includes = '?include=author';
+        const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections/${inspectionId}${includes}`;
+        const resp = await this.client.makeGetRequest(inspectionsEndpoint);
+
+        const hydrator = new Hydrator();
+        resp.data = hydrator.hydrateResponse(resp.data, resp.included)
+
+        return resp;
+    }
+
     async motRecords(vehicleId: string): Promise<InternalResponse<MotRecord[]>> {
         const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
         const resp = await this.client.makeGetRequest(motRecordsEndpoint);
