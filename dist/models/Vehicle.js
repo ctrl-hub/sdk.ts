@@ -22,6 +22,11 @@ export class Vehicle extends BaseModel {
             type: 'single',
             modelType: 'vehicle-specifications',
         },
+        {
+            name: 'assignee',
+            type: 'single',
+            modelType: 'users',
+        }
     ];
     constructor(data) {
         super(data);

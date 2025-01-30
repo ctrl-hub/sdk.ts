@@ -415,6 +415,11 @@ class Vehicle extends BaseModel {
       name: "specification",
       type: "single",
       modelType: "vehicle-specifications"
+    },
+    {
+      name: "assignee",
+      type: "single",
+      modelType: "users"
     }
   ];
   constructor(data) {

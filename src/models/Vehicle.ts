@@ -29,6 +29,11 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
             type: 'single',
             modelType: 'vehicle-specifications',
         },
+        {
+            name: 'assignee',
+            type: 'single',
+            modelType: 'users',
+        }
     ];
 
     constructor(data?: any) {
