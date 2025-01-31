@@ -17,6 +17,7 @@ import { VehicleSpecification } from '@models/VehicleSpecification';
 import { EquipmentManufacturer } from '@models/EquipmentManufacturer';
 import { Property } from '@models/Property';
 import { VehicleInventoryCheck } from '@models/VehicleInventoryCheck';
+import { VehicleInspection } from '@models/VehicleInspection';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
 import { FormVersion } from '@models/FormVersion';
@@ -54,6 +55,7 @@ export class Hydrator {
         'vehicle-manufacturers': VehicleManufacturer,
         'vehicle-specifications': VehicleSpecification,
         'vehicle-inventory-checks': VehicleInventoryCheck,
+        'vehicle-inspections': VehicleInspection,
         'vehicle-mot-records': MotRecord,
         'work-orders': WorkOrder,
     };

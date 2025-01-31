@@ -28,6 +28,7 @@ export class VehicleInspection extends BaseModel {
             ],
             relationships: {
                 author: 'author',
+                vehicle: 'vehicle',
             },
         };
     }
@@ -36,6 +37,11 @@ export class VehicleInspection extends BaseModel {
             name: 'author',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'vehicle',
+            type: 'single',
+            modelType: 'vehicles',
         },
     ];
     constructor(data) {

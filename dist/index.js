@@ -597,6 +597,59 @@ class VehicleInventoryCheck extends BaseModel {
   }
 }
 
+// src/models/VehicleInspection.ts
+class VehicleInspection extends BaseModel {
+  type = "vehicle-inspection";
+  inspected_at = "";
+  checks;
+  jsonApiMapping() {
+    return {
+      attributes: [
+        "visible_damage",
+        "tyres",
+        "washers_and_wipers",
+        "windscreen",
+        "number_plate",
+        "security",
+        "accessories",
+        "spare_number_plate",
+        "safe_access",
+        "reversing_alarm",
+        "beacons",
+        "chemicals_and_fuel",
+        "storage",
+        "lights_and_indicators",
+        "engine_warning_lights",
+        "servicing",
+        "levels",
+        "cleanliness",
+        "driver_checks"
+      ],
+      relationships: {
+        author: "author",
+        vehicle: "vehicle"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "author",
+      type: "single",
+      modelType: "users"
+    },
+    {
+      name: "vehicle",
+      type: "single",
+      modelType: "vehicles"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.inspected_at = data?.attributes?.inspected_at ?? data?.inspected_at ?? "";
+    this.checks = data?.attributes?.checks ?? [];
+  }
+}
+
 // src/models/User.ts
 class User extends BaseModel {
   type = "users";
@@ -923,6 +976,7 @@ class Hydrator {
     "vehicle-manufacturers": VehicleManufacturer,
     "vehicle-specifications": VehicleSpecification,
     "vehicle-inventory-checks": VehicleInventoryCheck,
+    "vehicle-inspections": VehicleInspection,
     "vehicle-mot-records": MotRecord,
     "work-orders": WorkOrder
   };
@@ -1345,6 +1399,30 @@ class VehiclesService extends BaseService {
     const includes = "?include=author,equipment,equipment.model,equipment.model.categories,equipment.model.manufacturer";
     const inventoryChecksEndpoint = `${this.endpoint}/${vehicleId}/inventory-checks${includes}`;
     const resp = await this.client.makeGetRequest(inventoryChecksEndpoint);
+    const hydrator = new Hydrator;
+    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
+    return resp;
+  }
+  async inspectionsByOrganisation() {
+    const includes = "?include=author,vehicle";
+    const inspectionsEndpoint = `${this.endpoint}/inspections${includes}`;
+    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
+    const hydrator = new Hydrator;
+    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
+    return resp;
+  }
+  async inspections(vehicleId) {
+    const includes = "?include=author";
+    const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections${includes}`;
+    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
+    const hydrator = new Hydrator;
+    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
+    return resp;
+  }
+  async inspection(vehicleId, inspectionId) {
+    const includes = "?include=author";
+    const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections/${inspectionId}${includes}`;
+    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
     const hydrator = new Hydrator;
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;

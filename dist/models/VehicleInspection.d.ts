@@ -30,6 +30,7 @@ export declare class VehicleInspection extends BaseModel implements Partial<Json
         attributes: string[];
         relationships: {
             author: string;
+            vehicle: string;
         };
     };
     static relationships: RelationshipDefinition[];
