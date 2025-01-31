@@ -894,6 +894,24 @@ class WorkOrder extends BaseModel {
   }
 }
 
+// src/models/OperationTemplate.ts
+class OperationTemplate extends BaseModel {
+  type = "operation-templates";
+  name = "";
+  labels = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.labels = data?.attributes?.labels ?? data?.labels ?? [];
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "labels"]
+    };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -907,6 +925,7 @@ class Hydrator {
     "form-categories": FormCategory,
     "form-versions": FormVersion,
     groups: Group,
+    "operation-templates": OperationTemplate,
     operations: Operation,
     permissions: Permission,
     properties: Property,
@@ -1503,6 +1522,13 @@ class OperationsService extends BaseService {
   }
 }
 
+// src/services/OperationTemplatesService.ts
+class OperationTemplatesService extends BaseService {
+  constructor(client) {
+    super(client, `/v3/orgs/:orgId/governance/operation-templates`);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1552,6 +1578,9 @@ class Client {
   }
   operations(schemeId, workOrderId) {
     return new OperationsService(this, schemeId, workOrderId);
+  }
+  operationTemplates() {
+    return new OperationTemplatesService(this);
   }
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);

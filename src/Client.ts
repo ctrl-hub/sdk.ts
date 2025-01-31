@@ -26,6 +26,7 @@ import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
 import { WorkOrdersService } from '@services/WorkOrdersService';
 import { OperationsService } from '@services/OperationsService';
+import { OperationTemplatesService } from '@services/OperationTemplatesService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -87,6 +88,10 @@ export class Client {
 
     public operations(schemeId: string, workOrderId: string): OperationsService {
         return new OperationsService(this, schemeId, workOrderId);
+    }
+
+    public operationTemplates(): OperationTemplatesService {
+        return new OperationTemplatesService(this);
     }
 
     public serviceAccountKeys(): ServiceAccountKeysService {

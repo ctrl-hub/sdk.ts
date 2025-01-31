@@ -29,6 +29,7 @@ import { Team } from '@models/Team';
 import { Scheme } from '@models/Scheme';
 import { WorkOrder } from '@models/WorkOrder';
 import { Operation } from 'index';
+import { OperationTemplate } from '@models/OperationTemplate';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -42,6 +43,7 @@ export class Hydrator {
         'form-categories': FormCategory,
         'form-versions': FormVersion,
         groups: Group,
+        "operation-templates": OperationTemplate,
         operations: Operation,
         permissions: Permission,
         properties: Property,
