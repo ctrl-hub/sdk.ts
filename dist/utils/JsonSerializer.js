@@ -44,6 +44,12 @@ export class JsonApiSerializer {
         }
         return this.buildDefaultPayload(model);
     }
+    castAttribute(value, castType) {
+        if (castType === 'date') {
+            return new Date(value);
+        }
+        return value;
+    }
     buildUpdatePayload(model) {
         const ModelClass = this.modelMap[model.type];
         if (!ModelClass) {
@@ -63,8 +69,12 @@ export class JsonApiSerializer {
             };
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr) => {
-                    const value = model[attr];
+                    let value = model[attr];
                     if (value !== undefined && value !== '') {
+                        if (mapping.attributeCasts && Object.keys(mapping.attributeCasts).includes(attr)) {
+                            let val2 = this.castAttribute(value, mapping.attributeCasts[attr]);
+                            alert(val2);
+                        }
                         payload.data.attributes[attr] = value;
                     }
                 });

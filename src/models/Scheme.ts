@@ -1,15 +1,16 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { JsonApiMapping } from '../types/JsonApiMapping';
 
-export class Scheme extends BaseModel {
+export class Scheme extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'schemes';
 
     public name: string = '';
     public code: string = '';
     public description: string = '';
     public status: string = '';
-    public start_date: string = '';
-    public end_date: string = '';
+    public start_date?: Date;
+    public end_date?: Date;
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -32,6 +33,10 @@ export class Scheme extends BaseModel {
     jsonApiMapping() {
         return {
             attributes: ['name', 'code', 'description', 'status', 'start_date', 'end_date'],
+            attributeCasts: {
+                start_date: 'date',
+                end_date: 'date',
+            }
         };
     }
 }

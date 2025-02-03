@@ -18,6 +18,7 @@ export declare class JsonApiSerializer {
     protected modelMap: Record<string, new (...args: any[]) => Model>;
     constructor(modelMap: Record<string, new (...args: any[]) => Model>);
     buildCreatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
+    castAttribute(value: any, castType: string): any;
     buildUpdatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
     private buildDefaultPayload;
 }
