@@ -1,5 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { Label } from './Label';
 export declare class Scheme extends BaseModel {
     type: string;
     name: string;
@@ -8,7 +9,7 @@ export declare class Scheme extends BaseModel {
     status: string;
     start_date: string;
     end_date: string;
-    labels: Array<number>;
+    labels: Array<Label>;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     jsonApiMapping(): {
