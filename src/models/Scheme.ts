@@ -24,9 +24,9 @@ export class Scheme extends BaseModel {
         this.name = data?.attributes?.name ?? data?.name ?? '';
         this.code = data?.attributes?.code ?? data?.code ?? '';
         this.description = data?.attributes?.description ?? data?.description ?? '';
-        this.status = data?.attributes?.status ?? data?.description ?? '';
-        this.start_date = data?.attributes?.start_date ?? data?.description ?? '';
-        this.end_date = data?.attributes?.end_date ?? data?.description ?? '';
+        this.status = data?.attributes?.status ?? data?.status ?? '';
+        this.start_date = data?.attributes?.start_date ?? data?.start_date ?? '';
+        this.end_date = data?.attributes?.end_date ?? data?.end_date ?? '';
     }
 
     jsonApiMapping() {

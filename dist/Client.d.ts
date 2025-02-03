@@ -25,6 +25,7 @@ import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
 import { WorkOrdersService } from '@services/WorkOrdersService';
 import { OperationsService } from '@services/OperationsService';
+import { OperationTemplatesService } from '@services/OperationTemplatesService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -38,6 +39,7 @@ export declare class Client {
     schemes(): SchemesService;
     workOrders(schemeId: string): WorkOrdersService;
     operations(schemeId: string, workOrderId: string): OperationsService;
+    operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
     customerInteractions(customerId: string): CustomerInteractionsService;
