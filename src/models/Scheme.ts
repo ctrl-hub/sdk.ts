@@ -1,5 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { Label } from './Label';
 
 export class Scheme extends BaseModel {
     public type: string = 'schemes';
@@ -10,6 +11,7 @@ export class Scheme extends BaseModel {
     public status: string = '';
     public start_date: string = '';
     public end_date: string = '';
+    public labels: Array<Label> = [];
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -27,11 +29,12 @@ export class Scheme extends BaseModel {
         this.status = data?.attributes?.status ?? data?.status ?? '';
         this.start_date = data?.attributes?.start_date ?? data?.start_date ?? '';
         this.end_date = data?.attributes?.end_date ?? data?.end_date ?? '';
+        this.labels = data?.attributes?.labels ?? data?.labels ?? [];
     }
 
     jsonApiMapping() {
         return {
-            attributes: ['name', 'code', 'description', 'status', 'start_date', 'end_date'],
+            attributes: ['name', 'code', 'description', 'status', 'start_date', 'end_date', 'labels'],
         };
     }
 }
