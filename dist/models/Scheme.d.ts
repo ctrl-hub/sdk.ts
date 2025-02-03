@@ -8,6 +8,7 @@ export declare class Scheme extends BaseModel {
     status: string;
     start_date: string;
     end_date: string;
+    labels: Array<number>;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
     jsonApiMapping(): {

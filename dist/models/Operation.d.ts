@@ -8,6 +8,7 @@ export declare class Operation extends BaseModel {
     status: string;
     start_date: string;
     end_date: string;
+    labels: Array<number>;
     uprns: Array<number>;
     usrns: Array<number>;
     static relationships: RelationshipDefinition[];
