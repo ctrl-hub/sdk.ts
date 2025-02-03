@@ -4,7 +4,6 @@ export class Scheme extends BaseModel {
     name = '';
     code = '';
     description = '';
-    status = '';
     start_date = '';
     end_date = '';
     labels = [];
@@ -20,14 +19,13 @@ export class Scheme extends BaseModel {
         this.name = data?.attributes?.name ?? data?.name ?? '';
         this.code = data?.attributes?.code ?? data?.code ?? '';
         this.description = data?.attributes?.description ?? data?.description ?? '';
-        this.status = data?.attributes?.status ?? data?.status ?? '';
         this.start_date = data?.attributes?.start_date ?? data?.start_date ?? '';
         this.end_date = data?.attributes?.end_date ?? data?.end_date ?? '';
         this.labels = data?.attributes?.labels ?? data?.labels ?? [];
     }
     jsonApiMapping() {
         return {
-            attributes: ['name', 'code', 'description', 'status', 'start_date', 'end_date', 'labels'],
+            attributes: ['name', 'code', 'description', 'start_date', 'end_date', 'labels'],
         };
     }
 }

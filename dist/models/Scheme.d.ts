@@ -6,7 +6,6 @@ export declare class Scheme extends BaseModel {
     name: string;
     code: string;
     description: string;
-    status: string;
     start_date: string;
     end_date: string;
     labels: Array<Label>;
