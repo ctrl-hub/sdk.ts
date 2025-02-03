@@ -1,5 +1,6 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import type { Label } from './Label';
 
 export class Operation extends BaseModel {
     public type: string = 'operations';
@@ -10,7 +11,7 @@ export class Operation extends BaseModel {
     public status: string = '';
     public start_date: string = '';
     public end_date: string = '';
-    public labels: Array<number> = [];
+    public labels: Array<Label> = [];
     public uprns: Array<number> = [];
     public usrns: Array<number> = [];
 
