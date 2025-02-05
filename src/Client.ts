@@ -27,6 +27,7 @@ import { SchemesService } from '@services/SchemesService';
 import { WorkOrdersService } from '@services/WorkOrdersService';
 import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
+import { VehicleInspectionService } from '@services/VehicleInspectionService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -172,6 +173,10 @@ export class Client {
 
     public vehicleModelSpecifications(): VehicleModelSpecificationService {
         return new VehicleModelSpecificationService(this);
+    }
+
+    public vehicleInspections(): VehicleInspectionService {
+        return new VehicleInspectionService(this);
     }
 
     setOrganisationSlug(organisation: string) {

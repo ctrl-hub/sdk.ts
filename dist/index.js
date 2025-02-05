@@ -1418,30 +1418,6 @@ class VehiclesService extends BaseService {
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
   }
-  async inspectionsByOrganisation() {
-    const includes = "?include=author,vehicle";
-    const inspectionsEndpoint = `${this.endpoint}/inspections${includes}`;
-    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
-    const hydrator = new Hydrator;
-    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
-    return resp;
-  }
-  async inspections(vehicleId) {
-    const includes = "?include=author";
-    const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections${includes}`;
-    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
-    const hydrator = new Hydrator;
-    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
-    return resp;
-  }
-  async inspection(vehicleId, inspectionId) {
-    const includes = "?include=author";
-    const inspectionsEndpoint = `${this.endpoint}/${vehicleId}/inspections/${inspectionId}${includes}`;
-    const resp = await this.client.makeGetRequest(inspectionsEndpoint);
-    const hydrator = new Hydrator;
-    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
-    return resp;
-  }
   async motRecords(vehicleId) {
     const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
     const resp = await this.client.makeGetRequest(motRecordsEndpoint);
@@ -1603,6 +1579,13 @@ class OperationTemplatesService extends BaseService {
   }
 }
 
+// src/services/VehicleInspectionService.ts
+class VehicleInspectionService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/vehicles/inspections");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1715,6 +1698,9 @@ class Client {
   }
   vehicleModelSpecifications() {
     return new VehicleModelSpecificationService(this);
+  }
+  vehicleInspections() {
+    return new VehicleInspectionService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
