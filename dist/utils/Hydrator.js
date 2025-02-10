@@ -111,7 +111,7 @@ export class Hydrator {
     findAndHydrateIncluded(relation, included) {
         const includedData = included.find(inc => inc.id === relation.id && inc.type === relation.type);
         if (!includedData)
-            return null;
+            return relation;
         return this.hydrateSingle(includedData, included);
     }
 }
