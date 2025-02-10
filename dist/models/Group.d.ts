@@ -1,3 +1,4 @@
+import type { JsonApiMapping } from '../types/JsonApiMapping';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 type Binding = {
@@ -12,12 +13,16 @@ type Binding = {
         }[];
     };
 };
-export declare class Group extends BaseModel {
+export declare class Group extends BaseModel implements Partial<JsonApiMapping> {
     type: string;
     name: string;
     description: string;
     bindings: Binding[];
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
+    jsonApiMapping(): {
+        attributes: string[];
+        relationships: {};
+    };
 }
 export {};

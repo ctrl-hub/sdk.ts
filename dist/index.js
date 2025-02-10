@@ -289,9 +289,15 @@ class Group extends BaseModel {
   static relationships = [];
   constructor(data) {
     super(data);
-    this.name = data?.attributes?.name ?? "";
-    this.description = data?.attributes?.description ?? "";
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
     this.bindings = data?.attributes?.bindings ?? [];
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "description"],
+      relationships: {}
+    };
   }
 }
 
