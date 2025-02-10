@@ -65,9 +65,11 @@ export class Hydrator {
         return this.modelMap;
     };
     hydrateResponse(data, included) {
+        console.log('hydrate');
         return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
     }
     hydrateArray(items, included) {
+        console.log('hydrating array', this.getModelMap());
         return items.map(item => this.hydrateSingle(item, included));
     }
     hydrateSingle(item, included) {
@@ -111,7 +113,7 @@ export class Hydrator {
     findAndHydrateIncluded(relation, included) {
         const includedData = included.find(inc => inc.id === relation.id && inc.type === relation.type);
         if (!includedData)
-            return null;
+            return relation;
         return this.hydrateSingle(includedData, included);
     }
 }

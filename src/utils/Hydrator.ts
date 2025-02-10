@@ -71,10 +71,12 @@ export class Hydrator {
     };
 
     hydrateResponse<T extends Model>(data: JsonData | JsonData[], included: any[]): T | T[] {
+        console.log('hydrate')
         return Array.isArray(data) ? this.hydrateArray<T>(data, included) : this.hydrateSingle<T>(data, included);
     }
 
     private hydrateArray<T extends Model>(items: JsonData[], included: any[]): T[] {
+        console.log('hydrating array', this.getModelMap());
         return items.map(item => this.hydrateSingle<T>(item, included));
     }
 
@@ -128,7 +130,7 @@ export class Hydrator {
     private findAndHydrateIncluded(relation: { id: string; type: string }, included: any[]): Model | null {
         const includedData = included.find(inc => inc.id === relation.id && inc.type === relation.type);
 
-        if (!includedData) return null;
+        if (!includedData) return relation;
 
         return this.hydrateSingle(includedData, included);
     }

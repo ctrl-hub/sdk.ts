@@ -12,7 +12,13 @@ export class Operation extends BaseModel {
     completed = false;
     aborted = false;
     cancelled = false;
-    static relationships = [];
+    static relationships = [
+        {
+            name: 'properties',
+            type: 'array',
+            modelType: 'properties',
+        },
+    ];
     constructor(data) {
         super(data);
         this.name = data?.attributes?.name ?? data?.name ?? '';
