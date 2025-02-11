@@ -580,7 +580,8 @@ class VehicleInventoryCheck extends BaseModel {
     return {
       attributes: ["registration", "vin", "description", "colour"],
       relationships: {
-        specification: "vehicle-specifications"
+        author: "author",
+        vehicle: "vehicle"
       }
     };
   }
@@ -594,6 +595,11 @@ class VehicleInventoryCheck extends BaseModel {
       name: "author",
       type: "single",
       modelType: "users"
+    },
+    {
+      name: "vehicle",
+      type: "single",
+      modelType: "vehicles"
     }
   ];
   constructor(data) {
@@ -1416,14 +1422,6 @@ class VehiclesService extends BaseService {
     };
     return await this.client.makePostRequest(enquiryEndpoint, body);
   }
-  async inventoryChecks(vehicleId) {
-    const includes = "?include=author,equipment,equipment.model,equipment.model.categories,equipment.model.manufacturer";
-    const inventoryChecksEndpoint = `${this.endpoint}/${vehicleId}/inventory-checks${includes}`;
-    const resp = await this.client.makeGetRequest(inventoryChecksEndpoint);
-    const hydrator = new Hydrator;
-    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
-    return resp;
-  }
   async motRecords(vehicleId) {
     const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
     const resp = await this.client.makeGetRequest(motRecordsEndpoint);
@@ -1592,6 +1590,13 @@ class VehicleInspectionService extends BaseService {
   }
 }
 
+// src/services/VehicleInventoryCheckService.ts
+class VehicleInventoryCheckService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/vehicles/inventory-checks");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1707,6 +1712,9 @@ class Client {
   }
   vehicleInspections() {
     return new VehicleInspectionService(this);
+  }
+  vehicleInventoryChecks() {
+    return new VehicleInventoryCheckService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

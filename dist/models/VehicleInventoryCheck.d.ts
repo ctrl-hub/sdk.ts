@@ -14,7 +14,8 @@ export declare class VehicleInventoryCheck extends BaseModel implements Partial<
     jsonApiMapping(): {
         attributes: string[];
         relationships: {
-            specification: string;
+            author: string;
+            vehicle: string;
         };
     };
     static relationships: RelationshipDefinition[];
