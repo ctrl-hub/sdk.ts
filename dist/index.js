@@ -1576,8 +1576,9 @@ class CustomersService extends BaseService {
 
 // src/services/CustomerInteractionsService.ts
 class CustomerInteractionsService extends BaseService {
-  constructor(client) {
-    super(client, `/v3/orgs/:orgId/interactions`);
+  constructor(client, customerId) {
+    const endpoint = customerId ? `/v3/orgs/:orgId/customers/${customerId}/interactions` : `/v3/orgs/:orgId/interactions`;
+    super(client, endpoint);
   }
 }
 
@@ -1682,8 +1683,8 @@ class Client {
   customers() {
     return new CustomersService(this);
   }
-  customerInteractions() {
-    return new CustomerInteractionsService(this);
+  customerInteractions(customerId) {
+    return new CustomerInteractionsService(this, customerId);
   }
   serviceAccounts() {
     return new ServiceAccountsService(this);
