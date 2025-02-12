@@ -7,7 +7,8 @@ export class VehicleInventoryCheck extends BaseModel {
         return {
             attributes: ['registration', 'vin', 'description', 'colour'],
             relationships: {
-                specification: 'vehicle-specifications',
+                author: 'author',
+                vehicle: 'vehicle',
             },
         };
     }
@@ -21,6 +22,11 @@ export class VehicleInventoryCheck extends BaseModel {
             name: 'author',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'vehicle',
+            type: 'single',
+            modelType: 'vehicles',
         },
     ];
     constructor(data) {
