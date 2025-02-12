@@ -12,7 +12,13 @@ export class Property extends BaseModel {
     public mprn: number = 0;
     public mpan: number = 0;
 
-    static relationships: RelationshipDefinition[] = [];
+    static relationships: RelationshipDefinition[] = [
+        {
+            name: 'pressure_tests',
+            type: 'array',
+            modelType: 'pressure-tests',
+        },
+    ];
 
     constructor(data?: any) {
         super(data);

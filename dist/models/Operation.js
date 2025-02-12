@@ -18,6 +18,11 @@ export class Operation extends BaseModel {
             type: 'array',
             modelType: 'properties',
         },
+        {
+            name: 'streets',
+            type: 'array',
+            modelType: 'streets',
+        },
     ];
     constructor(data) {
         super(data);

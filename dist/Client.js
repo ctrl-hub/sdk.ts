@@ -84,8 +84,8 @@ export class Client {
     customers() {
         return new CustomersService(this);
     }
-    customerInteractions(customerId) {
-        return new CustomerInteractionsService(this, customerId);
+    customerInteractions() {
+        return new CustomerInteractionsService(this);
     }
     serviceAccounts() {
         return new ServiceAccountsService(this);

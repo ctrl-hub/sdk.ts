@@ -2,6 +2,7 @@ import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 import type { User } from './User';
+import type { Property } from './Property';
 
 export class CustomerInteraction extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'customer-interactions';
@@ -14,12 +15,14 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
     public notes: string = '';
 
     public representative?: User;
+    public property?: Property;
 
     jsonApiMapping() {
         return {
             attributes: ['method', 'direction', 'date_time', 'contacted', 'status', 'notes'],
             relationships: {
                 representative: 'users',
+                property: 'properties',
             },
         };
     }
@@ -29,6 +32,11 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
             name: 'representative',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'property',
+            type: 'single',
+            modelType: 'properties',
         },
     ];
 

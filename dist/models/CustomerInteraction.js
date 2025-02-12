@@ -8,11 +8,13 @@ export class CustomerInteraction extends BaseModel {
     status = '';
     notes = '';
     representative;
+    property;
     jsonApiMapping() {
         return {
             attributes: ['method', 'direction', 'date_time', 'contacted', 'status', 'notes'],
             relationships: {
                 representative: 'users',
+                property: 'properties',
             },
         };
     }
@@ -21,6 +23,11 @@ export class CustomerInteraction extends BaseModel {
             name: 'representative',
             type: 'single',
             modelType: 'users',
+        },
+        {
+            name: 'property',
+            type: 'single',
+            modelType: 'properties',
         },
     ];
     constructor(data) {
