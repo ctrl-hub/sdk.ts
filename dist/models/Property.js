@@ -8,7 +8,13 @@ export class Property extends BaseModel {
     pressure_tests = { source: '', id: '' };
     mprn = 0;
     mpan = 0;
-    static relationships = [];
+    static relationships = [
+        {
+            name: 'pressure_tests',
+            type: 'array',
+            modelType: 'pressure-tests',
+        },
+    ];
     constructor(data) {
         super(data);
         this.uprn = data?.attributes?.uprn ?? data.uprn ?? 0;

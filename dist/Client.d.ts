@@ -44,7 +44,7 @@ export declare class Client {
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customers(): CustomersService;
-    customerInteractions(customerId: string): CustomerInteractionsService;
+    customerInteractions(customerId?: string): CustomerInteractionsService;
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;
     forms(): FormsService;

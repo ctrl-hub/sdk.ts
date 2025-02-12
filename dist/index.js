@@ -562,7 +562,13 @@ class Property extends BaseModel {
   pressure_tests = { source: "", id: "" };
   mprn = 0;
   mpan = 0;
-  static relationships = [];
+  static relationships = [
+    {
+      name: "pressure_tests",
+      type: "array",
+      modelType: "pressure-tests"
+    }
+  ];
   constructor(data) {
     super(data);
     this.uprn = data?.attributes?.uprn ?? data.uprn ?? 0;
@@ -844,11 +850,13 @@ class CustomerInteraction extends BaseModel {
   status = "";
   notes = "";
   representative;
+  property;
   jsonApiMapping() {
     return {
       attributes: ["method", "direction", "date_time", "contacted", "status", "notes"],
       relationships: {
-        representative: "users"
+        representative: "users",
+        property: "properties"
       }
     };
   }
@@ -857,6 +865,11 @@ class CustomerInteraction extends BaseModel {
       name: "representative",
       type: "single",
       modelType: "users"
+    },
+    {
+      name: "property",
+      type: "single",
+      modelType: "properties"
     }
   ];
   constructor(data) {
@@ -977,6 +990,19 @@ class OperationTemplate extends BaseModel {
   }
 }
 
+// src/models/Street.ts
+class Street extends BaseModel {
+  type = "streets";
+  usrn = 0;
+  location = { type: "", coordinates: [] };
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.usrn = data?.attributes?.usrn ?? data.usrn ?? 0;
+    this.location = data?.attributes?.location ?? data.location ?? { type: "", coordinates: [] };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -998,6 +1024,7 @@ class Hydrator {
     schemes: Scheme,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
+    streets: Street,
     submissions: Submission,
     teams: Team,
     users: User,
@@ -1548,7 +1575,8 @@ class CustomersService extends BaseService {
 // src/services/CustomerInteractionsService.ts
 class CustomerInteractionsService extends BaseService {
   constructor(client, customerId) {
-    super(client, `/v3/orgs/:orgId/customers/${customerId}/interactions`);
+    const endpoint = customerId ? `/v3/orgs/:orgId/customers/${customerId}/interactions` : `/v3/orgs/:orgId/interactions`;
+    super(client, endpoint);
   }
 }
 
@@ -1850,6 +1878,11 @@ class Operation extends BaseModel {
       name: "properties",
       type: "array",
       modelType: "properties"
+    },
+    {
+      name: "streets",
+      type: "array",
+      modelType: "streets"
     }
   ];
   constructor(data) {

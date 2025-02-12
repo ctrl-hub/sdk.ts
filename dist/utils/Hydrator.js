@@ -28,6 +28,7 @@ import { Scheme } from '@models/Scheme';
 import { WorkOrder } from '@models/WorkOrder';
 import { Operation } from 'index';
 import { OperationTemplate } from '@models/OperationTemplate';
+import { Street } from '@models/Street';
 export class Hydrator {
     modelMap = {
         customers: Customer,
@@ -48,6 +49,7 @@ export class Hydrator {
         schemes: Scheme,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
+        streets: Street,
         submissions: Submission,
         teams: Team,
         users: User,
