@@ -17,7 +17,13 @@ export class Operation extends BaseModel {
     public aborted: boolean = false;
     public cancelled: boolean = false;
 
-    static relationships: RelationshipDefinition[] = [];
+    static relationships: RelationshipDefinition[] = [
+        {
+            name: 'properties',
+            type: 'array',
+            modelType: 'properties',
+        },
+    ];
 
     constructor(data?: any) {
         super(data);

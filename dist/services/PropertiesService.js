@@ -1,6 +1,5 @@
 import { Client } from "Client";
 import { BaseService } from "./BaseService";
-import { Equipment } from "../models/Equipment";
 export class PropertiesService extends BaseService {
     constructor(client) {
         super(client, "/v3/governance/properties");
