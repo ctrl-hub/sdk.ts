@@ -19,7 +19,8 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
-import { CustomersService } from '@services/CustomersService';
+import { ContactsService } from '@services/ContactsService';
+import { CustomerAccountsService } from '@services/CustomerAccountsService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
@@ -42,7 +43,8 @@ export declare class Client {
     operations(schemeId: string, workOrderId: string): OperationsService;
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
-    customers(): CustomersService;
+    customerAccounts(): CustomerAccountsService;
+    contacts(): ContactsService;
     customerInteractions(customerId?: string): CustomerInteractionsService;
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;

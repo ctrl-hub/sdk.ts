@@ -798,16 +798,17 @@ class FormVersion extends BaseModel {
   }
 }
 
-// src/models/Customer.ts
-class Customer extends BaseModel {
-  type = "customers";
-  name = "";
+// src/models/Contact.ts
+class Contact extends BaseModel {
+  type = "contact";
+  first_name = "";
+  last_name = "";
   telephone = "";
   email = "";
   property = "";
   jsonApiMapping() {
     return {
-      attributes: ["name", "telephone", "email", "property"],
+      attributes: ["first_name", "last_name", "telephone", "email", "property"],
       relationships: {
         model: "customer-interactions"
       }
@@ -827,9 +828,32 @@ class Customer extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.first_name = data?.attributes?.first_name ?? data?.first_name ?? "";
+    this.last_name = data?.attributes?.last_name ?? data?.last_name ?? "";
     this.telephone = data?.attributes?.telephone ?? data?.telephone ?? "";
     this.email = data?.attributes?.email ?? data?.email ?? "";
+    this.property = data?.attributes?.property ?? data?.property ?? "";
+  }
+}
+
+// src/models/CustomerAccount.ts
+class CustomerAccount extends BaseModel {
+  type = "customer-accounts";
+  property = "";
+  jsonApiMapping() {
+    return {
+      attributes: ["property"]
+    };
+  }
+  static relationships = [
+    {
+      name: "properties",
+      type: "array",
+      modelType: "properties"
+    }
+  ];
+  constructor(data) {
+    super(data);
     this.property = data?.attributes?.property ?? data?.property ?? "";
   }
 }
@@ -1000,7 +1024,8 @@ class Street extends BaseModel {
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
-    customers: Customer,
+    contact: Contact,
+    "customer-accounts": CustomerAccount,
     "customer-interactions": CustomerInteraction,
     "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
@@ -1567,10 +1592,17 @@ class VehicleModelSpecificationService extends BaseService {
   }
 }
 
-// src/services/CustomersService.ts
-class CustomersService extends BaseService {
+// src/services/ContactsService.ts
+class ContactsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/customers");
+    super(client, "/v3/orgs/:orgId/contacts");
+  }
+}
+
+// src/services/CustomerAccountsService.ts
+class CustomerAccountsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/customer-accounts");
   }
 }
 
@@ -1680,8 +1712,11 @@ class Client {
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
   }
-  customers() {
-    return new CustomersService(this);
+  customerAccounts() {
+    return new CustomerAccountsService(this);
+  }
+  contacts() {
+    return new ContactsService(this);
   }
   customerInteractions(customerId) {
     return new CustomerInteractionsService(this, customerId);
@@ -1923,7 +1958,8 @@ export {
   EquipmentCategory,
   Equipment,
   CustomerInteraction,
-  Customer,
+  CustomerAccount,
+  Contact,
   ClientConfig,
   Client
 };

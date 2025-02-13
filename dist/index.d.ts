@@ -5,7 +5,8 @@ export type { InternalResponse } from './types/Response';
 /**
  * Models
  */
-export { Customer } from './models/Customer';
+export { Contact } from './models/Contact';
+export { CustomerAccount } from './models/CustomerAccount';
 export { CustomerInteraction } from './models/CustomerInteraction';
 export { Equipment } from './models/Equipment';
 export { EquipmentCategory } from './models/EquipmentCategory';

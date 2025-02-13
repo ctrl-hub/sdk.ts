@@ -20,7 +20,8 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
-import { CustomersService } from '@services/CustomersService';
+import { ContactsService } from '@services/ContactsService';
+import { CustomerAccountsService } from '@services/CustomerAccountsService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
@@ -99,8 +100,12 @@ export class Client {
         return new ServiceAccountKeysService(this);
     }
 
-    public customers(): CustomersService {
-        return new CustomersService(this);
+    public customerAccounts(): CustomerAccountsService {
+        return new CustomerAccountsService(this);
+    }
+
+    public contacts(): ContactsService {
+        return new ContactsService(this);
     }
 
     public customerInteractions(customerId?: string): CustomerInteractionsService {

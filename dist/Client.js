@@ -18,7 +18,8 @@ import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService
 import { EquipmentModelsService } from '@services/EquipmentModelsService';
 import { PropertiesService } from '@services/PropertiesService';
 import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
-import { CustomersService } from '@services/CustomersService';
+import { ContactsService } from '@services/ContactsService';
+import { CustomerAccountsService } from '@services/CustomerAccountsService';
 import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
 import { TeamsService } from '@services/TeamsService';
 import { SchemesService } from '@services/SchemesService';
@@ -81,8 +82,11 @@ export class Client {
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);
     }
-    customers() {
-        return new CustomersService(this);
+    customerAccounts() {
+        return new CustomerAccountsService(this);
+    }
+    contacts() {
+        return new ContactsService(this);
     }
     customerInteractions(customerId) {
         return new CustomerInteractionsService(this, customerId);
