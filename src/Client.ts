@@ -12,6 +12,7 @@ import type { InternalResponse } from './types/Response';
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
+import { EquipmentExposureService } from './services/EquipmentExposureService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
@@ -154,6 +155,10 @@ export class Client {
 
     public equipment(): EquipmentService {
         return new EquipmentService(this);
+    }
+
+    public equipmentExposures(): EquipmentExposureService {
+        return new EquipmentExposureService(this);
     }
 
     public equipmentManufacturers(): EquipmentManufacturersService {

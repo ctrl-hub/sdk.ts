@@ -214,6 +214,61 @@ class EquipmentCategory extends BaseModel {
   }
 }
 
+// src/models/EquipmentExposure.ts
+class EquipmentExposure extends BaseModel {
+  type = "equipment-exposures";
+  start_time;
+  end_time;
+  location = {
+    type: "Point",
+    coordinates: [0, 0]
+  };
+  ppe = {
+    mask: false,
+    ear_defenders: false
+  };
+  jsonApiMapping() {
+    return {
+      attributes: ["end_time", "location", "ppe", "start_time"],
+      relationships: {
+        author: "author",
+        equipment: "equipment"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "author",
+      type: "single",
+      modelType: "users"
+    },
+    {
+      name: "equipment",
+      type: "single",
+      modelType: "equipment"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.start_time = data?.attributes?.start_time?.id ?? data?.start_time ?? "";
+    this.end_time = data?.attributes?.end_time ?? data?.end_time ?? "";
+    if (data?.attributes?.location) {
+      const locationData = data.attributes.location;
+      this.location = {
+        type: locationData.location?.type ?? "",
+        coordinates: locationData.location?.coordinates ?? []
+      };
+    }
+    if (data?.attributes?.ppe) {
+      const ppeData = data.attributes.ppe;
+      this.ppe = {
+        mask: ppeData.ppe?.mask ?? false,
+        ear_defenders: ppeData.ppe?.ear_defenders ?? false
+      };
+    }
+  }
+}
+
 // src/models/EquipmentModel.ts
 class EquipmentModel extends BaseModel {
   type = "equipment-models";
@@ -984,6 +1039,7 @@ class Hydrator {
     "customer-interactions": CustomerInteraction,
     "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
+    "equipment-exposures": EquipmentExposure,
     "equipment-models": EquipmentModel,
     "equipment-manufacturers": EquipmentManufacturer,
     forms: Form,
@@ -1442,6 +1498,13 @@ class EquipmentService extends BaseService {
   }
 }
 
+// src/services/EquipmentExposureService.ts
+class EquipmentExposureService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/equipment/exposures");
+  }
+}
+
 // src/services/VehicleManufacturersService.ts
 class VehicleManufacturersService extends BaseService {
   constructor(client) {
@@ -1698,6 +1761,9 @@ class Client {
   }
   equipment() {
     return new EquipmentService(this);
+  }
+  equipmentExposures() {
+    return new EquipmentExposureService(this);
   }
   equipmentManufacturers() {
     return new EquipmentManufacturersService(this);

@@ -10,6 +10,7 @@ import { ServiceAccountKeysService } from './services/ServiceAccountKeysService'
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
+import { EquipmentExposureService } from './services/EquipmentExposureService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
@@ -123,6 +124,9 @@ export class Client {
     }
     equipment() {
         return new EquipmentService(this);
+    }
+    equipmentExposures() {
+        return new EquipmentExposureService(this);
     }
     equipmentManufacturers() {
         return new EquipmentManufacturersService(this);

@@ -1,5 +1,6 @@
 import { Equipment } from '@models/Equipment';
 import { EquipmentCategory } from '@models/EquipmentCategory';
+import { EquipmentExposure } from '@models/EquipmentExposure';
 import { EquipmentModel } from '@models/EquipmentModel';
 import { Form } from '@models/Form';
 import { FormCategory } from '@models/FormCategory';
@@ -34,6 +35,7 @@ export class Hydrator {
         'customer-interactions': CustomerInteraction,
         'equipment-categories': EquipmentCategory,
         'equipment-items': Equipment,
+        'equipment-exposures': EquipmentExposure,
         'equipment-models': EquipmentModel,
         'equipment-manufacturers': EquipmentManufacturer,
         forms: Form,
