@@ -255,8 +255,8 @@ class EquipmentExposure extends BaseModel {
     if (data?.attributes?.location) {
       const locationData = data.attributes.location;
       this.location = {
-        type: locationData.location?.type ?? "",
-        coordinates: locationData.location?.coordinates ?? []
+        type: locationData.type ?? "",
+        coordinates: locationData.coordinates ?? []
       };
     }
     if (data?.attributes?.ppe) {

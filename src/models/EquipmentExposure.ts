@@ -57,8 +57,8 @@ export class EquipmentExposure extends BaseModel implements Partial<JsonApiMappi
             const locationData = data.attributes.location;
 
             this.location = {
-                type: locationData.location?.type ?? '',
-                coordinates: locationData.location?.coordinates ?? []
+                type: locationData.type ?? '',
+                coordinates: locationData.coordinates ?? []
             }
         }
 
@@ -71,10 +71,6 @@ export class EquipmentExposure extends BaseModel implements Partial<JsonApiMappi
             }
         }
     }
-//                 contact: {
-//                     landline: profileData.contact?.landline ?? '',
-//                     mobile: profileData.contact?.mobile ?? ''
-//                 },
 }
 
 /*
