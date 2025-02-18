@@ -52,20 +52,3 @@ export class EquipmentExposure extends BaseModel {
         }
     }
 }
-/*
-      "attributes": {
-        "end_time": "2024-12-17T19:26:00Z",
-        "location": {
-          "type": "Point",
-          "coordinates": [
-            0.5484145,
-            0.156465
-          ]
-        },
-        "ppe": {
-          "mask": true,
-          "ear_defenders": true
-        },
-        "start_time": "2024-12-17T16:42:00Z"
-      },
-  */ 

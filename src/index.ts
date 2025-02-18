@@ -10,6 +10,7 @@ export { Customer } from './models/Customer';
 export { CustomerInteraction } from './models/CustomerInteraction';
 export { Equipment } from './models/Equipment';
 export { EquipmentCategory } from './models/EquipmentCategory';
+export { EquipmentExposure } from './models/EquipmentExposure';
 export { EquipmentModel } from './models/EquipmentModel';
 export { EquipmentManufacturer } from './models/EquipmentManufacturer';
 export { Form } from './models/Form';

@@ -1961,6 +1961,7 @@ export {
   Form,
   EquipmentModel,
   EquipmentManufacturer,
+  EquipmentExposure,
   EquipmentCategory,
   Equipment,
   CustomerInteraction,
