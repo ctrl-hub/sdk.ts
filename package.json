@@ -12,9 +12,12 @@
         "bun-types": "^1.1.30"
     },
     "scripts": {
-        "build": "tsc && bun build src/index.ts --outdir dist && mkdir -p dist/types && cp -r src/types/* dist/types/"
+        "build": "tsc && tsc-alias && bun build src/index.ts --outdir dist && mkdir -p dist/types && cp -r src/types/* dist/types/"
     },
     "files": [
         "dist"
-    ]
+    ],
+    "dependencies": {
+        "tsc-alias": "^1.8.10"
+    }
 }
