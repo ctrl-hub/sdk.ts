@@ -1,21 +1,24 @@
 import { BaseModel } from '@models/BaseModel';
 export class CustomerAccount extends BaseModel {
     type = 'customer-accounts';
-    property = '';
-    jsonApiMapping() {
-        return {
-            attributes: ['property'],
-        };
-    }
     static relationships = [
         {
             name: 'properties',
             type: 'array',
             modelType: 'properties',
         },
+        {
+            name: 'contacts',
+            type: 'array',
+            modelType: 'contacts',
+        },
+        {
+            name: 'interactions',
+            type: 'array',
+            modelType: 'customer-interactions',
+        },
     ];
     constructor(data) {
         super(data);
-        this.property = data?.attributes?.property ?? data?.property ?? '';
     }
 }

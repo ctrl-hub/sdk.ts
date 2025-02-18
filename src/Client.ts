@@ -100,16 +100,16 @@ export class Client {
         return new ServiceAccountKeysService(this);
     }
 
-    public customerAccounts(): CustomerAccountsService {
-        return new CustomerAccountsService(this);
+    public customerAccounts(customerAccountId?: string): CustomerAccountsService {
+        return new CustomerAccountsService(this, customerAccountId);
     }
 
     public contacts(): ContactsService {
         return new ContactsService(this);
     }
 
-    public customerInteractions(customerId?: string): CustomerInteractionsService {
-        return new CustomerInteractionsService(this, customerId);
+    public customerInteractions(): CustomerInteractionsService {
+        return new CustomerInteractionsService(this);
     }
 
     public serviceAccounts(): ServiceAccountsService {

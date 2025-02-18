@@ -1,20 +1,22 @@
 import { BaseModel } from '@models/BaseModel';
 export class Contact extends BaseModel {
-    type = 'contact';
+    type = 'contacts';
+    salutation = '';
     first_name = '';
     last_name = '';
     telephone = '';
     email = '';
-    property = '';
     jsonApiMapping() {
         return {
-            attributes: ['first_name', 'last_name', 'telephone', 'email', 'property'],
-            relationships: {
-                model: 'customer-interactions',
-            },
+            attributes: ['salutation', 'first_name', 'last_name', 'telephone', 'email'],
         };
     }
     static relationships = [
+        {
+            name: 'customer_accounts',
+            type: 'array',
+            modelType: 'customer-accounts',
+        },
         {
             name: 'representative',
             type: 'array',
@@ -28,10 +30,10 @@ export class Contact extends BaseModel {
     ];
     constructor(data) {
         super(data);
+        this.salutation = data?.attributes?.salutation ?? data?.salutation ?? '';
         this.first_name = data?.attributes?.first_name ?? data?.first_name ?? '';
         this.last_name = data?.attributes?.last_name ?? data?.last_name ?? '';
         this.telephone = data?.attributes?.telephone ?? data?.telephone ?? '';
         this.email = data?.attributes?.email ?? data?.email ?? '';
-        this.property = data?.attributes?.property ?? data?.property ?? '';
     }
 }

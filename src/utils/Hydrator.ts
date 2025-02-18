@@ -36,7 +36,7 @@ import { Street } from '@models/Street';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
-        contact: Contact,
+        contacts: Contact,
         "customer-accounts": CustomerAccount,
         'customer-interactions': CustomerInteraction,
         'equipment-categories': EquipmentCategory,

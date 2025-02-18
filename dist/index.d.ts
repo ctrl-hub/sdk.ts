@@ -17,6 +17,7 @@ export { FormCategory } from './models/FormCategory';
 export { Group } from './models/Group';
 export { Log } from './models/Log';
 export { Permission } from './models/Permission';
+export { Property } from './models/Property';
 export { Role } from './models/Role';
 export { Scheme } from './models/Scheme';
 export { WorkOrder } from './models/WorkOrder';

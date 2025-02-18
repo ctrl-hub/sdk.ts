@@ -1,17 +1,8 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
 
-export class CustomerAccount extends BaseModel implements Partial<JsonApiMapping> {
+export class CustomerAccount extends BaseModel {
     public type: string = 'customer-accounts';
-
-    public property: string = '';
-
-    jsonApiMapping() {
-        return {
-            attributes: ['property'],
-        };
-    }
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -19,11 +10,19 @@ export class CustomerAccount extends BaseModel implements Partial<JsonApiMapping
             type: 'array',
             modelType: 'properties',
         },
+        {
+            name: 'contacts',
+            type: 'array',
+            modelType: 'contacts',
+        },
+        {
+            name: 'interactions',
+            type: 'array',
+            modelType: 'customer-interactions',
+        },
     ];
 
     constructor(data?: any) {
         super(data);
-
-        this.property = data?.attributes?.property ?? data?.property ?? '';
     }
 }

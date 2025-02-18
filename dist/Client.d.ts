@@ -43,9 +43,9 @@ export declare class Client {
     operations(schemeId: string, workOrderId: string): OperationsService;
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
-    customerAccounts(): CustomerAccountsService;
+    customerAccounts(customerAccountId?: string): CustomerAccountsService;
     contacts(): ContactsService;
-    customerInteractions(customerId?: string): CustomerInteractionsService;
+    customerInteractions(): CustomerInteractionsService;
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;
     forms(): FormsService;

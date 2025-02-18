@@ -82,14 +82,14 @@ export class Client {
     serviceAccountKeys() {
         return new ServiceAccountKeysService(this);
     }
-    customerAccounts() {
-        return new CustomerAccountsService(this);
+    customerAccounts(customerAccountId) {
+        return new CustomerAccountsService(this, customerAccountId);
     }
     contacts() {
         return new ContactsService(this);
     }
-    customerInteractions(customerId) {
-        return new CustomerInteractionsService(this, customerId);
+    customerInteractions() {
+        return new CustomerInteractionsService(this);
     }
     serviceAccounts() {
         return new ServiceAccountsService(this);

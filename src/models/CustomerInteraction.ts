@@ -3,6 +3,8 @@ import { BaseModel } from '@models/BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 import type { User } from './User';
 import type { Property } from './Property';
+import type { Contact } from './Contact';
+import type { CustomerAccount } from './CustomerAccount';
 
 export class CustomerInteraction extends BaseModel implements Partial<JsonApiMapping> {
     public type: string = 'customer-interactions';
@@ -16,6 +18,8 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
 
     public representative?: User;
     public property?: Property;
+    public contact?: Contact;
+    public customer_account?: CustomerAccount;
 
     jsonApiMapping() {
         return {
@@ -23,6 +27,8 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
             relationships: {
                 representative: 'users',
                 property: 'properties',
+                contact: 'contacts',
+                customer_account: 'customer-accounts',
             },
         };
     }
@@ -37,6 +43,16 @@ export class CustomerInteraction extends BaseModel implements Partial<JsonApiMap
             name: 'property',
             type: 'single',
             modelType: 'properties',
+        },
+        {
+            name: 'contact',
+            type: 'single',
+            modelType: 'contacts',
+        },
+        {
+            name: 'customer_account',
+            type: 'single',
+            modelType: 'customer-accounts',
         },
     ];
 

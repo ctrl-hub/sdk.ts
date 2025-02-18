@@ -34,7 +34,7 @@ export class JsonApiSerializer {
                         payload.data.relationships[key] = {
                             data: {
                                 type: relationshipType,
-                                id: relationshipValue,
+                                id: relationshipValue.id ?? relationshipValue,
                             },
                         };
                     }
@@ -85,6 +85,23 @@ export class JsonApiSerializer {
             return payload;
         }
         return this.buildDefaultPayload(model);
+    }
+    buildRelationshipPayload(model, relationships) {
+        const ModelClass = this.modelMap[model.type];
+        if (!ModelClass) {
+            console.warn(`No model class found for type: ${model.type}`);
+            return { data: [] };
+        }
+        const data = relationships
+            .filter(relationship => relationship.id !== undefined)
+            .map(relationship => ({
+            type: model.type,
+            id: relationship.id,
+        }));
+        const payload = {
+            data: data,
+        };
+        return payload;
     }
     buildDefaultPayload(model) {
         const { type, id, meta, links, included, _relationships, ...attributes } = model;

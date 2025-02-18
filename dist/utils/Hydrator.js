@@ -32,7 +32,7 @@ import { OperationTemplate } from '@models/OperationTemplate';
 import { Street } from '@models/Street';
 export class Hydrator {
     modelMap = {
-        contact: Contact,
+        contacts: Contact,
         "customer-accounts": CustomerAccount,
         'customer-interactions': CustomerInteraction,
         'equipment-categories': EquipmentCategory,
