@@ -10,6 +10,7 @@ import { ServiceAccountKeysService } from './services/ServiceAccountKeysService'
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
+import { EquipmentExposureService } from './services/EquipmentExposureService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
@@ -27,6 +28,7 @@ import { WorkOrdersService } from '@services/WorkOrdersService';
 import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
+import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
 export class Client {
     config;
     organisation;
@@ -127,6 +129,9 @@ export class Client {
     equipment() {
         return new EquipmentService(this);
     }
+    equipmentExposures() {
+        return new EquipmentExposureService(this);
+    }
     equipmentManufacturers() {
         return new EquipmentManufacturersService(this);
     }
@@ -144,6 +149,9 @@ export class Client {
     }
     vehicleInspections() {
         return new VehicleInspectionService(this);
+    }
+    vehicleInventoryChecks() {
+        return new VehicleInventoryCheckService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
@@ -211,7 +219,7 @@ export class Client {
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: 'include', // @todo only required for cookie based auth,
+                credentials: 'include',
                 headers: headers,
             });
             let json = await fetchResponse.json();

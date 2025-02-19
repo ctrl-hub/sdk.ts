@@ -12,6 +12,7 @@ import type { InternalResponse } from './types/Response';
 import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
+import { EquipmentExposureService } from './services/EquipmentExposureService';
 import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
 import { VehicleModelsService } from '@services/VehicleModelsService';
 import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
@@ -29,6 +30,7 @@ import { WorkOrdersService } from '@services/WorkOrdersService';
 import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
+import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -160,6 +162,10 @@ export class Client {
         return new EquipmentService(this);
     }
 
+    public equipmentExposures(): EquipmentExposureService {
+        return new EquipmentExposureService(this);
+    }
+
     public equipmentManufacturers(): EquipmentManufacturersService {
         return new EquipmentManufacturersService(this);
     }
@@ -182,6 +188,10 @@ export class Client {
 
     public vehicleInspections(): VehicleInspectionService {
         return new VehicleInspectionService(this);
+    }
+
+    public vehicleInventoryChecks(): VehicleInventoryCheckService {
+        return new VehicleInventoryCheckService(this);
     }
 
     setOrganisationSlug(organisation: string) {

@@ -1,21 +1,25 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
-interface Item {
-    'equipment_id': string;
-    'present'?: boolean;
-    'working'?: boolean;
-    'cerified'?: boolean;
-}
-export declare class VehicleInventoryCheck extends BaseModel implements Partial<JsonApiMapping> {
+type Location = {
+    type: "Point";
+    coordinates: [number, number];
+};
+type PPE = {
+    mask: boolean;
+    ear_defenders: boolean;
+};
+export declare class EquipmentExposure extends BaseModel implements Partial<JsonApiMapping> {
     type: string;
-    inspected_at: string;
-    items?: Item[];
+    start_time: string;
+    end_time: string;
+    location: Location;
+    ppe: PPE;
     jsonApiMapping(): {
         attributes: string[];
         relationships: {
             author: string;
-            vehicle: string;
+            equipment: string;
         };
     };
     static relationships: RelationshipDefinition[];

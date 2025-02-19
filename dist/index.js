@@ -214,6 +214,61 @@ class EquipmentCategory extends BaseModel {
   }
 }
 
+// src/models/EquipmentExposure.ts
+class EquipmentExposure extends BaseModel {
+  type = "equipment-exposures";
+  start_time;
+  end_time;
+  location = {
+    type: "Point",
+    coordinates: [0, 0]
+  };
+  ppe = {
+    mask: false,
+    ear_defenders: false
+  };
+  jsonApiMapping() {
+    return {
+      attributes: ["end_time", "location", "ppe", "start_time"],
+      relationships: {
+        author: "author",
+        equipment: "equipment"
+      }
+    };
+  }
+  static relationships = [
+    {
+      name: "author",
+      type: "single",
+      modelType: "users"
+    },
+    {
+      name: "equipment",
+      type: "single",
+      modelType: "equipment"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.start_time = data?.attributes?.start_time?.id ?? data?.start_time ?? "";
+    this.end_time = data?.attributes?.end_time ?? data?.end_time ?? "";
+    if (data?.attributes?.location) {
+      const locationData = data.attributes.location;
+      this.location = {
+        type: locationData.type ?? "",
+        coordinates: locationData.coordinates ?? []
+      };
+    }
+    if (data?.attributes?.ppe) {
+      const ppeData = data.attributes.ppe;
+      this.ppe = {
+        mask: ppeData.ppe?.mask ?? false,
+        ear_defenders: ppeData.ppe?.ear_defenders ?? false
+      };
+    }
+  }
+}
+
 // src/models/EquipmentModel.ts
 class EquipmentModel extends BaseModel {
   type = "equipment-models";
@@ -590,7 +645,8 @@ class VehicleInventoryCheck extends BaseModel {
     return {
       attributes: ["registration", "vin", "description", "colour"],
       relationships: {
-        specification: "vehicle-specifications"
+        author: "author",
+        vehicle: "vehicle"
       }
     };
   }
@@ -604,6 +660,11 @@ class VehicleInventoryCheck extends BaseModel {
       name: "author",
       type: "single",
       modelType: "users"
+    },
+    {
+      name: "vehicle",
+      type: "single",
+      modelType: "vehicles"
     }
   ];
   constructor(data) {
@@ -1048,6 +1109,7 @@ class Hydrator {
     "customer-interactions": CustomerInteraction,
     "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
+    "equipment-exposures": EquipmentExposure,
     "equipment-models": EquipmentModel,
     "equipment-manufacturers": EquipmentManufacturer,
     forms: Form,
@@ -1506,14 +1568,6 @@ class VehiclesService extends BaseService {
     };
     return await this.client.makePostRequest(enquiryEndpoint, body);
   }
-  async inventoryChecks(vehicleId) {
-    const includes = "?include=author,equipment,equipment.model,equipment.model.categories,equipment.model.manufacturer";
-    const inventoryChecksEndpoint = `${this.endpoint}/${vehicleId}/inventory-checks${includes}`;
-    const resp = await this.client.makeGetRequest(inventoryChecksEndpoint);
-    const hydrator = new Hydrator;
-    resp.data = hydrator.hydrateResponse(resp.data, resp.included);
-    return resp;
-  }
   async motRecords(vehicleId) {
     const motRecordsEndpoint = `${this.endpoint}/${vehicleId}/mot-records`;
     const resp = await this.client.makeGetRequest(motRecordsEndpoint);
@@ -1527,6 +1581,13 @@ class VehiclesService extends BaseService {
 class EquipmentService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/assets/equipment");
+  }
+}
+
+// src/services/EquipmentExposureService.ts
+class EquipmentExposureService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/equipment/exposures");
   }
 }
 
@@ -1700,6 +1761,13 @@ class VehicleInspectionService extends BaseService {
   }
 }
 
+// src/services/VehicleInventoryCheckService.ts
+class VehicleInventoryCheckService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/assets/vehicles/inventory-checks");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1801,6 +1869,9 @@ class Client {
   equipment() {
     return new EquipmentService(this);
   }
+  equipmentExposures() {
+    return new EquipmentExposureService(this);
+  }
   equipmentManufacturers() {
     return new EquipmentManufacturersService(this);
   }
@@ -1818,6 +1889,9 @@ class Client {
   }
   vehicleInspections() {
     return new VehicleInspectionService(this);
+  }
+  vehicleInventoryChecks() {
+    return new VehicleInventoryCheckService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
@@ -2000,6 +2074,7 @@ export {
   Form,
   EquipmentModel,
   EquipmentManufacturer,
+  EquipmentExposure,
   EquipmentCategory,
   Equipment,
   CustomerInteraction,
