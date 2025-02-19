@@ -1,6 +1,6 @@
 import { Client } from 'Client';
 import { BaseService } from './BaseService';
-import { Customer } from '@models/Customer';
-export declare class CustomersService extends BaseService<Customer> {
+import { CustomerAccount } from '@models/CustomerAccount';
+export declare class CustomersService extends BaseService<CustomerAccount> {
     constructor(client: Client);
 }

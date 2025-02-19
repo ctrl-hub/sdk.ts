@@ -5,7 +5,8 @@ export type { InternalResponse } from './types/Response';
 /**
  * Models
  */
-export { Customer } from './models/Customer';
+export { Contact } from './models/Contact';
+export { CustomerAccount } from './models/CustomerAccount';
 export { CustomerInteraction } from './models/CustomerInteraction';
 export { Equipment } from './models/Equipment';
 export { EquipmentCategory } from './models/EquipmentCategory';
@@ -17,6 +18,7 @@ export { FormCategory } from './models/FormCategory';
 export { Group } from './models/Group';
 export { Log } from './models/Log';
 export { Permission } from './models/Permission';
+export { Property } from './models/Property';
 export { Role } from './models/Role';
 export { Scheme } from './models/Scheme';
 export { WorkOrder } from './models/WorkOrder';

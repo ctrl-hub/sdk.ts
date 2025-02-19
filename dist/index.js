@@ -617,16 +617,22 @@ class Property extends BaseModel {
   pressure_tests = { source: "", id: "" };
   mprn = 0;
   mpan = 0;
-  static relationships = [];
+  static relationships = [
+    {
+      name: "pressure_tests",
+      type: "array",
+      modelType: "pressure-tests"
+    }
+  ];
   constructor(data) {
     super(data);
-    this.uprn = data?.attributes?.uprn ?? data.uprn ?? 0;
-    this.location = data?.attributes?.location ?? data.location ?? { type: "", coordinates: [] };
-    this.address = data?.attributes?.address ?? data.address ?? { description: "", department: "", organisation: "", number: "", name: "", thoroughfare: "", dependent_thoroughfare: "", post_town: "", postcode: "", pobox: "", country: "" };
-    this.psr = data?.attributes?.psr ?? data.psr ?? { indicator: false, priority: 0, notes: "", contact: "" };
-    this.pressure_tests = data?.attributes?.pressure_tests ?? data.pressure_tests ?? { source: "", id: "" };
-    this.mprn = data?.attributes?.mprn ?? data.mprn ?? 0;
-    this.mpan = data?.attributes?.mpan ?? data.mpan ?? 0;
+    this.uprn = data?.attributes?.uprn ?? data?.uprn ?? 0;
+    this.location = data?.attributes?.location ?? data?.location ?? { type: "", coordinates: [] };
+    this.address = data?.attributes?.address ?? data?.address ?? { description: "", department: "", organisation: "", number: "", name: "", thoroughfare: "", dependent_thoroughfare: "", post_town: "", postcode: "", pobox: "", country: "" };
+    this.psr = data?.attributes?.psr ?? data?.psr ?? { indicator: false, priority: 0, notes: "", contact: "" };
+    this.pressure_tests = data?.attributes?.pressure_tests ?? data?.pressure_tests ?? { source: "", id: "" };
+    this.mprn = data?.attributes?.mprn ?? data?.mprn ?? 0;
+    this.mpan = data?.attributes?.mpan ?? data?.mpan ?? 0;
   }
 }
 
@@ -853,22 +859,25 @@ class FormVersion extends BaseModel {
   }
 }
 
-// src/models/Customer.ts
-class Customer extends BaseModel {
-  type = "customers";
-  name = "";
+// src/models/Contact.ts
+class Contact extends BaseModel {
+  type = "contacts";
+  salutation = "";
+  first_name = "";
+  last_name = "";
   telephone = "";
   email = "";
-  property = "";
   jsonApiMapping() {
     return {
-      attributes: ["name", "telephone", "email", "property"],
-      relationships: {
-        model: "customer-interactions"
-      }
+      attributes: ["salutation", "first_name", "last_name", "telephone", "email"]
     };
   }
   static relationships = [
+    {
+      name: "customer_accounts",
+      type: "array",
+      modelType: "customer-accounts"
+    },
     {
       name: "representative",
       type: "array",
@@ -882,10 +891,36 @@ class Customer extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.salutation = data?.attributes?.salutation ?? data?.salutation ?? "";
+    this.first_name = data?.attributes?.first_name ?? data?.first_name ?? "";
+    this.last_name = data?.attributes?.last_name ?? data?.last_name ?? "";
     this.telephone = data?.attributes?.telephone ?? data?.telephone ?? "";
     this.email = data?.attributes?.email ?? data?.email ?? "";
-    this.property = data?.attributes?.property ?? data?.property ?? "";
+  }
+}
+
+// src/models/CustomerAccount.ts
+class CustomerAccount extends BaseModel {
+  type = "customer-accounts";
+  static relationships = [
+    {
+      name: "properties",
+      type: "array",
+      modelType: "properties"
+    },
+    {
+      name: "contacts",
+      type: "array",
+      modelType: "contacts"
+    },
+    {
+      name: "interactions",
+      type: "array",
+      modelType: "customer-interactions"
+    }
+  ];
+  constructor(data) {
+    super(data);
   }
 }
 
@@ -899,11 +934,17 @@ class CustomerInteraction extends BaseModel {
   status = "";
   notes = "";
   representative;
+  property;
+  contact;
+  customer_account;
   jsonApiMapping() {
     return {
       attributes: ["method", "direction", "date_time", "contacted", "status", "notes"],
       relationships: {
-        representative: "users"
+        representative: "users",
+        property: "properties",
+        contact: "contacts",
+        customer_account: "customer-accounts"
       }
     };
   }
@@ -912,6 +953,21 @@ class CustomerInteraction extends BaseModel {
       name: "representative",
       type: "single",
       modelType: "users"
+    },
+    {
+      name: "property",
+      type: "single",
+      modelType: "properties"
+    },
+    {
+      name: "contact",
+      type: "single",
+      modelType: "contacts"
+    },
+    {
+      name: "customer_account",
+      type: "single",
+      modelType: "customer-accounts"
     }
   ];
   constructor(data) {
@@ -1032,10 +1088,24 @@ class OperationTemplate extends BaseModel {
   }
 }
 
+// src/models/Street.ts
+class Street extends BaseModel {
+  type = "streets";
+  usrn = 0;
+  location = { type: "", coordinates: [] };
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.usrn = data?.attributes?.usrn ?? data.usrn ?? 0;
+    this.location = data?.attributes?.location ?? data.location ?? { type: "", coordinates: [] };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
-    customers: Customer,
+    contacts: Contact,
+    "customer-accounts": CustomerAccount,
     "customer-interactions": CustomerInteraction,
     "equipment-categories": EquipmentCategory,
     "equipment-items": Equipment,
@@ -1054,6 +1124,7 @@ class Hydrator {
     schemes: Scheme,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
+    streets: Street,
     submissions: Submission,
     teams: Team,
     users: User,
@@ -1214,7 +1285,7 @@ class JsonApiSerializer {
             payload.data.relationships[key] = {
               data: {
                 type: relationshipType,
-                id: relationshipValue
+                id: relationshipValue.id ?? relationshipValue
               }
             };
           }
@@ -1265,6 +1336,21 @@ class JsonApiSerializer {
       return payload;
     }
     return this.buildDefaultPayload(model);
+  }
+  buildRelationshipPayload(model, relationships) {
+    const ModelClass = this.modelMap[model.type];
+    if (!ModelClass) {
+      console.warn(`No model class found for type: ${model.type}`);
+      return { data: [] };
+    }
+    const data = relationships.filter((relationship) => relationship.id !== undefined).map((relationship) => ({
+      type: model.type,
+      id: relationship.id
+    }));
+    const payload = {
+      data
+    };
+    return payload;
   }
   buildDefaultPayload(model) {
     const { type, id, meta, links, included, _relationships, ...attributes } = model;
@@ -1601,17 +1687,35 @@ class VehicleModelSpecificationService extends BaseService {
   }
 }
 
-// src/services/CustomersService.ts
-class CustomersService extends BaseService {
+// src/services/ContactsService.ts
+class ContactsService extends BaseService {
   constructor(client) {
-    super(client, "/v3/orgs/:orgId/customers");
+    super(client, "/v3/orgs/:orgId/contacts");
+  }
+}
+
+// src/services/CustomerAccountsService.ts
+class CustomerAccountsService extends BaseService {
+  constructor(client, customerAccountId) {
+    const endpoint = customerAccountId ? `/v3/orgs/:orgId/customer-accounts/${customerAccountId}` : `/v3/orgs/:orgId/customer-accounts`;
+    super(client, endpoint);
+  }
+  async patchProperties(properties) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Property, properties);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/properties`, payload);
+  }
+  async patchContacts(contacts) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Contact, contacts);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/contacts`, payload);
   }
 }
 
 // src/services/CustomerInteractionsService.ts
 class CustomerInteractionsService extends BaseService {
-  constructor(client, customerId) {
-    super(client, `/v3/orgs/:orgId/customers/${customerId}/interactions`);
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/customer-interactions");
   }
 }
 
@@ -1720,11 +1824,14 @@ class Client {
   serviceAccountKeys() {
     return new ServiceAccountKeysService(this);
   }
-  customers() {
-    return new CustomersService(this);
+  customerAccounts(customerAccountId) {
+    return new CustomerAccountsService(this, customerAccountId);
   }
-  customerInteractions(customerId) {
-    return new CustomerInteractionsService(this, customerId);
+  contacts() {
+    return new ContactsService(this);
+  }
+  customerInteractions() {
+    return new CustomerInteractionsService(this);
   }
   serviceAccounts() {
     return new ServiceAccountsService(this);
@@ -1916,6 +2023,11 @@ class Operation extends BaseModel {
       name: "properties",
       type: "array",
       modelType: "properties"
+    },
+    {
+      name: "streets",
+      type: "array",
+      modelType: "streets"
     }
   ];
   constructor(data) {
@@ -1953,6 +2065,7 @@ export {
   Scheme,
   Role,
   RequestOptions,
+  Property,
   Permission,
   Operation,
   Log,
@@ -1965,7 +2078,8 @@ export {
   EquipmentCategory,
   Equipment,
   CustomerInteraction,
-  Customer,
+  CustomerAccount,
+  Contact,
   ClientConfig,
   Client
 };

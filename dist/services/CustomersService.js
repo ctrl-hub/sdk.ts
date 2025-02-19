@@ -1,8 +1,8 @@
 import { Client } from 'Client';
 import { BaseService } from './BaseService';
-import { Customer } from '@models/Customer';
+import { CustomerAccount } from '@models/CustomerAccount';
 export class CustomersService extends BaseService {
     constructor(client) {
-        super(client, '/v3/orgs/:orgId/customers');
+        super(client, '/v3/orgs/:orgId/customer-accounts');
     }
 }

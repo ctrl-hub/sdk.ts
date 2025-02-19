@@ -25,17 +25,20 @@ import { VehicleInspection } from '@models/VehicleInspection';
 import { User } from '@models/User';
 import { MotRecord } from '@models/MotRecord';
 import { FormVersion } from '@models/FormVersion';
-import { Customer } from '@models/Customer';
+import { Contact } from '@models/Contact';
+import { CustomerAccount } from '@models/CustomerAccount';
 import { CustomerInteraction } from '@models/CustomerInteraction';
 import { Team } from '@models/Team';
 import { Scheme } from '@models/Scheme';
 import { WorkOrder } from '@models/WorkOrder';
 import { Operation } from 'index';
 import { OperationTemplate } from '@models/OperationTemplate';
+import { Street } from '@models/Street';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
-        customers: Customer,
+        contacts: Contact,
+        "customer-accounts": CustomerAccount,
         'customer-interactions': CustomerInteraction,
         'equipment-categories': EquipmentCategory,
         'equipment-items': Equipment,
@@ -54,6 +57,7 @@ export class Hydrator {
         schemes: Scheme,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
+        streets: Street,
         submissions: Submission,
         teams: Team,
         users: User,
