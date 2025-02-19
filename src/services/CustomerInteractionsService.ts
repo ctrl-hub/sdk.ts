@@ -4,6 +4,6 @@ import { CustomerInteraction } from '@models/CustomerInteraction';
 
 export class CustomerInteractionsService extends BaseService<CustomerInteraction> {
     constructor(client: Client) {
-        super(client, '/v3/orgs/:orgId/interactions');
+        super(client, '/v3/orgs/:orgId/customer-interactions');
     }
 }
