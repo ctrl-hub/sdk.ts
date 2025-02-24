@@ -52,25 +52,39 @@ export class JsonApiSerializer {
                 },
             };
 
+            prototype.constructor.relationships.forEach((relationship: {
+                name: string;
+                type: string;
+                modelType: string;
+            }) => {
+                if (relationship.type === 'array') {
+                    const value = (model as any)[relationship.name];
+                    if (value) {
+                        payload.data.relationships![relationship.name] = {
+                            data: value.map((item: any) => ({
+                                type: relationship.modelType,
+                                id: item.id,
+                            })),
+                        };
+                    }
+                } else {
+                    const value = (model as any)[relationship.name];
+                    if (value) {
+                        payload.data.relationships![relationship.name] = {
+                            data: {
+                                type: relationship.modelType,
+                                id: value.id,
+                            },
+                        };
+                    }
+                }
+            });
+
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr: string) => {
                     const value = (model as any)[attr];
                     if (value !== undefined && value !== '') {
                         payload.data.attributes[attr] = value;
-                    }
-                });
-            }
-
-            if (mapping.relationships) {
-                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
-                    const relationshipValue = (model as any)[key];
-                    if (relationshipValue && typeof relationshipType === 'string') {
-                        payload.data.relationships![key] = {
-                            data: {
-                                type: relationshipType,
-                                id: relationshipValue.id ?? relationshipValue,
-                            },
-                        };
                     }
                 });
             }
@@ -103,25 +117,39 @@ export class JsonApiSerializer {
                 },
             };
 
+            prototype.constructor.relationships.forEach((relationship: {
+                name: string;
+                type: string;
+                modelType: string;
+            }) => {
+                if (relationship.type === 'array') {
+                    const value = (model as any)[relationship.name];
+                    if (value) {
+                        payload.data.relationships![relationship.name] = {
+                            data: value.map((item: any) => ({
+                                type: relationship.modelType,
+                                id: item.id,
+                            })),
+                        };
+                    }
+                } else {
+                    const value = (model as any)[relationship.name];
+                    if (value) {
+                        payload.data.relationships![relationship.name] = {
+                            data: {
+                                type: relationship.modelType,
+                                id: value.id,
+                            },
+                        };
+                    }
+                }
+            });
+
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr: string) => {
                     const value = (model as any)[attr];
                     if (value !== undefined && value !== '') {
                         payload.data.attributes[attr] = value;
-                    }
-                });
-            }
-
-            if (mapping.relationships) {
-                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
-                    const relationshipValue = (model as any)[key];
-                    if (relationshipValue && typeof relationshipType === 'string') {
-                        payload.data.relationships![key] = {
-                            data: {
-                                type: relationshipType,
-                                id: relationshipValue.id ?? relationshipValue,
-                            },
-                        };
                     }
                 });
             }

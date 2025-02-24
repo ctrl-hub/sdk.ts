@@ -9,8 +9,8 @@ export declare class Operation extends BaseModel {
     start_date: string;
     end_date: string;
     labels: Array<Label>;
-    uprns: Array<number>;
-    usrns: Array<number>;
+    uprns: Array<string>;
+    usrns: Array<string>;
     completed: boolean;
     aborted: boolean;
     cancelled: boolean;

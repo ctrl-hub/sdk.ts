@@ -11,8 +11,8 @@ export class Operation extends BaseModel {
     public start_date: string = '';
     public end_date: string = '';
     public labels: Array<Label> = [];
-    public uprns: Array<number> = [];
-    public usrns: Array<number> = [];
+    public uprns: Array<string> = [];
+    public usrns: Array<string> = [];
     public completed: boolean = false;
     public aborted: boolean = false;
     public cancelled: boolean = false;

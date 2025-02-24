@@ -19,24 +19,35 @@ export class JsonApiSerializer {
                     relationships: {},
                 },
             };
+            prototype.constructor.relationships.forEach((relationship) => {
+                if (relationship.type === 'array') {
+                    const value = model[relationship.name];
+                    if (value) {
+                        payload.data.relationships[relationship.name] = {
+                            data: value.map((item) => ({
+                                type: relationship.modelType,
+                                id: item.id,
+                            })),
+                        };
+                    }
+                }
+                else {
+                    const value = model[relationship.name];
+                    if (value) {
+                        payload.data.relationships[relationship.name] = {
+                            data: {
+                                type: relationship.modelType,
+                                id: value.id,
+                            },
+                        };
+                    }
+                }
+            });
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr) => {
                     const value = model[attr];
                     if (value !== undefined && value !== '') {
                         payload.data.attributes[attr] = value;
-                    }
-                });
-            }
-            if (mapping.relationships) {
-                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
-                    const relationshipValue = model[key];
-                    if (relationshipValue && typeof relationshipType === 'string') {
-                        payload.data.relationships[key] = {
-                            data: {
-                                type: relationshipType,
-                                id: relationshipValue.id ?? relationshipValue,
-                            },
-                        };
                     }
                 });
             }
@@ -61,24 +72,35 @@ export class JsonApiSerializer {
                     relationships: {},
                 },
             };
+            prototype.constructor.relationships.forEach((relationship) => {
+                if (relationship.type === 'array') {
+                    const value = model[relationship.name];
+                    if (value) {
+                        payload.data.relationships[relationship.name] = {
+                            data: value.map((item) => ({
+                                type: relationship.modelType,
+                                id: item.id,
+                            })),
+                        };
+                    }
+                }
+                else {
+                    const value = model[relationship.name];
+                    if (value) {
+                        payload.data.relationships[relationship.name] = {
+                            data: {
+                                type: relationship.modelType,
+                                id: value.id,
+                            },
+                        };
+                    }
+                }
+            });
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr) => {
                     const value = model[attr];
                     if (value !== undefined && value !== '') {
                         payload.data.attributes[attr] = value;
-                    }
-                });
-            }
-            if (mapping.relationships) {
-                Object.entries(mapping.relationships).forEach(([key, relationshipType]) => {
-                    const relationshipValue = model[key];
-                    if (relationshipValue && typeof relationshipType === 'string') {
-                        payload.data.relationships[key] = {
-                            data: {
-                                type: relationshipType,
-                                id: relationshipValue.id ?? relationshipValue,
-                            },
-                        };
                     }
                 });
             }
