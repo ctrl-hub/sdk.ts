@@ -1,10 +1,10 @@
 import { describe, it, expect } from "bun:test";
 import { JsonApiSerializer } from "@utils/JsonSerializer";
 import { Equipment } from "@models/Equipment";
-import { FormCategory } from '../../src';
-import { Hydrator } from '../../src/utils/Hydrator';
+import { FormCategory } from '@models/FormCategory';
+import { Hydrator } from '@utils/Hydrator'
 
-describe('JsonApiSerializer', () => {
+describe('JsonApiSerializer for Equipment and Model', () => {
 
     const hydrator = new Hydrator();
 

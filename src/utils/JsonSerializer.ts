@@ -70,12 +70,22 @@ export class JsonApiSerializer {
                 } else {
                     const value = (model as any)[relationship.name];
                     if (value) {
-                        payload.data.relationships![relationship.name] = {
-                            data: {
-                                type: relationship.modelType,
-                                id: value.id,
-                            },
-                        };
+                        // value could be a string (ID) or an object
+                        if (typeof value === 'string') {
+                            payload.data.relationships![relationship.name] = {
+                                data: {
+                                    type: relationship.modelType,
+                                    id: value,
+                                },
+                            };
+                        } else {
+                            payload.data.relationships![relationship.name] = {
+                                data: {
+                                    type: relationship.modelType,
+                                    id: value.id,
+                                },
+                            };
+                        }
                     }
                 }
             });
@@ -135,12 +145,22 @@ export class JsonApiSerializer {
                 } else {
                     const value = (model as any)[relationship.name];
                     if (value) {
-                        payload.data.relationships![relationship.name] = {
-                            data: {
-                                type: relationship.modelType,
-                                id: value.id,
-                            },
-                        };
+                        // value could be a string (ID) or an object
+                        if (typeof value === 'string') {
+                            payload.data.relationships![relationship.name] = {
+                                data: {
+                                    type: relationship.modelType,
+                                    id: value,
+                                },
+                            };
+                        } else {
+                            payload.data.relationships![relationship.name] = {
+                                data: {
+                                    type: relationship.modelType,
+                                    id: value.id,
+                                },
+                            };
+                        }
                     }
                 }
             });
