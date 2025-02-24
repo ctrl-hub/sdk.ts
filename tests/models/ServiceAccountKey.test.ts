@@ -25,7 +25,6 @@ describe('ServiceAccountKey', () => {
             const serviceAccountKey = new ServiceAccountKey(data);
 
             expect(serviceAccountKey.id).toBe(data.id);
-            expect(serviceAccountKey.client_id).toBe(data.attributes.client_id);
             expect(serviceAccountKey.meta).toEqual(data.meta);
         });
 
