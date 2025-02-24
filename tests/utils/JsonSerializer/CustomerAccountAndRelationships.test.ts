@@ -5,7 +5,6 @@ import { CustomerAccount, Property, Contact } from '../../../src';
 
 describe('JsonApiSerializer for Customer Account and Relationships', () => {
     const hydrator = new Hydrator();
-    const jsonApiSerializer = new JsonApiSerializer(hydrator.getModelMap());
 
     describe('buildCreatePayload', () => {
         it('should transform customer account and relationships to correct JSONAPI format', () => {
