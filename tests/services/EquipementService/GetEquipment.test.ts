@@ -3,7 +3,7 @@ import { Equipment } from "@models/Equipment";
 import { EquipmentModel } from "@models/EquipmentModel";
 import { EquipmentManufacturer } from "@models/EquipmentManufacturer";
 import { EquipmentService } from "@services/EquipmentService";
-import { Client } from "../src/Client";
+import { Client } from '../../../src';
 import { Hydrator } from "@utils/Hydrator";
 
 describe('Equipment Service', () => {
