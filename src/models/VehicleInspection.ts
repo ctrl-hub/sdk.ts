@@ -1,6 +1,8 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
+import type { Vehicle } from './Vehicle';
+import type { User } from './User';
 
 interface Checks {
   'visible_damage'?: boolean,
@@ -24,40 +26,20 @@ interface Checks {
   'driver_checks'?: boolean
 }
 
-export class VehicleInspection extends BaseModel implements Partial<JsonApiMapping> {
+export class VehicleInspection extends BaseModel {
     public type: string = 'vehicle-inspection';
+    
+    @JsonApiAttribute()
     public inspected_at: string = '';
+    
+    @JsonApiAttribute()
     public checks?: Checks;
-
-    jsonApiMapping() {
-        return {
-            attributes: [
-              'visible_damage',
-              'tyres',
-              'washers_and_wipers',
-              'windscreen',
-              'number_plate',
-              'security',
-              'accessories',
-              'spare_number_plate',
-              'safe_access',
-              'reversing_alarm',
-              'beacons',
-              'chemicals_and_fuel',
-              'storage',
-              'lights_and_indicators',
-              'engine_warning_lights',
-              'servicing',
-              'levels',
-              'cleanliness',
-              'driver_checks'
-            ],
-            relationships: {
-                author: 'author',
-                vehicle: 'vehicle',
-            },
-        };
-    }
+    
+    @JsonApiRelationship('users')
+    public author?: User | string;
+    
+    @JsonApiRelationship('vehicles')
+    public vehicle?: Vehicle | string;
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -74,7 +56,5 @@ export class VehicleInspection extends BaseModel implements Partial<JsonApiMappi
 
     constructor(data?: any) {
         super(data);
-        this.inspected_at = data?.attributes?.inspected_at ?? data?.inspected_at ?? '';
-        this.checks = data?.attributes?.checks ?? [];
     }
 }

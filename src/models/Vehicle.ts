@@ -1,27 +1,32 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { VehicleSpecification } from '@models/VehicleSpecification';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
+import type { User } from '@models/User';
 
-export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
+export class Vehicle extends BaseModel {
     public type: string = 'vehicles';
 
+    @JsonApiAttribute()
     public registration: string = '';
+    
+    @JsonApiAttribute()
     public vin: string = '';
+    
+    @JsonApiAttribute()
     public description: string = '';
+    
+    @JsonApiAttribute()
     public colour: string = '';
-
+    
+    @JsonApiRelationship('vehicle-specifications')
     public specification?: VehicleSpecification | string = '';
-    public status?: string = '';
 
-    jsonApiMapping() {
-        return {
-            attributes: ['registration', 'vin', 'description', 'colour', 'status'],
-            relationships: {
-                specification: 'vehicle-specifications',
-            },
-        };
-    }
+    @JsonApiRelationship('users')
+    public assignee?: User | string = '';
+
+    @JsonApiAttribute()
+    public status?: string = '';
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -30,24 +35,10 @@ export class Vehicle extends BaseModel implements Partial<JsonApiMapping> {
             modelType: 'vehicle-specifications',
         },
         {
-            name: 'assignee',
-            type: 'single',
-            modelType: 'users',
-        },
-        {
             name: 'equipment',
             type: 'array',
             modelType: 'equipment',
         }
     ];
 
-    constructor(data?: any) {
-        super(data);
-        this.registration = data?.attributes?.registration ?? data?.registration ?? '';
-        this.vin = data?.attributes?.vin ?? data?.vin ?? '';
-        this.description = data?.attributes?.description ?? data?.description ?? '';
-        this.colour = data?.attributes?.colour ?? data?.colour ?? '';
-        this.specification = data?.relationships?.specification?.id ?? data?.specification ?? '';
-        this.status = data?.attributes?.status ?? data?.status ?? '';
-    }
 }

@@ -1,35 +1,13 @@
 import type { EquipmentModel } from './EquipmentModel';
-import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
 
-export class Equipment extends BaseModel implements Partial<JsonApiMapping> {
+export class Equipment extends BaseModel {
     public type: string = 'equipment-items';
 
+    @JsonApiAttribute()
     public serial: string = '';
 
+    @JsonApiRelationship('equipment-models')
     public model?: EquipmentModel | string = '';
-
-    jsonApiMapping() {
-        return {
-            attributes: ['serial'],
-            relationships: {
-                model: 'equipment-models',
-            },
-        };
-    }
-
-    static relationships: RelationshipDefinition[] = [
-        {
-            name: 'model',
-            type: 'single',
-            modelType: 'equipment-models',
-        },
-    ];
-
-    constructor(data?: any) {
-        super(data);
-        this.serial = data?.attributes?.serial ?? data?.serial ?? '';
-        this.model = data?.relationships?.model?.id ?? data?.model ?? '';
-    }
 }

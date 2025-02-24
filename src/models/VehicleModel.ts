@@ -1,5 +1,7 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
+import type { VehicleManufacturer } from './VehicleManufacturer';
 
 type VehicleCategory = {
     id: string;
@@ -9,8 +11,13 @@ type VehicleCategory = {
 export class VehicleModel extends BaseModel {
     public type: string = 'vehicle-models';
 
+    @JsonApiAttribute()
     public name: string = '';
+    
     public categories: VehicleCategory[] = [];
+    
+    @JsonApiRelationship('vehicle-manufacturers')
+    public manufacturer?: VehicleManufacturer | string;
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -28,8 +35,6 @@ export class VehicleModel extends BaseModel {
     constructor(data?: any) {
         super(data);
 
-        this.name = data?.attributes?.name ?? '';
-
         this.categories = [];
 
         const categoryData = data?.relationships?.categories?.data ?? [];
@@ -41,5 +46,4 @@ export class VehicleModel extends BaseModel {
             )?.attributes?.name || ''
         }));
     }
-
 }

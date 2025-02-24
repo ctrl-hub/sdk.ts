@@ -2,6 +2,7 @@ import type { EquipmentManufacturer } from './EquipmentManufacturer';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
 import type { EquipmentCategory } from '@models/EquipmentCategory';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
 
 type EquipmentModelDocumentation = {
     name: string;
@@ -10,7 +11,7 @@ type EquipmentModelDocumentation = {
 }
 
 type EquipmentModelSpecification = {
-    vibration: {
+    vibration?: {
         magnitude: number;
     };
 }
@@ -18,12 +19,21 @@ type EquipmentModelSpecification = {
 export class EquipmentModel extends BaseModel {
     public type: string = 'equipment-models';
 
+    @JsonApiAttribute()
     public name: string = '';
+    
+    @JsonApiAttribute()
     public description: string = '';
-    public specification: EquipmentModelSpecification;
+    
+    @JsonApiAttribute()
+    public specification: EquipmentModelSpecification = {};
+    
     public categories: EquipmentCategory[] = [];
+    
+    @JsonApiAttribute()
     public documentation: EquipmentModelDocumentation[] = [];
 
+    @JsonApiRelationship('equipment-manufacturers')
     public manufacturer?: EquipmentManufacturer;
 
     static relationships: RelationshipDefinition[] = [
@@ -41,13 +51,7 @@ export class EquipmentModel extends BaseModel {
 
     constructor(data?: any) {
         super(data);
-        this.name = data?.attributes?.name ?? '';
-        this.description = data?.attributes?.description ?? '';
-        this.documentation = data?.attributes?.documentation ?? [];
-        this.categories = [];
-
-        this.specification = data?.attributes?.specification ?? {};
-
+        
         const categoryData = data?.relationships?.categories?.data ?? [];
 
         this.categories = categoryData.map((category: any) => ({

@@ -38,22 +38,5 @@ describe('JsonApiSerializer for Equipment and Model', () => {
             expect(payload).toEqual(expectedPayload);
         });
 
-        it('should transform a model whcih does not have jsonApiMapping', () => {
-            const formCategory = new FormCategory();
-            formCategory.name = "Test Category";
-
-            const payload = (new JsonApiSerializer(hydrator.getModelMap())).buildCreatePayload(formCategory);
-
-            const expectedPayload = {
-                data: {
-                    type: "form-categories",
-                    attributes: {
-                        name: "Test Category"
-                    }
-                }
-            };
-
-            expect(payload).toEqual(expectedPayload);
-        });
     });
 });

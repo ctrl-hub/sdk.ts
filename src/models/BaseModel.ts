@@ -11,6 +11,7 @@ export abstract class BaseModel implements Model {
     public _relationships?: Record<string, any>;
 
     static relationships: RelationshipDefinition[] = [];
+    static _jsonApiRelationships?: Map<string, {type: string}>;
 
     constructor(data?: any) {
         this.id = data?.id ?? '';
@@ -31,6 +32,19 @@ export abstract class BaseModel implements Model {
 
         if (data?.relationships && Object.keys(data.relationships).length > 0) {
             this._relationships = data.relationships;
+        }
+        
+        // Process @JsonApiRelationship properties
+        const constructor = this.constructor as typeof BaseModel;
+        if (constructor._jsonApiRelationships) {
+            constructor._jsonApiRelationships.forEach((relationshipConfig, prop) => {
+                // Only assign if the relationship exists in data
+                if (data?.relationships?.[prop]?.data) {
+                    (this as any)[prop] = data.relationships[prop].data.id;
+                } else if (data && prop in data) {
+                    (this as any)[prop] = data[prop];
+                }
+            });
         }
     }
 

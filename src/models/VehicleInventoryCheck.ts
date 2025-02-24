@@ -1,6 +1,9 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
 import { BaseModel } from '@models/BaseModel';
-import type { JsonApiMapping } from '../types/JsonApiMapping';
+import { JsonApiAttribute, JsonApiRelationship } from '@decorators/JsonApi';
+import type { Vehicle } from './Vehicle';
+import type { User } from './User';
+import type { Equipment } from './Equipment';
 
 interface Item {
     'equipment_id': string,
@@ -9,22 +12,23 @@ interface Item {
     'cerified'?: boolean
 }
 
-export class VehicleInventoryCheck extends BaseModel implements Partial<JsonApiMapping> {
+export class VehicleInventoryCheck extends BaseModel {
     public type: string = 'vehicle-inventory-checks';
 
+    @JsonApiAttribute()
     public inspected_at: string = '';
 
+    @JsonApiAttribute()
     public items?: Item[] = [];
-
-    jsonApiMapping() {
-        return {
-            attributes: ['registration', 'vin', 'description', 'colour'],
-            relationships: {
-                author: 'author',
-                vehicle: 'vehicle',
-            },
-        };
-    }
+    
+    @JsonApiRelationship('equipment-items')
+    public equipment?: Equipment[] | string[];
+    
+    @JsonApiRelationship('users')
+    public author?: User | string;
+    
+    @JsonApiRelationship('vehicles')
+    public vehicle?: Vehicle | string;
 
     static relationships: RelationshipDefinition[] = [
         {
@@ -46,7 +50,5 @@ export class VehicleInventoryCheck extends BaseModel implements Partial<JsonApiM
 
     constructor(data?: any) {
         super(data);
-        this.inspected_at = data?.attributes?.inspected_at ?? data?.inspected_at ?? '';
-        this.items = data?.attributes?.items ?? [];
     }
 }

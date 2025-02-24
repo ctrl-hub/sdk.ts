@@ -90,6 +90,7 @@ export class Hydrator {
             throw new Error(`No model found for type: ${item.type}`);
         }
 
+        // Create the model instance
         const model = new ModelClass({
             id: item.id,
             type: item.type,
@@ -98,6 +99,15 @@ export class Hydrator {
             attributes: item.attributes,
             relationships: item.relationships,
         }) as T;
+
+        // Apply attributes from item.attributes directly to model
+        if (item.attributes) {
+            Object.entries(item.attributes).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    (model as any)[key] = value;
+                }
+            });
+        }
 
         if (item.relationships) {
             this.hydrateRelationships(model, item.relationships, included, ModelClass);
@@ -112,6 +122,29 @@ export class Hydrator {
         included: any[],
         ModelClass: new (data?: any) => Model,
     ): void {
+        // First try to use relationships from @JsonApiRelationship decorator
+        if ('_jsonApiRelationships' in ModelClass) {
+            const relationshipMap = (ModelClass as any)._jsonApiRelationships as
+                Map<string, {type: string, relationshipType: 'single' | 'multiple'}>;
+
+            if (relationshipMap && relationshipMap.size > 0) {
+                relationshipMap.forEach((relInfo, propName) => {
+                    const relationData = relationships[propName]?.data;
+                    if (!relationData) return;
+
+                    if (relInfo.relationshipType === 'multiple') {
+                        (model as any)[propName] = Array.isArray(relationData)
+                            ? relationData.map(relation => this.findAndHydrateIncluded(relation, included))
+                            : [];
+                    } else {
+                        (model as any)[propName] = this.findAndHydrateIncluded(relationData, included);
+                    }
+                });
+                return;
+            }
+        }
+
+        // Fall back to static relationships if available
         if (!('relationships' in ModelClass)) return;
 
         const relationshipDefs = (ModelClass as any).relationships as RelationshipDefinition[];

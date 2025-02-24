@@ -1,18 +1,18 @@
 import type { Model } from '../types/Model';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 
+// Updated type definitions
+type JsonApiResourceIdentifier = {
+    type: string;
+    id: string;
+};
+
 type JsonApiRelationship = {
-    data: {
-        type: string;
-        id: string;
-    };
+    data: JsonApiResourceIdentifier | JsonApiResourceIdentifier[];
 };
 
 type JsonApiRelationshipsPayload = {
-    data: Array<{
-        type: string;
-        id: string;
-    }>;
+    data: JsonApiResourceIdentifier[];
 };
 
 type JsonApiPayload = {
@@ -47,50 +47,84 @@ export class JsonApiSerializer {
             return this.buildDefaultPayload(model, isUpdate);
         }
 
+        const payload: JsonApiPayload = {
+            data: {
+                type: model.type,
+                attributes: {},
+            },
+        };
+
+        if (isUpdate && model.id) {
+            payload.data.id = model.id;
+        }
+
+        // Check for decorator-based attributes
+        if ((ModelClass as any)._jsonApiAttributes) {
+            const attributeKeys = Array.from((ModelClass as any)._jsonApiAttributes as Set<string>);
+            attributeKeys.forEach((attr: string) => {
+                const value = (model as any)[attr];
+                if (value !== undefined && value !== '') {
+                    payload.data.attributes[attr] = value;
+                }
+            });
+        }
+
+        // Check for enhanced decorator-based relationships (infer type from value)
+        if ((ModelClass as any)._jsonApiRelationships) {
+
+            const relationshipEntries = Array.from(
+                (ModelClass as any)._jsonApiRelationships as Map<string, {type: string}>
+            );
+
+            relationshipEntries.forEach(([propName, relationshipInfo]) => {
+                const value = (model as any)[propName];
+
+                // Skip if value is undefined, null, or an empty array
+                if (!value || (Array.isArray(value) && value.length === 0)) {
+                    return;
+                }
+
+                if (Array.isArray(value)) {
+                    // It's a multiple relationship (array of models or IDs)
+                    if (!payload.data.relationships) {
+                        payload.data.relationships = {};
+                    }
+                    payload.data.relationships[propName] = {
+                        data: value.map((item: any) => ({
+                            type: relationshipInfo.type,
+                            id: typeof item === 'string' ? item : item.id,
+                        })) as JsonApiResourceIdentifier[],
+                    };
+                } else {
+                    // It's a single relationship (one model object or a string ID)
+                    if (!payload.data.relationships) {
+                        payload.data.relationships = {};
+                    }
+                    payload.data.relationships[propName] = {
+                        data: {
+                            type: relationshipInfo.type,
+                            id: typeof value === 'string' ? value : value.id,
+                        } as JsonApiResourceIdentifier,
+                    };
+                }
+            });
+        }
+
+        // If we found attributes or relationships through decorators, return the payload
+        const hasDecoratorData =
+            ((ModelClass as any)._jsonApiAttributes &&
+                ((ModelClass as any)._jsonApiAttributes as Set<string>).size > 0) ||
+            ((ModelClass as any)._jsonApiRelationships &&
+                ((ModelClass as any)._jsonApiRelationships as Map<string, any>).size > 0);
+
+        if (hasDecoratorData) {
+            return payload;
+        }
+
         const prototype = ModelClass.prototype;
 
         if (typeof prototype.jsonApiMapping === 'function') {
             const mapping = prototype.jsonApiMapping.call(model);
-
-            const payload: JsonApiPayload = {
-                data: {
-                    type: model.type,
-                    attributes: {},
-                    relationships: {},
-                },
-            };
-
-            if (isUpdate && model.id) {
-                payload.data.id = model.id;
-            }
-
-            prototype.constructor.relationships.forEach((relationship: {
-                name: string;
-                type: string;
-                modelType: string;
-            }) => {
-                if (relationship.type === 'array') {
-                    const value = (model as any)[relationship.name];
-                    if (value) {
-                        payload.data.relationships![relationship.name] = {
-                            data: value.map((item: any) => ({
-                                type: relationship.modelType,
-                                id: item.id,
-                            })),
-                        };
-                    }
-                } else {
-                    const value = (model as any)[relationship.name];
-                    if (value) {
-                        payload.data.relationships![relationship.name] = {
-                            data: {
-                                type: relationship.modelType,
-                                id: typeof value === 'string' ? value : value.id,
-                            },
-                        };
-                    }
-                }
-            });
 
             if (mapping.attributes) {
                 mapping.attributes.forEach((attr: string) => {
@@ -99,6 +133,60 @@ export class JsonApiSerializer {
                         payload.data.attributes[attr] = value;
                     }
                 });
+            }
+
+            if (mapping.relationships) {
+                // Handle relationships - either as array of strings or as an object
+                if (Array.isArray(mapping.relationships)) {
+                    mapping.relationships.forEach((relationName: string) => {
+                        const relationship = prototype.constructor.relationships.find(
+                            (r: any) => r.name === relationName
+                        );
+
+                        if (relationship) {
+                            const value = (model as any)[relationship.name];
+                            if (value) {
+                                if (relationship.type === 'array') {
+                                    payload.data.relationships![relationship.name] = {
+                                        data: value.map((item: any) => ({
+                                            type: relationship.modelType,
+                                            id: item.id,
+                                        })) as JsonApiResourceIdentifier[],
+                                    };
+                                } else {
+                                    payload.data.relationships![relationship.name] = {
+                                        data: {
+                                            type: relationship.modelType,
+                                            id: typeof value === 'string' ? value : value.id,
+                                        } as JsonApiResourceIdentifier,
+                                    };
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // Handle relationships as an object mapping
+                    Object.entries(mapping.relationships).forEach(([propName, relationType]) => {
+                        const value = (model as any)[propName];
+                        if (value) {
+                            if (Array.isArray(value)) {
+                                payload.data.relationships![propName] = {
+                                    data: value.map((item: any) => ({
+                                        type: relationType as string,
+                                        id: typeof item === 'string' ? item : item.id,
+                                    })) as JsonApiResourceIdentifier[],
+                                };
+                            } else {
+                                payload.data.relationships![propName] = {
+                                    data: {
+                                        type: relationType as string,
+                                        id: typeof value === 'string' ? value : value.id,
+                                    } as JsonApiResourceIdentifier,
+                                };
+                            }
+                        }
+                    });
+                }
             }
 
             return payload;
@@ -120,7 +208,7 @@ export class JsonApiSerializer {
             .map(relationship => ({
                 type: model.type,
                 id: relationship.id!,
-            }));
+            })) as JsonApiResourceIdentifier[];
 
         return { data };
     }
