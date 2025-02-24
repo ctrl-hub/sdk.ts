@@ -25,4 +25,10 @@ export class CustomerAccount extends BaseModel {
     constructor(data?: any) {
         super(data);
     }
+
+    jsonApiMapping() {
+        return {
+            relationships: ['contacts', 'properties'],
+        };
+    }
 }
