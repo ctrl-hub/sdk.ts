@@ -9,86 +9,221 @@ import { Hydrator } from "@utils/Hydrator";
 
 describe('Vehicle Relationship Hydration', () => {
     const mockApiResponse = {
-        data: {
-            id: "2020d855-d835-466a-982b-350efdbf76dc",
-            type: "vehicles",
-            attributes: {
-                colour: "green",
-                description: null,
-                registration: "TS21 OTR",
-                status: "active",
-                vin: "1FAFP66L0WK258659"
+        "data": {
+            "id": "5e7b997c-0940-4efd-b600-add43e35a058",
+            "type": "vehicles",
+            "attributes": {
+                "colour": "red",
+                "description": null,
+                "registration": "YO15HWT",
+                "status": "active",
+                "vin": "sdf1"
             },
-            relationships: {
-                equipment: {
-                    data: []
+            "relationships": {
+                "assignee": {
+                    "data": {
+                        "id": "5b89ac0b-6d20-4c17-8475-47641ac0f16d",
+                        "type": "users"
+                    }
                 },
-                specification: {
-                    data: {
-                        id: "b17e2e56-62b7-449e-9105-aa195ce41f89",
-                        type: "vehicle-specifications"
+                "equipment": {
+                    "data": [
+                        {
+                            "id": "2075e5da-908f-40ba-b2e0-1813cc28a6f6",
+                            "type": "equipment-items"
+                        }
+                    ]
+                },
+                "specification": {
+                    "data": {
+                        "id": "0036e7dc-8207-4124-a698-5c77584e831a",
+                        "type": "vehicle-specifications"
                     }
                 }
             },
-            meta: {
-                created_at: "2024-11-13T17:48:00Z",
-                modified_at: "2024-11-13T17:48:00Z"
+            "meta": {
+                "counts": {
+                    "equipment": 1
+                },
+                "created_at": "2025-01-28T22:26:16Z",
+                "modified_at": "2025-01-29T14:50:43Z",
+                "sorn": false,
+                "has_recall": false,
+                "mot": {
+                    "is_valid": true,
+                    "records": 10,
+                    "last": {
+                        "at": "2025-01-09T09:51:42Z",
+                        "id": "153862303177"
+                    }
+                },
+                "tax": {
+                    "is_valid": true,
+                    "due": "2026-01-01"
+                },
+                "last_odometer_reading": 67055,
+                "checks": {
+                    "inventory": {
+                        "count": 0,
+                        "last": {
+                            "at": null,
+                            "id": ""
+                        }
+                    },
+                    "inspection": {
+                        "count": 0,
+                        "last": {
+                            "at": null,
+                            "id": ""
+                        }
+                    }
+                },
+                "dvla": {
+                    "mot": {
+                        "exists": true,
+                        "data": {
+                            "make": "FORD",
+                            "model": "FOCUS",
+                            "first_used": "2015-07-31T00:00:00Z",
+                            "fuel_type": "Petrol",
+                            "colour": "Red",
+                            "registration_date": "2015-07-31T00:00:00Z",
+                            "manufacture_date": "2015-07-31T00:00:00Z",
+                            "engine_size": "1596",
+                            "has_outstanding_recall": "unknown"
+                        },
+                        "last_sync": "2025-01-29T14:50:45.274Z"
+                    },
+                    "ves": {
+                        "exists": true,
+                        "data": {
+                            "art_end_date": "",
+                            "co2_emissions": 146,
+                            "colour": "RED",
+                            "date_of_last_v5c_issued": "2023-03-27",
+                            "engine_capacity": 1596,
+                            "euro_status": "",
+                            "fuel_type": "PETROL",
+                            "make": "FORD",
+                            "marked_for_export": false,
+                            "month_of_first_registration": "2015-07",
+                            "mot_status": "Valid",
+                            "real_driving_emissions": "",
+                            "registration_number": "YO15HWT",
+                            "revenue_weight": 1825,
+                            "tax_due_date": "2026-01-01",
+                            "tax_status": "Taxed",
+                            "type_approval": "M1",
+                            "wheelplan": "2 AXLE RIGID BODY",
+                            "year_of_manufacture": 2015
+                        },
+                        "last_sync": "2025-01-29T14:50:45.274Z"
+                    }
+                }
             }
         },
-        included: [
+        "meta": {},
+        "jsonapi": {
+            "version": "1.0",
+            "meta": {}
+        },
+        "links": {
+            "self": "https://api.ctrl-hub.run/v3/orgs/6df86de8-e3c1-4e8e-aa12-76305d4a491f/assets/vehicles/5e7b997c-0940-4efd-b600-add43e35a058?include=specification%2Cspecification.model%2Cspecification.model.manufacturer%2Cstatus%2Cassignee"
+        },
+        "included": [
             {
-                id: "b17e2e56-62b7-449e-9105-aa195ce41f89",
-                type: "vehicle-specifications",
-                attributes: {
-                    documentation: [
+                "id": "0036e7dc-8207-4124-a698-5c77584e831a",
+                "type": "vehicle-specifications",
+                "attributes": {
+                    "documentation": [],
+                    "emissions": 146,
+                    "engine_capacity": 1596,
+                    "fuel_type": "petrol",
+                    "wheelplan": "2 AXLE RIGID BODY",
+                    "year": 2015
+                },
+                "relationships": {
+                    "model": {
+                        "data": {
+                            "id": "37b62d2e-d23d-4868-89b2-6c07966381eb",
+                            "type": "vehicle-models"
+                        }
+                    }
+                }
+            },
+            {
+                "id": "5b89ac0b-6d20-4c17-8475-47641ac0f16d",
+                "type": "users",
+                "attributes": {
+                    "email": "engineers@ctrl-hub.com",
+                    "identities": [
                         {
-                            name: "Owner's Manual",
-                            description: "Maintenance and troubleshooting advice",
-                            link: "https://www.fordservicecontent.com/Ford_Content/Catalog/owner_information/CG3750en-202101-20210107154136.pdf"
+                            "platform": "kratos",
+                            "id": "5ee46479-b578-4ae6-905b-01535d1e6b74",
+                            "meta": {}
                         }
                     ],
-                    emissions: 157.1,
-                    engine: "2l",
-                    fuel: "petrol",
-                    transmission: "automatic",
-                    year: 2024
-                },
-                relationships: {
-                    model: {
-                        data: {
-                            id: "b729434a-909d-48e2-b97c-08276f5497eb",
-                            type: "vehicle-models"
+                    "profile": {
+                        "work": {
+                            "occupation": "Ctrl Hub",
+                            "cscs": "",
+                            "eusr": "",
+                            "start_date": "2024-04-18"
+                        },
+                        "personal": {
+                            "first_name": "Johnny",
+                            "last_name": "Greaves",
+                            "dob": "",
+                            "username": "johnny.greaves"
+                        },
+                        "contact": {
+                            "mobile": "",
+                            "landline": ""
+                        },
+                        "address": {
+                            "number": "",
+                            "name": "",
+                            "street": "Test Street",
+                            "area": "",
+                            "town": "Test Town",
+                            "county": "Test County",
+                            "postcode": "AA1 1AA",
+                            "country_code": "GB",
+                            "what3words": ""
+                        },
+                        "settings": {
+                            "preferred_language": "en-GB",
+                            "timezone": "Europe/London"
                         }
                     }
                 }
             },
             {
-                id: "b729434a-909d-48e2-b97c-08276f5497eb",
-                type: "vehicle-models",
-                attributes: {
-                    name: "Transit"
+                "id": "37b62d2e-d23d-4868-89b2-6c07966381eb",
+                "type": "vehicle-models",
+                "attributes": {
+                    "name": "FOCUS"
                 },
-                relationships: {
-                    manufacturer: {
-                        data: {
-                            id: "9e4cd1b2-928f-4d1d-9cb8-fd663b0df596",
-                            type: "vehicle-manufacturers"
+                "relationships": {
+                    "categories": {
+                        "data": []
+                    },
+                    "manufacturer": {
+                        "data": {
+                            "id": "82ed522e-0012-4504-9f9a-156e5761c61e",
+                            "type": "vehicle-manufacturers"
                         }
                     }
                 }
             },
             {
-                id: "9e4cd1b2-928f-4d1d-9cb8-fd663b0df596",
-                type: "vehicle-manufacturers",
-                attributes: {
-                    name: "Ford"
+                "id": "82ed522e-0012-4504-9f9a-156e5761c61e",
+                "type": "vehicle-manufacturers",
+                "attributes": {
+                    "name": "Ford"
                 }
             }
-        ],
-        meta: {},
-        links: {
-            self: "https://api.ctrl-hub.com/v3/orgs/ef0fcfd6-2a18-4c27-b2c2-b2563859b3b1/assets/vehicles/2020d855-d835-466a-982b-350efdbf76dc"
-        }
+        ]
     };
 
     describe('VehiclesService', () => {
@@ -112,44 +247,39 @@ describe('Vehicle Relationship Hydration', () => {
 
             const vehiclesService = new VehiclesService(mockClient);
 
-            const response = await vehiclesService.get("2020d855-d835-466a-982b-350efdbf76dc", {
-                include: ['equipment', 'specification', 'specification.model', 'specification.model.manufacturer']
+            const response = await vehiclesService.get("5e7b997c-0940-4efd-b600-add43e35a058", {
+                include: ['specification', 'specification.model', 'specification.model.manufacturer', 'statis', 'assignee']
             });
 
             const vehicle = response.data as Vehicle;
 
             // Test vehicle properties
-            expect(vehicle.id).toBe("2020d855-d835-466a-982b-350efdbf76dc");
+            expect(vehicle.id).toBe("5e7b997c-0940-4efd-b600-add43e35a058");
             expect(vehicle.type).toBe("vehicles");
-            expect(vehicle.registration).toBe("TS21 OTR");
-            expect(vehicle.vin).toBe("1FAFP66L0WK258659");
-            expect(vehicle.colour).toBe("green");
+            expect(vehicle.registration).toBe("YO15HWT");
+            expect(vehicle.vin).toBe("sdf1");
+            expect(vehicle.colour).toBe("red");
 
             // Test specification relationship
             const spec = vehicle.specification as VehicleSpecification;
             expect(spec).toBeInstanceOf(VehicleSpecification);
-            expect(spec.id).toBe("b17e2e56-62b7-449e-9105-aa195ce41f89");
-            expect(spec.emissions).toBe(157.1);
-            expect(spec.engine).toBe("2l");
-            expect(spec.fuel).toBe("petrol");
-            expect(spec.transmission).toBe("automatic");
-            expect(spec.year).toBe(2024);
-            expect(spec.documentation).toEqual([{
-                name: "Owner's Manual",
-                description: "Maintenance and troubleshooting advice",
-                link: "https://www.fordservicecontent.com/Ford_Content/Catalog/owner_information/CG3750en-202101-20210107154136.pdf"
-            }]);
+            expect(spec.id).toBe("0036e7dc-8207-4124-a698-5c77584e831a");
+            expect(spec.emissions).toBe(146);
+            expect(spec.engine_capacity).toBe(1596);
+            expect(spec.fuel_type).toBe("petrol");
+            expect(spec.wheelplan).toBe("2 AXLE RIGID BODY");
+            expect(spec.year).toBe(2015);
+            expect(spec.documentation).toEqual([]);
 
             // Test nested model relationship
-            const model = spec.model as VehicleModel;
-            expect(model).toBeInstanceOf(VehicleModel);
-            expect(model.id).toBe("b729434a-909d-48e2-b97c-08276f5497eb");
-            expect(model.name).toBe("Transit");
+            expect(spec.model).toBeInstanceOf(VehicleModel);
+            expect(spec.model.id).toBe("37b62d2e-d23d-4868-89b2-6c07966381eb");
+            expect(spec.model.type).toBe("vehicle-models");
+            expect(spec.model.name).toBe("FOCUS");
 
-            // Test nested manufacturer relationship
-            const manufacturer = model.manufacturer as VehicleManufacturer;
+            const manufacturer = spec.model.manufacturer as VehicleManufacturer;
             expect(manufacturer).toBeInstanceOf(VehicleManufacturer);
-            expect(manufacturer.id).toBe("9e4cd1b2-928f-4d1d-9cb8-fd663b0df596");
+            expect(manufacturer.id).toBe("82ed522e-0012-4504-9f9a-156e5761c61e");
             expect(manufacturer.name).toBe("Ford");
 
             // Verify the makeGetRequest was called with correct parameters
@@ -157,51 +287,4 @@ describe('Vehicle Relationship Hydration', () => {
         });
     });
 
-    describe('Hydrator', () => {
-        it('should correctly hydrate nested relationships', () => {
-            const hydrator = new Hydrator();
-
-            const hydratedData = hydrator.hydrateResponse<Vehicle>(
-                mockApiResponse.data,
-                mockApiResponse.included
-            );
-
-            // Since hydrateResponse can return T | T[], we need to assert it's a single vehicle
-            expect(Array.isArray(hydratedData)).toBe(false);
-            const vehicle = hydratedData as Vehicle;
-
-            // Test the complete object structure
-            expect(vehicle).toMatchObject({
-                id: "2020d855-d835-466a-982b-350efdbf76dc",
-                type: "vehicles",
-                registration: "TS21 OTR",
-                vin: "1FAFP66L0WK258659",
-                colour: "green",
-                specification: {
-                    id: "b17e2e56-62b7-449e-9105-aa195ce41f89",
-                    type: "vehicle-specifications",
-                    emissions: 157.1,
-                    engine: "2l",
-                    fuel: "petrol",
-                    transmission: "automatic",
-                    year: 2024,
-                    documentation: [{
-                        name: "Owner's Manual",
-                        description: "Maintenance and troubleshooting advice",
-                        link: "https://www.fordservicecontent.com/Ford_Content/Catalog/owner_information/CG3750en-202101-20210107154136.pdf"
-                    }],
-                    model: {
-                        id: "b729434a-909d-48e2-b97c-08276f5497eb",
-                        type: "vehicle-models",
-                        name: "Transit",
-                        manufacturer: {
-                            id: "9e4cd1b2-928f-4d1d-9cb8-fd663b0df596",
-                            type: "vehicle-manufacturers",
-                            name: "Ford"
-                        }
-                    }
-                }
-            });
-        });
-    });
 });

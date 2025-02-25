@@ -31,6 +31,7 @@ import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
+import { AppointmentsService } from '@services/AppointmentsService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -124,6 +125,10 @@ export class Client {
 
     public forms(): FormsService {
         return new FormsService(this);
+    }
+
+    public appointments(): AppointmentsService {
+        return new AppointmentsService(this);
     }
 
     public teams(): TeamsService {
