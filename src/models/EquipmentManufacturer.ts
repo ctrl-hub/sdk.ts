@@ -10,7 +10,7 @@ export class EquipmentManufacturer extends BaseModel {
 
     constructor(data?: any) {
         super(data);
-        this.name = data?.attributes?.name ?? '';
+        this.name = data?.attributes?.name ?? data?.name ?? '';
     }
 
     jsonApiMapping() {
