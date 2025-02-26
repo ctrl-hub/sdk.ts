@@ -5,6 +5,7 @@ export type { InternalResponse } from './types/Response';
 /**
  * Models
  */
+export { Appointment } from './models/Appointment';
 export { Contact } from './models/Contact';
 export { CustomerAccount } from './models/CustomerAccount';
 export { CustomerInteraction } from './models/CustomerInteraction';

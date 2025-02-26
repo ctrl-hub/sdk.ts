@@ -13,6 +13,10 @@ export class Appointment extends BaseModel implements Partial<JsonApiMapping> {
     jsonApiMapping() {
         return {
             attributes: ['appointment_type', 'start_time', 'end_time', 'notes'],
+            relationships: {
+                customer_interaction: 'customer-interactions',
+                operation: 'operations',
+            }
         };
     }
 
