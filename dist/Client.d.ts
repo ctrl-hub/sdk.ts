@@ -30,6 +30,7 @@ import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
+import { AppointmentsService } from '@services/AppointmentsService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -51,6 +52,7 @@ export declare class Client {
     serviceAccounts(): ServiceAccountsService;
     formCategories(): FormCategoriesService;
     forms(): FormsService;
+    appointments(): AppointmentsService;
     teams(): TeamsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;

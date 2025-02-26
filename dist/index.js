@@ -205,7 +205,7 @@ class EquipmentCategory extends BaseModel {
   name = "";
   constructor(data) {
     super(data);
-    this.name = data?.attributes?.name ?? "";
+    this.name = data?.attributes?.name ?? data?.name ?? "";
   }
   jsonApiMapping() {
     return {
@@ -259,11 +259,25 @@ class EquipmentExposure extends BaseModel {
         coordinates: locationData.coordinates ?? []
       };
     }
+    if (data?.location) {
+      const locationData = data.location;
+      this.location = {
+        type: locationData.type ?? "",
+        coordinates: locationData.coordinates ?? []
+      };
+    }
     if (data?.attributes?.ppe) {
-      const ppeData = data.attributes.ppe;
+      const ppeData = data.attributes?.ppe;
       this.ppe = {
         mask: ppeData.ppe?.mask ?? false,
         ear_defenders: ppeData.ppe?.ear_defenders ?? false
+      };
+    }
+    if (data?.ppe) {
+      const ppeData = data.ppe;
+      this.ppe = {
+        mask: ppeData.mask ?? false,
+        ear_defenders: ppeData.ear_defenders ?? false
       };
     }
   }
@@ -598,7 +612,7 @@ class EquipmentManufacturer extends BaseModel {
   static relationships = [];
   constructor(data) {
     super(data);
-    this.name = data?.attributes?.name ?? "";
+    this.name = data?.attributes?.name ?? data?.name ?? "";
   }
   jsonApiMapping() {
     return {
@@ -922,6 +936,11 @@ class CustomerAccount extends BaseModel {
   constructor(data) {
     super(data);
   }
+  jsonApiMapping() {
+    return {
+      relationships: ["contacts", "properties"]
+    };
+  }
 }
 
 // src/models/CustomerInteraction.ts
@@ -1066,6 +1085,53 @@ class WorkOrder extends BaseModel {
   jsonApiMapping() {
     return {
       attributes: ["name", "code", "description", "start_date", "end_date", "labels"]
+    };
+  }
+}
+
+// src/models/Operation.ts
+class Operation extends BaseModel {
+  type = "operations";
+  name = "";
+  code = "";
+  description = "";
+  start_date = "";
+  end_date = "";
+  labels = [];
+  uprns = [];
+  usrns = [];
+  completed = false;
+  aborted = false;
+  cancelled = false;
+  static relationships = [
+    {
+      name: "properties",
+      type: "array",
+      modelType: "properties"
+    },
+    {
+      name: "streets",
+      type: "array",
+      modelType: "streets"
+    }
+  ];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.code = data?.attributes?.code ?? data?.code ?? "";
+    this.description = data?.attributes?.description ?? data?.description ?? "";
+    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
+    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
+    this.labels = data?.attributes?.labels ?? data?.labels ?? [];
+    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? [];
+    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? [];
+    this.completed = data?.attributes?.completed ?? data?.completed ?? false;
+    this.aborted = data?.attributes?.aborted ?? data?.aborted ?? false;
+    this.cancelled = data?.attributes?.cancelled ?? data?.cancelled ?? false;
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "code", "description", "start_date", "end_date", "labels", "uprns", "usrns", "completed", "aborted", "cancelled"]
     };
   }
 }
@@ -1255,73 +1321,30 @@ class JsonApiSerializer {
     this.modelMap = modelMap;
   }
   buildCreatePayload(model) {
-    const ModelClass = this.modelMap[model.type];
-    if (!ModelClass) {
-      console.warn(`No model class found for type: ${model.type}`);
-      return this.buildDefaultPayload(model);
-    }
-    const prototype = ModelClass.prototype;
-    if (typeof prototype.jsonApiMapping === "function") {
-      const mapping = prototype.jsonApiMapping.call(model);
-      const payload = {
-        data: {
-          type: model.type,
-          attributes: {},
-          relationships: {}
-        }
-      };
-      prototype.constructor.relationships.forEach((relationship) => {
-        if (relationship.type === "array") {
-          const value = model[relationship.name];
-          if (value) {
-            payload.data.relationships[relationship.name] = {
-              data: value.map((item) => ({
-                type: relationship.modelType,
-                id: item.id
-              }))
-            };
-          }
-        } else {
-          const value = model[relationship.name];
-          if (value) {
-            payload.data.relationships[relationship.name] = {
-              data: {
-                type: relationship.modelType,
-                id: value.id
-              }
-            };
-          }
-        }
-      });
-      if (mapping.attributes) {
-        mapping.attributes.forEach((attr) => {
-          const value = model[attr];
-          if (value !== undefined && value !== "") {
-            payload.data.attributes[attr] = value;
-          }
-        });
-      }
-      return payload;
-    }
-    return this.buildDefaultPayload(model);
+    return this.buildPayload(model, false);
   }
   buildUpdatePayload(model) {
+    return this.buildPayload(model, true);
+  }
+  buildPayload(model, isUpdate) {
     const ModelClass = this.modelMap[model.type];
     if (!ModelClass) {
       console.warn(`No model class found for type: ${model.type}`);
-      return this.buildDefaultPayload(model);
+      return this.buildDefaultPayload(model, isUpdate);
     }
     const prototype = ModelClass.prototype;
     if (typeof prototype.jsonApiMapping === "function") {
       const mapping = prototype.jsonApiMapping.call(model);
       const payload = {
         data: {
-          id: model.id,
           type: model.type,
           attributes: {},
           relationships: {}
         }
       };
+      if (isUpdate && model.id) {
+        payload.data.id = model.id;
+      }
       prototype.constructor.relationships.forEach((relationship) => {
         if (relationship.type === "array") {
           const value = model[relationship.name];
@@ -1339,7 +1362,7 @@ class JsonApiSerializer {
             payload.data.relationships[relationship.name] = {
               data: {
                 type: relationship.modelType,
-                id: value.id
+                id: typeof value === "string" ? value : value.id
               }
             };
           }
@@ -1355,7 +1378,7 @@ class JsonApiSerializer {
       }
       return payload;
     }
-    return this.buildDefaultPayload(model);
+    return this.buildDefaultPayload(model, isUpdate);
   }
   buildRelationshipPayload(model, relationships) {
     const ModelClass = this.modelMap[model.type];
@@ -1367,19 +1390,20 @@ class JsonApiSerializer {
       type: model.type,
       id: relationship.id
     }));
-    const payload = {
-      data
-    };
-    return payload;
+    return { data };
   }
-  buildDefaultPayload(model) {
+  buildDefaultPayload(model, includeId) {
     const { type, id, meta, links, included, _relationships, ...attributes } = model;
-    return {
+    const payload = {
       data: {
         type: model.type,
         attributes
       }
     };
+    if (includeId && id) {
+      payload.data.id = id;
+    }
+    return payload;
   }
 }
 
@@ -1788,6 +1812,13 @@ class VehicleInventoryCheckService extends BaseService {
   }
 }
 
+// src/services/AppointmentsService.ts
+class AppointmentsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/appointments");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1861,6 +1892,9 @@ class Client {
   }
   forms() {
     return new FormsService(this);
+  }
+  appointments() {
+    return new AppointmentsService(this);
   }
   teams() {
     return new TeamsService(this);
@@ -2022,52 +2056,6 @@ class ClientConfig {
     this.clientId = config.clientId || "";
     this.clientSecret = config.clientSecret || "";
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
-  }
-}
-// src/models/Operation.ts
-class Operation extends BaseModel {
-  type = "operations";
-  name = "";
-  code = "";
-  description = "";
-  start_date = "";
-  end_date = "";
-  labels = [];
-  uprns = [];
-  usrns = [];
-  completed = false;
-  aborted = false;
-  cancelled = false;
-  static relationships = [
-    {
-      name: "properties",
-      type: "array",
-      modelType: "properties"
-    },
-    {
-      name: "streets",
-      type: "array",
-      modelType: "streets"
-    }
-  ];
-  constructor(data) {
-    super(data);
-    this.name = data?.attributes?.name ?? data?.name ?? "";
-    this.code = data?.attributes?.code ?? data?.code ?? "";
-    this.description = data?.attributes?.description ?? data?.description ?? "";
-    this.start_date = data?.attributes?.start_date ?? data?.start_date ?? "";
-    this.end_date = data?.attributes?.end_date ?? data?.end_date ?? "";
-    this.labels = data?.attributes?.labels ?? data?.labels ?? [];
-    this.uprns = data?.attributes?.uprns ?? data?.uprns ?? [];
-    this.usrns = data?.attributes?.usrns ?? data?.usrns ?? [];
-    this.completed = data?.attributes?.completed ?? data?.completed ?? false;
-    this.aborted = data?.attributes?.aborted ?? data?.aborted ?? false;
-    this.cancelled = data?.attributes?.cancelled ?? data?.cancelled ?? false;
-  }
-  jsonApiMapping() {
-    return {
-      attributes: ["name", "code", "description", "start_date", "end_date", "labels", "uprns", "usrns", "completed", "aborted", "cancelled"]
-    };
   }
 }
 export {

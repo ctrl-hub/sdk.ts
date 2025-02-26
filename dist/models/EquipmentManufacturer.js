@@ -5,7 +5,7 @@ export class EquipmentManufacturer extends BaseModel {
     static relationships = [];
     constructor(data) {
         super(data);
-        this.name = data?.attributes?.name ?? '';
+        this.name = data?.attributes?.name ?? data?.name ?? '';
     }
     jsonApiMapping() {
         return {

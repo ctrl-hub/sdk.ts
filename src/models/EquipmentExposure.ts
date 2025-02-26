@@ -62,12 +62,29 @@ export class EquipmentExposure extends BaseModel implements Partial<JsonApiMappi
             }
         }
 
+        if (data?.location) {
+            const locationData = data.location;
+            this.location = {
+                type: locationData.type ?? '',
+                coordinates: locationData.coordinates ?? []
+            }
+        }
+
         if (data?.attributes?.ppe) {
-            const ppeData = data.attributes.ppe;
+            const ppeData = data.attributes?.ppe;
 
             this.ppe = {
                 mask: ppeData.ppe?.mask ?? false,
                 ear_defenders: ppeData.ppe?.ear_defenders ?? false
+            }
+        }
+
+        if (data?.ppe) {
+            const ppeData = data.ppe;
+
+            this.ppe = {
+                mask: ppeData.mask ?? false,
+                ear_defenders: ppeData.ear_defenders ?? false
             }
         }
     }

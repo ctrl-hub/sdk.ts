@@ -29,6 +29,7 @@ import { OperationsService } from '@services/OperationsService';
 import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
+import { AppointmentsService } from '@services/AppointmentsService';
 export class Client {
     config;
     organisation;
@@ -101,6 +102,9 @@ export class Client {
     }
     forms() {
         return new FormsService(this);
+    }
+    appointments() {
+        return new AppointmentsService(this);
     }
     teams() {
         return new TeamsService(this);
