@@ -4,74 +4,30 @@ export class JsonApiSerializer {
         this.modelMap = modelMap;
     }
     buildCreatePayload(model) {
-        const ModelClass = this.modelMap[model.type];
-        if (!ModelClass) {
-            console.warn(`No model class found for type: ${model.type}`);
-            return this.buildDefaultPayload(model);
-        }
-        const prototype = ModelClass.prototype;
-        if (typeof prototype.jsonApiMapping === 'function') {
-            const mapping = prototype.jsonApiMapping.call(model);
-            const payload = {
-                data: {
-                    type: model.type,
-                    attributes: {},
-                    relationships: {},
-                },
-            };
-            prototype.constructor.relationships.forEach((relationship) => {
-                if (relationship.type === 'array') {
-                    const value = model[relationship.name];
-                    if (value) {
-                        payload.data.relationships[relationship.name] = {
-                            data: value.map((item) => ({
-                                type: relationship.modelType,
-                                id: item.id,
-                            })),
-                        };
-                    }
-                }
-                else {
-                    const value = model[relationship.name];
-                    if (value) {
-                        payload.data.relationships[relationship.name] = {
-                            data: {
-                                type: relationship.modelType,
-                                id: value.id,
-                            },
-                        };
-                    }
-                }
-            });
-            if (mapping.attributes) {
-                mapping.attributes.forEach((attr) => {
-                    const value = model[attr];
-                    if (value !== undefined && value !== '') {
-                        payload.data.attributes[attr] = value;
-                    }
-                });
-            }
-            return payload;
-        }
-        return this.buildDefaultPayload(model);
+        return this.buildPayload(model, false);
     }
     buildUpdatePayload(model) {
+        return this.buildPayload(model, true);
+    }
+    buildPayload(model, isUpdate) {
         const ModelClass = this.modelMap[model.type];
         if (!ModelClass) {
             console.warn(`No model class found for type: ${model.type}`);
-            return this.buildDefaultPayload(model);
+            return this.buildDefaultPayload(model, isUpdate);
         }
         const prototype = ModelClass.prototype;
         if (typeof prototype.jsonApiMapping === 'function') {
             const mapping = prototype.jsonApiMapping.call(model);
             const payload = {
                 data: {
-                    id: model.id,
                     type: model.type,
                     attributes: {},
                     relationships: {},
                 },
             };
+            if (isUpdate && model.id) {
+                payload.data.id = model.id;
+            }
             prototype.constructor.relationships.forEach((relationship) => {
                 if (relationship.type === 'array') {
                     const value = model[relationship.name];
@@ -90,7 +46,7 @@ export class JsonApiSerializer {
                         payload.data.relationships[relationship.name] = {
                             data: {
                                 type: relationship.modelType,
-                                id: value.id,
+                                id: typeof value === 'string' ? value : value.id,
                             },
                         };
                     }
@@ -106,7 +62,7 @@ export class JsonApiSerializer {
             }
             return payload;
         }
-        return this.buildDefaultPayload(model);
+        return this.buildDefaultPayload(model, isUpdate);
     }
     buildRelationshipPayload(model, relationships) {
         const ModelClass = this.modelMap[model.type];
@@ -120,18 +76,19 @@ export class JsonApiSerializer {
             type: model.type,
             id: relationship.id,
         }));
-        const payload = {
-            data: data,
-        };
-        return payload;
+        return { data };
     }
-    buildDefaultPayload(model) {
+    buildDefaultPayload(model, includeId) {
         const { type, id, meta, links, included, _relationships, ...attributes } = model;
-        return {
+        const payload = {
             data: {
                 type: model.type,
                 attributes,
             },
         };
+        if (includeId && id) {
+            payload.data.id = id;
+        }
+        return payload;
     }
 }

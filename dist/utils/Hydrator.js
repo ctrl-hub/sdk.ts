@@ -28,7 +28,7 @@ import { CustomerInteraction } from '@models/CustomerInteraction';
 import { Team } from '@models/Team';
 import { Scheme } from '@models/Scheme';
 import { WorkOrder } from '@models/WorkOrder';
-import { Operation } from 'index';
+import { Operation } from '@models/Operation';
 import { OperationTemplate } from '@models/OperationTemplate';
 import { Street } from '@models/Street';
 export class Hydrator {
