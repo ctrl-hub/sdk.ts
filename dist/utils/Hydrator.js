@@ -31,8 +31,10 @@ import { WorkOrder } from '@models/WorkOrder';
 import { Operation } from '@models/Operation';
 import { OperationTemplate } from '@models/OperationTemplate';
 import { Street } from '@models/Street';
+import { Appointment } from '@models/Appointment';
 export class Hydrator {
     modelMap = {
+        appointments: Appointment,
         contacts: Contact,
         "customer-accounts": CustomerAccount,
         'customer-interactions': CustomerInteraction,

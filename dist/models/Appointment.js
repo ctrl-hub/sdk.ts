@@ -8,6 +8,10 @@ export class Appointment extends BaseModel {
     jsonApiMapping() {
         return {
             attributes: ['appointment_type', 'start_time', 'end_time', 'notes'],
+            relationships: {
+                customer_interaction: 'customer-interactions',
+                operation: 'operations',
+            }
         };
     }
     static relationships = [

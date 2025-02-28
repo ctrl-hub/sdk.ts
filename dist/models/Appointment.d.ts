@@ -9,6 +9,10 @@ export declare class Appointment extends BaseModel implements Partial<JsonApiMap
     notes: string;
     jsonApiMapping(): {
         attributes: string[];
+        relationships: {
+            customer_interaction: string;
+            operation: string;
+        };
     };
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
