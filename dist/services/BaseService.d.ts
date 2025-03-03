@@ -4,7 +4,7 @@ import type { RequestOptionsType } from '../utils/RequestOptions';
 import { Hydrator } from '../utils/Hydrator';
 import { RequestBuilder } from '../utils/RequestBuilder';
 import type { Model } from '../types/Model';
-import { JsonApiSerializer } from '@utils/JsonSerializer';
+import { JsonApiSerializer } from '../utils/JsonSerializer';
 export declare class BaseService<T extends Model> extends RequestBuilder {
     protected client: Client;
     protected endpoint: string;

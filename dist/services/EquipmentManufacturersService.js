@@ -1,7 +1,7 @@
-import { Client } from "Client";
+import { Client } from "../Client";
 import { BaseService } from "./BaseService";
 import { EquipmentManufacturer } from "../models/EquipmentManufacturer";
-import { EquipmentModel } from "@models/EquipmentModel";
+import { EquipmentModel } from "../models/EquipmentModel";
 export class EquipmentManufacturersService extends BaseService {
     constructor(client) {
         super(client, "/v3/assets/equipment/manufacturers");

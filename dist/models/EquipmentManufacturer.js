@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class EquipmentManufacturer extends BaseModel {
     type = 'equipment-manufacturers';
     name = '';

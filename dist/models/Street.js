@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class Street extends BaseModel {
     type = 'streets';
     usrn = 0;

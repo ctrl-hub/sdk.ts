@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class OperationTemplate extends BaseModel {
     type = 'operation-templates';
     name = '';

@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class VehicleSpecification extends BaseModel {
     type = 'vehicle-specifications';
     emissions = 0;
