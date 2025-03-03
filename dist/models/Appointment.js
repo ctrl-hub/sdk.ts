@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class Appointment extends BaseModel {
     type = 'appointments';
     appointment_type = '';

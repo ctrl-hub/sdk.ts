@@ -1,7 +1,7 @@
-import { Client } from "Client";
+import { Client } from "../Client";
 import { BaseService } from "../services/BaseService";
 import { Submission } from "../models/Submission";
-import type { InternalResponse } from "types/Response";
+import type { InternalResponse } from "../types/Response";
 import { SubmissionVersion } from "../models/SubmissionVersion";
 export declare class SubmissionsService extends BaseService<Submission> {
     constructor(client: Client);

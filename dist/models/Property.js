@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class Property extends BaseModel {
     type = 'properties';
     uprn = 0;

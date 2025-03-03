@@ -1,5 +1,5 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 export declare class Appointment extends BaseModel implements Partial<JsonApiMapping> {
     type: string;

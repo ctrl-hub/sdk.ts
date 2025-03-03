@@ -1,5 +1,5 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 type FieldMapping = {
     from: string;
     to: string;

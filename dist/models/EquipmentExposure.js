@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class EquipmentExposure extends BaseModel {
     type = 'equipment-exposures';
     start_time; // ISO date string
