@@ -360,11 +360,11 @@ class Group extends BaseModel {
     super(data);
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.description = data?.attributes?.description ?? data?.description ?? "";
-    this.bindings = data?.attributes?.bindings ?? [];
+    this.bindings = data?.attributes?.bindings ?? data?.bindings ?? [];
   }
   jsonApiMapping() {
     return {
-      attributes: ["name", "description"],
+      attributes: ["name", "description", "bindings"],
       relationships: {}
     };
   }
@@ -1617,19 +1617,6 @@ class ServiceAccountKeysService extends BaseService {
 class GroupsService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/iam/groups");
-  }
-  async deleteBinding(groupId, bindingId) {
-    let deleteEndpoint = this.endpoint + "/" + groupId + "/bindings/" + bindingId;
-    return await this.client.makeDeleteRequest(deleteEndpoint);
-  }
-  async createBinding(groupId, body) {
-    let createBindingEndpoint = this.endpoint + "/" + groupId + "/bindings";
-    return await this.client.makePostRequest(createBindingEndpoint, {
-      data: {
-        type: "bindings",
-        attributes: JSON.parse(body)
-      }
-    });
   }
 }
 
