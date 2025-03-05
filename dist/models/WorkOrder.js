@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class WorkOrder extends BaseModel {
     type = 'work-orders';
     name = '';

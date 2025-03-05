@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class VehicleInventoryCheck extends BaseModel {
     type = 'vehicle-inventory-checks';
     inspected_at = '';

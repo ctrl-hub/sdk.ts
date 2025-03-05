@@ -1,5 +1,5 @@
-import { VehicleSpecification } from '@models/VehicleSpecification';
-import { BaseModel } from '@models/BaseModel';
+import { VehicleSpecification } from './VehicleSpecification';
+import { BaseModel } from './BaseModel';
 export class Vehicle extends BaseModel {
     type = 'vehicles';
     registration = '';

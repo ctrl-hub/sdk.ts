@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class MotRecord extends BaseModel {
     type = 'vehicle-mot-records';
     completedDate = '';

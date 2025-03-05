@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class CustomerAccount extends BaseModel {
     type = 'customer-accounts';
     static relationships = [

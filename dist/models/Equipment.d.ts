@@ -1,6 +1,6 @@
 import type { EquipmentModel } from './EquipmentModel';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 export declare class Equipment extends BaseModel implements Partial<JsonApiMapping> {
     type: string;

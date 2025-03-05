@@ -1,4 +1,4 @@
-import { Client } from "Client";
+import { Client } from "../Client";
 import { BaseService } from "./BaseService";
 export class OperationsService extends BaseService {
     constructor(client, schemeId, workOrderId) {

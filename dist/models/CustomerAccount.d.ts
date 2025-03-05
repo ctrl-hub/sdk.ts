@@ -1,5 +1,5 @@
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export declare class CustomerAccount extends BaseModel {
     type: string;
     static relationships: RelationshipDefinition[];

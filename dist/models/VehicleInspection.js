@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class VehicleInspection extends BaseModel {
     type = 'vehicle-inspection';
     inspected_at = '';

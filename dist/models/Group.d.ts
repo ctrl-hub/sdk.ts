@@ -1,6 +1,6 @@
 import type { JsonApiMapping } from '../types/JsonApiMapping';
 import type { RelationshipDefinition } from '../types/RelationshipDefinition';
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 type Binding = {
     id: string;
     role: string;
@@ -9,6 +9,7 @@ type Binding = {
         rules: {
             type: string;
             operator: string;
+            key: string;
             value: string;
         }[];
     };

@@ -1,5 +1,5 @@
-import { BaseModel } from '@models/BaseModel';
-import { ServiceAccountKey } from '@models/ServiceAccountKey';
+import { BaseModel } from './BaseModel';
+import { ServiceAccountKey } from './ServiceAccountKey';
 export class ServiceAccount extends BaseModel {
     type = 'service-accounts';
     name = '';

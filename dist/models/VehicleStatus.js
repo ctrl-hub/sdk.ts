@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class VehicleStatus extends BaseModel {
     type = 'vehicle-statuses';
     name = '';
