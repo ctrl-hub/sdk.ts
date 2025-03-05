@@ -9,6 +9,7 @@ type Binding = {
         rules: {
             type: string;
             operator: string;
+            key: string;
             value: string;
         }[];
     };
