@@ -13,6 +13,8 @@ export type SingleGetRequestOptionsType = {
 }
 
 export type RequestOptionsType = {
+    vehicleId?: String;
+    excludeAssigned?: boolean;
     sort?: Sort[];
     limit?: number;
     offset?: number;
@@ -21,6 +23,8 @@ export type RequestOptionsType = {
 };
 
 export class RequestOptions {
+    vehicleId?: String;
+    excludeAssigned?: boolean;
     sort?: Sort[];
     limit?: number;
     offset?: number;
@@ -28,6 +32,12 @@ export class RequestOptions {
     include?: String[];
 
     constructor(options: RequestOptionsType) {
+        if (options.vehicleId) {
+            this.vehicleId = options.vehicleId;
+        }
+        if (options.excludeAssigned) {
+            this.excludeAssigned = options.excludeAssigned;
+        }
         if (options.sort) {
             this.sort = options.sort;
         }
@@ -74,6 +84,14 @@ export class RequestOptions {
             params.append('offset', this.offset.toString());
         }
 
+        if (this.vehicleId) {
+            params.append('vehicleId', this.vehicleId.toString());
+        }
+
+        if (this.excludeAssigned) {
+            params.append('excludeAssigned', this.excludeAssigned.toString());
+        }
+
         return params;
     }
 
@@ -83,6 +101,8 @@ export class RequestOptions {
 
         // Use defaults if query params are not present
         const requestOptions: RequestOptionsType = {
+            vehicleId: '',
+            excludeAssigned: false,
             filters: [],
             limit: parseInt(queryParams.get('limit') || defaults.limit?.toString() || '20'),
             offset: parseInt(queryParams.get('offset') || defaults.offset?.toString() || '0'),

@@ -10,6 +10,8 @@ export type SingleGetRequestOptionsType = {
     include?: String[];
 };
 export type RequestOptionsType = {
+    vehicleId?: String;
+    excludeAssigned?: boolean;
     sort?: Sort[];
     limit?: number;
     offset?: number;
@@ -17,6 +19,8 @@ export type RequestOptionsType = {
     include?: String[];
 };
 export declare class RequestOptions {
+    vehicleId?: String;
+    excludeAssigned?: boolean;
     sort?: Sort[];
     limit?: number;
     offset?: number;

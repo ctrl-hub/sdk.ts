@@ -1,11 +1,19 @@
 // src/utils/RequestOptions.ts
 class RequestOptions {
+  vehicleId;
+  excludeAssigned;
   sort;
   limit;
   offset;
   filters;
   include;
   constructor(options) {
+    if (options.vehicleId) {
+      this.vehicleId = options.vehicleId;
+    }
+    if (options.excludeAssigned) {
+      this.excludeAssigned = options.excludeAssigned;
+    }
     if (options.sort) {
       this.sort = options.sort;
     }
@@ -44,12 +52,20 @@ class RequestOptions {
     if (this.offset) {
       params.append("offset", this.offset.toString());
     }
+    if (this.excludeAssigned) {
+      params.append("excludeAssigned", this.excludeAssigned.toString());
+    }
+    if (this.vehicleId) {
+      params.append("vehicleId", this.vehicleId.toString());
+    }
     return params;
   }
   static fromUrl(url, defaults = {}) {
     const urlObj = new URL(url);
     const queryParams = urlObj.searchParams;
     const requestOptions = {
+      vehicleId: "",
+      excludeAssigned: false,
       filters: [],
       limit: parseInt(queryParams.get("limit") || defaults.limit?.toString() || "20"),
       offset: parseInt(queryParams.get("offset") || defaults.offset?.toString() || "0"),
@@ -1656,6 +1672,29 @@ class VehiclesService extends BaseService {
     const hydrator = new Hydrator;
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
+  }
+  async patchEquipment(vehicleId, equipment) {
+    const payload = this.buildEquipmentRelationshipPayload(vehicleId, equipment, "equipment-items");
+    payload.data.id = vehicleId;
+    return await this.client.makePatchRequest(`${this.endpoint}/${vehicleId}`, payload);
+  }
+  buildEquipmentRelationshipPayload(vehicleId, relationships, relationshipType) {
+    const data = relationships.filter((relationship) => relationship !== undefined).map((relationship) => ({
+      type: relationshipType,
+      id: relationship
+    }));
+    const payload = {
+      data: {
+        id: vehicleId,
+        type: "vehicles",
+        relationships: {
+          equipment: {
+            data
+          }
+        }
+      }
+    };
+    return payload;
   }
 }
 
