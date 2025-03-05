@@ -1,13 +1,12 @@
 import { BaseModel } from './BaseModel';
 export class Appointment extends BaseModel {
     type = 'appointments';
-    appointment_type = '';
     start_time = '';
     end_time = '';
     notes = '';
     jsonApiMapping() {
         return {
-            attributes: ['appointment_type', 'start_time', 'end_time', 'notes'],
+            attributes: ['start_time', 'end_time', 'notes'],
             relationships: {
                 customer_interaction: 'customer-interactions',
                 operation: 'operations',
@@ -28,7 +27,6 @@ export class Appointment extends BaseModel {
     ];
     constructor(data) {
         super(data);
-        this.appointment_type = data?.attributes?.appointment_type ?? data?.appointment_type ?? '';
         this.start_time = data?.attributes?.start_time ?? data?.start_time ?? '';
         this.end_time = data?.attributes?.end_time ?? data?.end_time ?? '';
         this.notes = data?.attributes?.notes ?? data?.notes ?? '';
