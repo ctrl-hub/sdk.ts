@@ -28,6 +28,11 @@ export class Operation extends BaseModel {
             type: 'array',
             modelType: 'streets',
         },
+        {
+            name: 'assignees',
+            type: 'array',
+            modelType: 'users',
+        },
     ];
 
     constructor(data?: any) {
