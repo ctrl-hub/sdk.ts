@@ -1113,6 +1113,11 @@ class Operation extends BaseModel {
       name: "streets",
       type: "array",
       modelType: "streets"
+    },
+    {
+      name: "assignees",
+      type: "array",
+      modelType: "users"
     }
   ];
   constructor(data) {
