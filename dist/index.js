@@ -1244,6 +1244,8 @@ class Hydrator {
     return this.modelMap;
   };
   hydrateResponse(data, included) {
+    if (!data)
+      return data;
     return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
   }
   hydrateArray(items, included) {
