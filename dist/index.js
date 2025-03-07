@@ -1860,6 +1860,13 @@ class OrganisationsService extends BaseService {
   }
 }
 
+// src/services/OrganisationMembersService.ts
+class OrganisationMembersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/iam/members");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1990,6 +1997,9 @@ class Client {
   }
   organisations() {
     return new OrganisationsService(this);
+  }
+  organisationMembers() {
+    return new OrganisationMembersService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;

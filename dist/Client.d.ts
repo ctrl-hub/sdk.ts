@@ -32,6 +32,7 @@ import { VehicleInspectionService } from './services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from './services/VehicleInventoryCheckService';
 import { AppointmentsService } from './services/AppointmentsService';
 import { OrganisationsService } from './services/OrganisationsService';
+import { OrganisationMembersService } from './services/OrganisationMembersService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -72,6 +73,7 @@ export declare class Client {
     vehicleInspections(): VehicleInspectionService;
     vehicleInventoryChecks(): VehicleInventoryCheckService;
     organisations(): OrganisationsService;
+    organisationMembers(): OrganisationMembersService;
     setOrganisationSlug(organisation: string): void;
     substituteOrganisation(url: string): string;
     makeDeleteRequest(endpoint: string): Promise<any>;

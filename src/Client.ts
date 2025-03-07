@@ -33,6 +33,7 @@ import { VehicleInspectionService } from '@services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
 import { AppointmentsService } from '@services/AppointmentsService';
 import { OrganisationsService } from '@services/OrganisationsService';
+import { OrganisationMembersService } from '@services/OrganisationMembersService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -202,6 +203,10 @@ export class Client {
 
     public organisations(): OrganisationsService {
         return new OrganisationsService(this);
+    }
+
+    public organisationMembers(): OrganisationMembersService {
+        return new OrganisationMembersService(this);
     }
 
     setOrganisationSlug(organisation: string) {
