@@ -1849,6 +1849,20 @@ class AppointmentsService extends BaseService {
   }
 }
 
+// src/services/OrganisationsService.ts
+class OrganisationsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs");
+  }
+}
+
+// src/services/OrganisationMembersService.ts
+class OrganisationMembersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/iam/members");
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1977,6 +1991,12 @@ class Client {
   vehicleInventoryChecks() {
     return new VehicleInventoryCheckService(this);
   }
+  organisations() {
+    return new OrganisationsService(this);
+  }
+  organisationMembers() {
+    return new OrganisationMembersService(this);
+  }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
   }
@@ -2088,6 +2108,11 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
+// src/models/Organisation.ts
+class Organisation extends BaseModel {
+  type = "organisations";
+  static relationships = [];
+}
 export {
   WorkOrder,
   VehicleSpecification,
@@ -2095,6 +2120,7 @@ export {
   VehicleManufacturer,
   VehicleCategory,
   Vehicle,
+  User,
   Team,
   SubmissionVersion,
   Submission,
@@ -2105,6 +2131,7 @@ export {
   RequestOptions,
   Property,
   Permission,
+  Organisation,
   Operation,
   Log,
   Group,
