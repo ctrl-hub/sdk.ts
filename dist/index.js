@@ -1855,9 +1855,8 @@ class OrganisationsService extends BaseService {
     super(client, "/v3/orgs");
   }
   async getMembers() {
-    const resp = await this.client.makeGetRequest(`${this.endpoint}/:orgId/iam/members`);
-    resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
-    return resp;
+    this.endpoint = this.endpoint + "/:orgId/iam/members";
+    return await this.get();
   }
 }
 
