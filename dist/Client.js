@@ -30,6 +30,7 @@ import { OperationTemplatesService } from './services/OperationTemplatesService'
 import { VehicleInspectionService } from './services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from './services/VehicleInventoryCheckService';
 import { AppointmentsService } from './services/AppointmentsService';
+import { OrganisationsService } from './services/OrganisationsService';
 export class Client {
     config;
     organisation;
@@ -156,6 +157,9 @@ export class Client {
     }
     vehicleInventoryChecks() {
         return new VehicleInventoryCheckService(this);
+    }
+    organisations() {
+        return new OrganisationsService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;
