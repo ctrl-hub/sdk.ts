@@ -1856,12 +1856,7 @@ class OrganisationsService extends BaseService {
   }
   async getMembers() {
     const resp = await this.client.makeGetRequest(`${this.endpoint}/:orgId/iam/members`);
-    resp.data = resp.data.map((modelData) => {
-      return new User({
-        ...modelData,
-        included: []
-      });
-    });
+    resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
     return resp;
   }
 }
