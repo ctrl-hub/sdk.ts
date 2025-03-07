@@ -4,7 +4,13 @@ export class Group extends BaseModel {
     name = '';
     description = '';
     bindings = [];
-    static relationships = [];
+    static relationships = [
+        {
+            name: 'users',
+            type: 'array',
+            modelType: 'users',
+        },
+    ];
     constructor(data) {
         super(data);
         this.name = data?.attributes?.name ?? data?.name ?? '';

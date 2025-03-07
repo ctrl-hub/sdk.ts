@@ -23,7 +23,13 @@ export class Group extends BaseModel implements Partial<JsonApiMapping> {
     public description: string = '';
     public bindings: Binding[] = [];
 
-    static relationships: RelationshipDefinition[] = [];
+    static relationships: RelationshipDefinition[] = [
+        {
+            name: 'users',
+            type: 'array',
+            modelType: 'users',
+        },
+    ];
 
     constructor(data?: any) {
         super(data);
