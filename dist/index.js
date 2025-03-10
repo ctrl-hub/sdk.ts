@@ -1,19 +1,11 @@
 // src/utils/RequestOptions.ts
 class RequestOptions {
-  vehicleId;
-  excludeAssigned;
   sort;
   limit;
   offset;
   filters;
   include;
   constructor(options) {
-    if (options.vehicleId) {
-      this.vehicleId = options.vehicleId;
-    }
-    if (options.excludeAssigned) {
-      this.excludeAssigned = options.excludeAssigned;
-    }
     if (options.sort) {
       this.sort = options.sort;
     }
@@ -52,20 +44,12 @@ class RequestOptions {
     if (this.offset) {
       params.append("offset", this.offset.toString());
     }
-    if (this.excludeAssigned) {
-      params.append("excludeAssigned", this.excludeAssigned.toString());
-    }
-    if (this.vehicleId) {
-      params.append("vehicleId", this.vehicleId.toString());
-    }
     return params;
   }
   static fromUrl(url, defaults = {}) {
     const urlObj = new URL(url);
     const queryParams = urlObj.searchParams;
     const requestOptions = {
-      vehicleId: "",
-      excludeAssigned: false,
       filters: [],
       limit: parseInt(queryParams.get("limit") || defaults.limit?.toString() || "20"),
       offset: parseInt(queryParams.get("offset") || defaults.offset?.toString() || "0"),
