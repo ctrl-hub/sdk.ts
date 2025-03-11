@@ -2116,6 +2116,9 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
+  constructor() {
+    super(...arguments);
+  }
   type = "organisations";
   static relationships = [];
 }
@@ -2138,6 +2141,7 @@ export {
   Property,
   Permission,
   Organisation,
+  OperationTemplate,
   Operation,
   Log,
   Group,

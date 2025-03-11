@@ -24,6 +24,7 @@ export { Role } from './models/Role';
 export { Scheme } from './models/Scheme';
 export { WorkOrder } from './models/WorkOrder';
 export { Operation } from './models/Operation';
+export { OperationTemplate } from './models/OperationTemplate';
 export { Organisation } from './models/Organisation';
 export { ServiceAccount } from './models/ServiceAccount';
 export { ServiceAccountKey } from './models/ServiceAccountKey';
