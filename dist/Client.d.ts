@@ -58,7 +58,7 @@ export declare class Client {
     teams(): TeamsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
-    groups(): GroupsService;
+    groups(groupId?: string): GroupsService;
     vehicles(): VehiclesService;
     vehicleManufacturers(): VehicleManufacturersService;
     vehicleCategories(): VehicleCategoriesService;

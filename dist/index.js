@@ -1626,8 +1626,14 @@ class ServiceAccountKeysService extends BaseService {
 
 // src/services/GroupService.ts
 class GroupsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/iam/groups");
+  constructor(client, groupId) {
+    const endpoint = groupId ? `/v3/orgs/:orgId/iam/groups/${groupId}` : `/v3/orgs/:orgId/iam/groups`;
+    super(client, endpoint);
+  }
+  async patchMembers(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/members`, payload);
   }
 }
 
@@ -1955,8 +1961,8 @@ class Client {
   permissions() {
     return new PermissionsService(this);
   }
-  groups() {
-    return new GroupsService(this);
+  groups(groupId) {
+    return new GroupsService(this, groupId);
   }
   vehicles() {
     return new VehiclesService(this);
@@ -2116,9 +2122,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }

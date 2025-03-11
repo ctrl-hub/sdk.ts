@@ -117,8 +117,8 @@ export class Client {
     permissions() {
         return new PermissionsService(this);
     }
-    groups() {
-        return new GroupsService(this);
+    groups(groupId) {
+        return new GroupsService(this, groupId);
     }
     vehicles() {
         return new VehiclesService(this);
