@@ -145,8 +145,8 @@ export class Client {
         return new PermissionsService(this);
     }
 
-    public groups(): GroupsService {
-        return new GroupsService(this);
+    public groups(groupId?: string): GroupsService {
+        return new GroupsService(this, groupId);
     }
 
     public vehicles(): VehiclesService {
