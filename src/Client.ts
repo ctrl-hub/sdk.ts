@@ -93,8 +93,8 @@ export class Client {
         return new WorkOrdersService(this, schemeId);
     }
 
-    public operations(schemeId: string, workOrderId: string): OperationsService {
-        return new OperationsService(this, schemeId, workOrderId);
+    public operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService {
+        return new OperationsService(this, schemeId, workOrderId, operationId);
     }
 
     public operationTemplates(): OperationTemplatesService {
@@ -133,8 +133,8 @@ export class Client {
         return new AppointmentsService(this);
     }
 
-    public teams(): TeamsService {
-        return new TeamsService(this);
+    public teams(teamId?: string): TeamsService {
+        return new TeamsService(this, teamId);
     }
 
     public submissions(): SubmissionsService {

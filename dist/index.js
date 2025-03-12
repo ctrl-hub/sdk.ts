@@ -1807,8 +1807,13 @@ class CustomerInteractionsService extends BaseService {
 
 // src/services/TeamsService.ts
 class TeamsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/people/teams");
+  constructor(client, teamId) {
+    super(client, teamId ? `/v3/orgs/:orgId/people/teams/${teamId}` : "/v3/orgs/:orgId/people/teams");
+  }
+  async patchMembers(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/members`, payload);
   }
 }
 
@@ -1828,8 +1833,13 @@ class WorkOrdersService extends BaseService {
 
 // src/services/OperationsService.ts
 class OperationsService extends BaseService {
-  constructor(client, schemeId, workOrderId) {
-    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
+  constructor(client, schemeId, workOrderId, operationId) {
+    super(client, operationId ? `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations/${operationId}` : `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
+  }
+  async patchAssignees(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignees`, payload);
   }
 }
 
@@ -1922,8 +1932,8 @@ class Client {
   workOrders(schemeId) {
     return new WorkOrdersService(this, schemeId);
   }
-  operations(schemeId, workOrderId) {
-    return new OperationsService(this, schemeId, workOrderId);
+  operations(schemeId, workOrderId, operationId) {
+    return new OperationsService(this, schemeId, workOrderId, operationId);
   }
   operationTemplates() {
     return new OperationTemplatesService(this);
@@ -1952,8 +1962,8 @@ class Client {
   appointments() {
     return new AppointmentsService(this);
   }
-  teams() {
-    return new TeamsService(this);
+  teams(teamId) {
+    return new TeamsService(this, teamId);
   }
   submissions() {
     return new SubmissionsService(this);
@@ -2122,6 +2132,9 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
+  constructor() {
+    super(...arguments);
+  }
   type = "organisations";
   static relationships = [];
 }
