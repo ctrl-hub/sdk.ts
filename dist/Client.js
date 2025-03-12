@@ -78,8 +78,8 @@ export class Client {
     workOrders(schemeId) {
         return new WorkOrdersService(this, schemeId);
     }
-    operations(schemeId, workOrderId) {
-        return new OperationsService(this, schemeId, workOrderId);
+    operations(schemeId, workOrderId, operationId) {
+        return new OperationsService(this, schemeId, workOrderId, operationId);
     }
     operationTemplates() {
         return new OperationTemplatesService(this);
@@ -108,8 +108,8 @@ export class Client {
     appointments() {
         return new AppointmentsService(this);
     }
-    teams() {
-        return new TeamsService(this);
+    teams(teamId) {
+        return new TeamsService(this, teamId);
     }
     submissions() {
         return new SubmissionsService(this);

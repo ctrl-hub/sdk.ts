@@ -45,7 +45,7 @@ export declare class Client {
     roles(): RolesService;
     schemes(): SchemesService;
     workOrders(schemeId: string): WorkOrdersService;
-    operations(schemeId: string, workOrderId: string): OperationsService;
+    operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService;
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
     customerAccounts(customerAccountId?: string): CustomerAccountsService;
@@ -55,7 +55,7 @@ export declare class Client {
     formCategories(): FormCategoriesService;
     forms(): FormsService;
     appointments(): AppointmentsService;
-    teams(): TeamsService;
+    teams(teamId?: string): TeamsService;
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
     groups(groupId?: string): GroupsService;
