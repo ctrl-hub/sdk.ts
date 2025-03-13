@@ -1,7 +1,7 @@
 import { Client } from '../Client';
 import { Hydrator } from '../utils/Hydrator';
 import { RequestBuilder } from '../utils/RequestBuilder';
-import { JsonApiSerializer } from '@utils/JsonSerializer';
+import { JsonApiSerializer } from '../utils/JsonSerializer';
 export class BaseService extends RequestBuilder {
     client;
     endpoint;

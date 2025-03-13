@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class Operation extends BaseModel {
     type = 'operations';
     name = '';
@@ -22,6 +22,11 @@ export class Operation extends BaseModel {
             name: 'streets',
             type: 'array',
             modelType: 'streets',
+        },
+        {
+            name: 'assignees',
+            type: 'array',
+            modelType: 'users',
         },
     ];
     constructor(data) {

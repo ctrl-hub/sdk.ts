@@ -79,6 +79,7 @@ export class Hydrator {
     };
 
     hydrateResponse<T extends Model>(data: JsonData | JsonData[], included: any[]): T | T[] {
+        if (!data) return data;
         return Array.isArray(data) ? this.hydrateArray<T>(data, included) : this.hydrateSingle<T>(data, included);
     }
 

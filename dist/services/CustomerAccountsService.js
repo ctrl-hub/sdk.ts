@@ -1,9 +1,9 @@
-import { Client } from 'Client';
+import { Client } from '../Client';
 import { BaseService } from './BaseService';
-import { CustomerAccount } from '@models/CustomerAccount';
-import { JsonApiSerializer } from '@utils/JsonSerializer';
-import { Property } from '@models/Property';
-import { Contact } from '@models/Contact';
+import { CustomerAccount } from '../models/CustomerAccount';
+import { JsonApiSerializer } from '../utils/JsonSerializer';
+import { Property } from '../models/Property';
+import { Contact } from '../models/Contact';
 export class CustomerAccountsService extends BaseService {
     constructor(client, customerAccountId) {
         const endpoint = customerAccountId ? `/v3/orgs/:orgId/customer-accounts/${customerAccountId}` : `/v3/orgs/:orgId/customer-accounts`;

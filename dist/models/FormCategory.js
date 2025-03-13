@@ -1,4 +1,4 @@
-import { BaseModel } from '@models/BaseModel';
+import { BaseModel } from './BaseModel';
 export class FormCategory extends BaseModel {
     type = 'form-categories';
     name = '';

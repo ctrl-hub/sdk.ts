@@ -355,16 +355,22 @@ class Group extends BaseModel {
   name = "";
   description = "";
   bindings = [];
-  static relationships = [];
+  static relationships = [
+    {
+      name: "users",
+      type: "array",
+      modelType: "users"
+    }
+  ];
   constructor(data) {
     super(data);
     this.name = data?.attributes?.name ?? data?.name ?? "";
     this.description = data?.attributes?.description ?? data?.description ?? "";
-    this.bindings = data?.attributes?.bindings ?? [];
+    this.bindings = data?.attributes?.bindings ?? data?.bindings ?? [];
   }
   jsonApiMapping() {
     return {
-      attributes: ["name", "description"],
+      attributes: ["name", "description", "bindings"],
       relationships: {}
     };
   }
@@ -1113,6 +1119,11 @@ class Operation extends BaseModel {
       name: "streets",
       type: "array",
       modelType: "streets"
+    },
+    {
+      name: "assignees",
+      type: "array",
+      modelType: "users"
     }
   ];
   constructor(data) {
@@ -1170,13 +1181,12 @@ class Street extends BaseModel {
 // src/models/Appointment.ts
 class Appointment extends BaseModel {
   type = "appointments";
-  appointment_type = "";
   start_time = "";
   end_time = "";
   notes = "";
   jsonApiMapping() {
     return {
-      attributes: ["appointment_type", "start_time", "end_time", "notes"],
+      attributes: ["start_time", "end_time", "notes"],
       relationships: {
         customer_interaction: "customer-interactions",
         operation: "operations"
@@ -1197,7 +1207,6 @@ class Appointment extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.appointment_type = data?.attributes?.appointment_type ?? data?.appointment_type ?? "";
     this.start_time = data?.attributes?.start_time ?? data?.start_time ?? "";
     this.end_time = data?.attributes?.end_time ?? data?.end_time ?? "";
     this.notes = data?.attributes?.notes ?? data?.notes ?? "";
@@ -1246,6 +1255,8 @@ class Hydrator {
     return this.modelMap;
   };
   hydrateResponse(data, included) {
+    if (!data)
+      return data;
     return Array.isArray(data) ? this.hydrateArray(data, included) : this.hydrateSingle(data, included);
   }
   hydrateArray(items, included) {
@@ -1615,21 +1626,14 @@ class ServiceAccountKeysService extends BaseService {
 
 // src/services/GroupService.ts
 class GroupsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/iam/groups");
+  constructor(client, groupId) {
+    const endpoint = groupId ? `/v3/orgs/:orgId/iam/groups/${groupId}` : `/v3/orgs/:orgId/iam/groups`;
+    super(client, endpoint);
   }
-  async deleteBinding(groupId, bindingId) {
-    let deleteEndpoint = this.endpoint + "/" + groupId + "/bindings/" + bindingId;
-    return await this.client.makeDeleteRequest(deleteEndpoint);
-  }
-  async createBinding(groupId, body) {
-    let createBindingEndpoint = this.endpoint + "/" + groupId + "/bindings";
-    return await this.client.makePostRequest(createBindingEndpoint, {
-      data: {
-        type: "bindings",
-        attributes: JSON.parse(body)
-      }
-    });
+  async patchMembers(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/members`, payload);
   }
 }
 
@@ -1826,8 +1830,13 @@ class CustomerInteractionsService extends BaseService {
 
 // src/services/TeamsService.ts
 class TeamsService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/people/teams");
+  constructor(client, teamId) {
+    super(client, teamId ? `/v3/orgs/:orgId/people/teams/${teamId}` : "/v3/orgs/:orgId/people/teams");
+  }
+  async patchMembers(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/members`, payload);
   }
 }
 
@@ -1847,8 +1856,13 @@ class WorkOrdersService extends BaseService {
 
 // src/services/OperationsService.ts
 class OperationsService extends BaseService {
-  constructor(client, schemeId, workOrderId) {
-    super(client, `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
+  constructor(client, schemeId, workOrderId, operationId) {
+    super(client, operationId ? `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations/${operationId}` : `/v3/orgs/:orgId/governance/schemes/${schemeId}/work-orders/${workOrderId}/operations`);
+  }
+  async patchAssignees(users) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignees`, payload);
   }
 }
 
@@ -1877,6 +1891,20 @@ class VehicleInventoryCheckService extends BaseService {
 class AppointmentsService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/appointments");
+  }
+}
+
+// src/services/OrganisationsService.ts
+class OrganisationsService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs");
+  }
+}
+
+// src/services/OrganisationMembersService.ts
+class OrganisationMembersService extends BaseService {
+  constructor(client) {
+    super(client, "/v3/orgs/:orgId/iam/members");
   }
 }
 
@@ -1927,8 +1955,8 @@ class Client {
   workOrders(schemeId) {
     return new WorkOrdersService(this, schemeId);
   }
-  operations(schemeId, workOrderId) {
-    return new OperationsService(this, schemeId, workOrderId);
+  operations(schemeId, workOrderId, operationId) {
+    return new OperationsService(this, schemeId, workOrderId, operationId);
   }
   operationTemplates() {
     return new OperationTemplatesService(this);
@@ -1957,8 +1985,8 @@ class Client {
   appointments() {
     return new AppointmentsService(this);
   }
-  teams() {
-    return new TeamsService(this);
+  teams(teamId) {
+    return new TeamsService(this, teamId);
   }
   submissions() {
     return new SubmissionsService(this);
@@ -1966,8 +1994,8 @@ class Client {
   permissions() {
     return new PermissionsService(this);
   }
-  groups() {
-    return new GroupsService(this);
+  groups(groupId) {
+    return new GroupsService(this, groupId);
   }
   vehicles() {
     return new VehiclesService(this);
@@ -2007,6 +2035,12 @@ class Client {
   }
   vehicleInventoryChecks() {
     return new VehicleInventoryCheckService(this);
+  }
+  organisations() {
+    return new OrganisationsService(this);
+  }
+  organisationMembers() {
+    return new OrganisationMembersService(this);
   }
   setOrganisationSlug(organisation) {
     this.config.organisationId = organisation;
@@ -2119,6 +2153,14 @@ class ClientConfig {
     this.authDomain = config.authDomain || "https://auth.ctrl-hub.com";
   }
 }
+// src/models/Organisation.ts
+class Organisation extends BaseModel {
+  constructor() {
+    super(...arguments);
+  }
+  type = "organisations";
+  static relationships = [];
+}
 export {
   WorkOrder,
   VehicleSpecification,
@@ -2126,6 +2168,7 @@ export {
   VehicleManufacturer,
   VehicleCategory,
   Vehicle,
+  User,
   Team,
   SubmissionVersion,
   Submission,
@@ -2136,6 +2179,8 @@ export {
   RequestOptions,
   Property,
   Permission,
+  Organisation,
+  OperationTemplate,
   Operation,
   Log,
   Group,

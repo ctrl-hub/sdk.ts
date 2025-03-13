@@ -11,25 +11,27 @@ import { GroupsService } from './services/GroupService';
 import { VehiclesService } from './services/VehiclesService';
 import { EquipmentService } from './services/EquipmentService';
 import { EquipmentExposureService } from './services/EquipmentExposureService';
-import { VehicleManufacturersService } from '@services/VehicleManufacturersService';
-import { VehicleModelsService } from '@services/VehicleModelsService';
-import { VehicleCategoriesService } from '@services/VehicleCategoriesService';
-import { EquipmentManufacturersService } from '@services/EquipmentManufacturersService';
-import { EquipmentCategoriesService } from '@services/EquipmentCategoriesService';
-import { EquipmentModelsService } from '@services/EquipmentModelsService';
-import { PropertiesService } from '@services/PropertiesService';
-import { VehicleModelSpecificationService } from '@services/VehicleModelSpecificationService';
-import { ContactsService } from '@services/ContactsService';
-import { CustomerAccountsService } from '@services/CustomerAccountsService';
-import { CustomerInteractionsService } from '@services/CustomerInteractionsService';
-import { TeamsService } from '@services/TeamsService';
-import { SchemesService } from '@services/SchemesService';
-import { WorkOrdersService } from '@services/WorkOrdersService';
-import { OperationsService } from '@services/OperationsService';
-import { OperationTemplatesService } from '@services/OperationTemplatesService';
-import { VehicleInspectionService } from '@services/VehicleInspectionService';
-import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
-import { AppointmentsService } from '@services/AppointmentsService';
+import { VehicleManufacturersService } from './services/VehicleManufacturersService';
+import { VehicleModelsService } from './services/VehicleModelsService';
+import { VehicleCategoriesService } from './services/VehicleCategoriesService';
+import { EquipmentManufacturersService } from './services/EquipmentManufacturersService';
+import { EquipmentCategoriesService } from './services/EquipmentCategoriesService';
+import { EquipmentModelsService } from './services/EquipmentModelsService';
+import { PropertiesService } from './services/PropertiesService';
+import { VehicleModelSpecificationService } from './services/VehicleModelSpecificationService';
+import { ContactsService } from './services/ContactsService';
+import { CustomerAccountsService } from './services/CustomerAccountsService';
+import { CustomerInteractionsService } from './services/CustomerInteractionsService';
+import { TeamsService } from './services/TeamsService';
+import { SchemesService } from './services/SchemesService';
+import { WorkOrdersService } from './services/WorkOrdersService';
+import { OperationsService } from './services/OperationsService';
+import { OperationTemplatesService } from './services/OperationTemplatesService';
+import { VehicleInspectionService } from './services/VehicleInspectionService';
+import { VehicleInventoryCheckService } from './services/VehicleInventoryCheckService';
+import { AppointmentsService } from './services/AppointmentsService';
+import { OrganisationsService } from './services/OrganisationsService';
+import { OrganisationMembersService } from './services/OrganisationMembersService';
 export class Client {
     config;
     organisation;
@@ -76,8 +78,8 @@ export class Client {
     workOrders(schemeId) {
         return new WorkOrdersService(this, schemeId);
     }
-    operations(schemeId, workOrderId) {
-        return new OperationsService(this, schemeId, workOrderId);
+    operations(schemeId, workOrderId, operationId) {
+        return new OperationsService(this, schemeId, workOrderId, operationId);
     }
     operationTemplates() {
         return new OperationTemplatesService(this);
@@ -106,8 +108,8 @@ export class Client {
     appointments() {
         return new AppointmentsService(this);
     }
-    teams() {
-        return new TeamsService(this);
+    teams(teamId) {
+        return new TeamsService(this, teamId);
     }
     submissions() {
         return new SubmissionsService(this);
@@ -115,8 +117,8 @@ export class Client {
     permissions() {
         return new PermissionsService(this);
     }
-    groups() {
-        return new GroupsService(this);
+    groups(groupId) {
+        return new GroupsService(this, groupId);
     }
     vehicles() {
         return new VehiclesService(this);
@@ -156,6 +158,12 @@ export class Client {
     }
     vehicleInventoryChecks() {
         return new VehicleInventoryCheckService(this);
+    }
+    organisations() {
+        return new OrganisationsService(this);
+    }
+    organisationMembers() {
+        return new OrganisationMembersService(this);
     }
     setOrganisationSlug(organisation) {
         this.config.organisationId = organisation;

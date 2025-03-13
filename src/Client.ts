@@ -32,6 +32,8 @@ import { OperationTemplatesService } from '@services/OperationTemplatesService';
 import { VehicleInspectionService } from '@services/VehicleInspectionService';
 import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckService';
 import { AppointmentsService } from '@services/AppointmentsService';
+import { OrganisationsService } from '@services/OrganisationsService';
+import { OrganisationMembersService } from '@services/OrganisationMembersService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -91,8 +93,8 @@ export class Client {
         return new WorkOrdersService(this, schemeId);
     }
 
-    public operations(schemeId: string, workOrderId: string): OperationsService {
-        return new OperationsService(this, schemeId, workOrderId);
+    public operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService {
+        return new OperationsService(this, schemeId, workOrderId, operationId);
     }
 
     public operationTemplates(): OperationTemplatesService {
@@ -131,8 +133,8 @@ export class Client {
         return new AppointmentsService(this);
     }
 
-    public teams(): TeamsService {
-        return new TeamsService(this);
+    public teams(teamId?: string): TeamsService {
+        return new TeamsService(this, teamId);
     }
 
     public submissions(): SubmissionsService {
@@ -143,8 +145,8 @@ export class Client {
         return new PermissionsService(this);
     }
 
-    public groups(): GroupsService {
-        return new GroupsService(this);
+    public groups(groupId?: string): GroupsService {
+        return new GroupsService(this, groupId);
     }
 
     public vehicles(): VehiclesService {
@@ -197,6 +199,14 @@ export class Client {
 
     public vehicleInventoryChecks(): VehicleInventoryCheckService {
         return new VehicleInventoryCheckService(this);
+    }
+
+    public organisations(): OrganisationsService {
+        return new OrganisationsService(this);
+    }
+
+    public organisationMembers(): OrganisationMembersService {
+        return new OrganisationMembersService(this);
     }
 
     setOrganisationSlug(organisation: string) {

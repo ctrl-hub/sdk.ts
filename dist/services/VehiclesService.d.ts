@@ -1,8 +1,8 @@
-import { Client } from "Client";
+import { Client } from "../Client";
 import { BaseService } from "./BaseService";
 import { Vehicle } from "../models/Vehicle";
 import type { InternalResponse } from '../types/Response';
-import type { MotRecord } from "@models/MotRecord";
+import type { MotRecord } from "../models/MotRecord";
 type JsonApiRelationshipsPayload = {
     data: {
         id: string;
