@@ -231,7 +231,7 @@ export class Client {
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: 'include', // @todo only required for cookie based auth,
+                credentials: 'include',
                 headers: headers,
             });
             let json = await fetchResponse.json();

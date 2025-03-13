@@ -1482,15 +1482,13 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -1660,6 +1658,29 @@ class VehiclesService extends BaseService {
     const hydrator = new Hydrator;
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
+  }
+  async patchEquipment(vehicleId, equipment) {
+    const payload = this.buildEquipmentRelationshipPayload(vehicleId, equipment, "equipment-items");
+    payload.data.id = vehicleId;
+    return await this.client.makePatchRequest(`${this.endpoint}/${vehicleId}`, payload);
+  }
+  buildEquipmentRelationshipPayload(vehicleId, relationships, relationshipType) {
+    const data = relationships.filter((relationship) => relationship !== undefined).map((relationship) => ({
+      type: relationshipType,
+      id: relationship
+    }));
+    const payload = {
+      data: {
+        id: vehicleId,
+        type: "vehicles",
+        relationships: {
+          equipment: {
+            data
+          }
+        }
+      }
+    };
+    return payload;
   }
 }
 
@@ -2132,9 +2153,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }
