@@ -70,6 +70,17 @@ export class JsonApiSerializer {
             console.warn(`No model class found for type: ${model.type}`);
             return { data: [] };
         }
+        if (!Array.isArray(relationships)) {
+            if (relationships?.id !== undefined) {
+                return {
+                    data: {
+                        type: model.type,
+                        id: relationships.id
+                    }
+                };
+            }
+            return { data: null };
+        }
         const data = relationships
             .filter(relationship => relationship.id !== undefined)
             .map(relationship => ({

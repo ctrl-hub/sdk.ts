@@ -7,10 +7,13 @@ type JsonApiRelationship = {
     };
 };
 type JsonApiRelationshipsPayload = {
-    data: Array<{
+    data: {
         type: string;
         id: string;
-    }>;
+    } | Array<{
+        type: string;
+        id: string;
+    }> | null;
 };
 type JsonApiPayload = {
     data: {
@@ -26,7 +29,7 @@ export declare class JsonApiSerializer {
     buildCreatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
     buildUpdatePayload(model: Model & Partial<JsonApiMapping>): JsonApiPayload;
     private buildPayload;
-    buildRelationshipPayload(model: Model, relationships: Array<Model>): JsonApiRelationshipsPayload;
+    buildRelationshipPayload(model: Model, relationships: Model | Array<Model>): JsonApiRelationshipsPayload;
     private buildDefaultPayload;
 }
 export {};

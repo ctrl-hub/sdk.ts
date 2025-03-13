@@ -149,8 +149,8 @@ export class Client {
         return new GroupsService(this, groupId);
     }
 
-    public vehicles(): VehiclesService {
-        return new VehiclesService(this);
+    public vehicles(vehicleId?: string): VehiclesService {
+        return new VehiclesService(this, vehicleId);
     }
 
     public vehicleManufacturers(): VehicleManufacturersService {

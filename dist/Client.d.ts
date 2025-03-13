@@ -59,7 +59,7 @@ export declare class Client {
     submissions(): SubmissionsService;
     permissions(): PermissionsService;
     groups(groupId?: string): GroupsService;
-    vehicles(): VehiclesService;
+    vehicles(vehicleId?: string): VehiclesService;
     vehicleManufacturers(): VehicleManufacturersService;
     vehicleCategories(): VehicleCategoriesService;
     vehicleModels(): VehicleModelsService;
