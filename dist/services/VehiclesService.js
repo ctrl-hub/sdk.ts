@@ -25,4 +25,29 @@ export class VehiclesService extends BaseService {
         resp.data = hydrator.hydrateResponse(resp.data, resp.included);
         return resp;
     }
+    async patchEquipment(vehicleId, equipment) {
+        const payload = this.buildEquipmentRelationshipPayload(vehicleId, equipment, 'equipment-items');
+        payload.data.id = vehicleId;
+        return await this.client.makePatchRequest(`${this.endpoint}/${vehicleId}`, payload);
+    }
+    buildEquipmentRelationshipPayload(vehicleId, relationships, relationshipType) {
+        const data = relationships
+            .filter(relationship => relationship !== undefined)
+            .map(relationship => ({
+            type: relationshipType,
+            id: relationship,
+        }));
+        const payload = {
+            data: {
+                id: vehicleId,
+                type: 'vehicles',
+                relationships: {
+                    equipment: {
+                        data: data
+                    }
+                }
+            }
+        };
+        return payload;
+    }
 }
