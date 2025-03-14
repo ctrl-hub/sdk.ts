@@ -120,8 +120,8 @@ export class Client {
     groups(groupId) {
         return new GroupsService(this, groupId);
     }
-    vehicles() {
-        return new VehiclesService(this);
+    vehicles(vehicleId) {
+        return new VehiclesService(this, vehicleId);
     }
     vehicleManufacturers() {
         return new VehicleManufacturersService(this);

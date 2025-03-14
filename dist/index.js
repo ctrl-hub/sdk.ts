@@ -1435,6 +1435,17 @@ class JsonApiSerializer {
       console.warn(`No model class found for type: ${model.type}`);
       return { data: [] };
     }
+    if (!Array.isArray(relationships)) {
+      if (relationships?.id !== undefined) {
+        return {
+          data: {
+            type: model.type,
+            id: relationships.id
+          }
+        };
+      }
+      return { data: null };
+    }
     const data = relationships.filter((relationship) => relationship.id !== undefined).map((relationship) => ({
       type: model.type,
       id: relationship.id
@@ -1482,15 +1493,13 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -1639,8 +1648,9 @@ class GroupsService extends BaseService {
 
 // src/services/VehiclesService.ts
 class VehiclesService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/vehicles");
+  constructor(client, vehicleId) {
+    const endpoint = vehicleId ? `/v3/orgs/:orgId/assets/vehicles/${vehicleId}` : `/v3/orgs/:orgId/assets/vehicles`;
+    super(client, endpoint);
   }
   async enquiry(registration) {
     const enquiryEndpoint = "/v3/assets/vehicles/enquiries";
@@ -1660,6 +1670,11 @@ class VehiclesService extends BaseService {
     const hydrator = new Hydrator;
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
+  }
+  async patchAssignee(user) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
   }
 }
 
@@ -1974,8 +1989,8 @@ class Client {
   groups(groupId) {
     return new GroupsService(this, groupId);
   }
-  vehicles() {
-    return new VehiclesService(this);
+  vehicles(vehicleId) {
+    return new VehiclesService(this, vehicleId);
   }
   vehicleManufacturers() {
     return new VehicleManufacturersService(this);
@@ -2132,9 +2147,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }

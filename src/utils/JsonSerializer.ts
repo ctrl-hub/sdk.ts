@@ -9,10 +9,13 @@ type JsonApiRelationship = {
 };
 
 type JsonApiRelationshipsPayload = {
-    data: Array<{
+    data: {
         type: string;
         id: string;
-    }>;
+    } | Array<{
+        type: string;
+        id: string;
+    }> | null;
 };
 
 type JsonApiPayload = {
@@ -107,12 +110,24 @@ export class JsonApiSerializer {
         return this.buildDefaultPayload(model, isUpdate);
     }
 
-    buildRelationshipPayload(model: Model, relationships: Array<Model>): JsonApiRelationshipsPayload {
+    buildRelationshipPayload(model: Model, relationships: Model | Array<Model>): JsonApiRelationshipsPayload {
         const ModelClass = this.modelMap[model.type];
 
         if (!ModelClass) {
             console.warn(`No model class found for type: ${model.type}`);
             return { data: [] };
+        }
+
+        if (!Array.isArray(relationships)) {
+            if (relationships?.id !== undefined) {
+                return {
+                    data: {
+                        type: model.type,
+                        id: relationships.id!
+                    }
+                };
+            }
+            return { data: null };
         }
 
         const data = relationships

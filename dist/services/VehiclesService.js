@@ -1,10 +1,13 @@
 import { Client } from "../Client";
 import { BaseService } from "./BaseService";
 import { Vehicle } from "../models/Vehicle";
+import { User } from "../models/User";
 import { Hydrator } from "../utils/Hydrator";
+import { JsonApiSerializer } from '../utils/JsonSerializer';
 export class VehiclesService extends BaseService {
-    constructor(client) {
-        super(client, "/v3/orgs/:orgId/assets/vehicles");
+    constructor(client, vehicleId) {
+        const endpoint = vehicleId ? `/v3/orgs/:orgId/assets/vehicles/${vehicleId}` : `/v3/orgs/:orgId/assets/vehicles`;
+        super(client, endpoint);
     }
     async enquiry(registration) {
         const enquiryEndpoint = '/v3/assets/vehicles/enquiries';
@@ -24,5 +27,10 @@ export class VehiclesService extends BaseService {
         const hydrator = new Hydrator();
         resp.data = hydrator.hydrateResponse(resp.data, resp.included);
         return resp;
+    }
+    async patchAssignee(user) {
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
+        return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
     }
 }
