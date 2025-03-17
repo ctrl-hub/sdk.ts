@@ -1671,6 +1671,11 @@ class VehiclesService extends BaseService {
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
   }
+  async patchEquipment(equipmentItems) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Equipment, equipmentItems);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
+  }
   async patchAssignee(user) {
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
