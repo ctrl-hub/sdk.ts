@@ -2,9 +2,12 @@ import { Client } from "../Client";
 import { BaseService } from "./BaseService";
 import { Vehicle } from "../models/Vehicle";
 import { Hydrator } from "../utils/Hydrator";
+import { Equipment } from "../models/Equipment";
+import { JsonApiSerializer } from "../utils/JsonSerializer";
 export class VehiclesService extends BaseService {
-    constructor(client) {
-        super(client, "/v3/orgs/:orgId/assets/vehicles");
+    constructor(client, vehicleId) {
+        const endpoint = vehicleId ? `/v3/orgs/:orgId/assets/vehicles/${vehicleId}` : `/v3/orgs/:orgId/assets/vehicles`;
+        super(client, endpoint);
     }
     async enquiry(registration) {
         const enquiryEndpoint = '/v3/assets/vehicles/enquiries';
@@ -25,29 +28,9 @@ export class VehiclesService extends BaseService {
         resp.data = hydrator.hydrateResponse(resp.data, resp.included);
         return resp;
     }
-    async patchEquipment(vehicleId, equipment) {
-        const payload = this.buildEquipmentRelationshipPayload(vehicleId, equipment, 'equipment-items');
-        payload.data.id = vehicleId;
-        return await this.client.makePatchRequest(`${this.endpoint}/${vehicleId}`, payload);
-    }
-    buildEquipmentRelationshipPayload(vehicleId, relationships, relationshipType) {
-        const data = relationships
-            .filter(relationship => relationship !== undefined)
-            .map(relationship => ({
-            type: relationshipType,
-            id: relationship,
-        }));
-        const payload = {
-            data: {
-                id: vehicleId,
-                type: 'vehicles',
-                relationships: {
-                    equipment: {
-                        data: data
-                    }
-                }
-            }
-        };
-        return payload;
+    async patchEquipment(equipmentItems) {
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildRelationshipPayload(new Equipment, equipmentItems);
+        return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
     }
 }

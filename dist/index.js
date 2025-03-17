@@ -1637,8 +1637,9 @@ class GroupsService extends BaseService {
 
 // src/services/VehiclesService.ts
 class VehiclesService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/vehicles");
+  constructor(client, vehicleId) {
+    const endpoint = vehicleId ? `/v3/orgs/:orgId/assets/vehicles/${vehicleId}` : `/v3/orgs/:orgId/assets/vehicles`;
+    super(client, endpoint);
   }
   async enquiry(registration) {
     const enquiryEndpoint = "/v3/assets/vehicles/enquiries";
@@ -1659,28 +1660,10 @@ class VehiclesService extends BaseService {
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
   }
-  async patchEquipment(vehicleId, equipment) {
-    const payload = this.buildEquipmentRelationshipPayload(vehicleId, equipment, "equipment-items");
-    payload.data.id = vehicleId;
-    return await this.client.makePatchRequest(`${this.endpoint}/${vehicleId}`, payload);
-  }
-  buildEquipmentRelationshipPayload(vehicleId, relationships, relationshipType) {
-    const data = relationships.filter((relationship) => relationship !== undefined).map((relationship) => ({
-      type: relationshipType,
-      id: relationship
-    }));
-    const payload = {
-      data: {
-        id: vehicleId,
-        type: "vehicles",
-        relationships: {
-          equipment: {
-            data
-          }
-        }
-      }
-    };
-    return payload;
+  async patchEquipment(equipmentItems) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Equipment, equipmentItems);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
   }
 }
 
@@ -1995,8 +1978,8 @@ class Client {
   groups(groupId) {
     return new GroupsService(this, groupId);
   }
-  vehicles() {
-    return new VehiclesService(this);
+  vehicles(vehicleId) {
+    return new VehiclesService(this, vehicleId);
   }
   vehicleManufacturers() {
     return new VehicleManufacturersService(this);

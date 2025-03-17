@@ -120,8 +120,8 @@ export class Client {
     groups(groupId) {
         return new GroupsService(this, groupId);
     }
-    vehicles() {
-        return new VehiclesService(this);
+    vehicles(vehicleId) {
+        return new VehiclesService(this, vehicleId);
     }
     vehicleManufacturers() {
         return new VehicleManufacturersService(this);
@@ -231,7 +231,7 @@ export class Client {
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: 'include',
+                credentials: 'include', // @todo only required for cookie based auth,
                 headers: headers,
             });
             let json = await fetchResponse.json();
