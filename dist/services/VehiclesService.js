@@ -3,12 +3,8 @@ import { BaseService } from "./BaseService";
 import { Vehicle } from "../models/Vehicle";
 import { User } from "../models/User";
 import { Hydrator } from "../utils/Hydrator";
-<<<<<<< HEAD
 import { Equipment } from "../models/Equipment";
 import { JsonApiSerializer } from "../utils/JsonSerializer";
-=======
-import { JsonApiSerializer } from '../utils/JsonSerializer';
->>>>>>> main
 export class VehiclesService extends BaseService {
     constructor(client, vehicleId) {
         const endpoint = vehicleId ? `/v3/orgs/:orgId/assets/vehicles/${vehicleId}` : `/v3/orgs/:orgId/assets/vehicles`;
@@ -33,16 +29,14 @@ export class VehiclesService extends BaseService {
         resp.data = hydrator.hydrateResponse(resp.data, resp.included);
         return resp;
     }
-<<<<<<< HEAD
     async patchEquipment(equipmentItems) {
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildRelationshipPayload(new Equipment, equipmentItems);
         return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
-=======
+    }
     async patchAssignee(user) {
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
         return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
->>>>>>> main
     }
 }

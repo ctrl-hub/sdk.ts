@@ -9,9 +9,6 @@ export declare class VehiclesService extends BaseService<Vehicle> {
     constructor(client: Client, vehicleId?: string);
     enquiry(registration: string): Promise<InternalResponse<any[]>>;
     motRecords(vehicleId: string): Promise<InternalResponse<MotRecord[]>>;
-<<<<<<< HEAD
     patchEquipment(equipmentItems: Array<Equipment>): Promise<any>;
-=======
     patchAssignee(user: User): Promise<any>;
->>>>>>> main
 }
