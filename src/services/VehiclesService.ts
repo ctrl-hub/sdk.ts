@@ -1,6 +1,7 @@
 import {Client} from "Client";
 import {BaseService} from "./BaseService";
 import {Vehicle} from "../models/Vehicle";
+import {User} from "../models/User";
 import type { InternalResponse } from '../types/Response';
 import { Hydrator } from "@utils/Hydrator";
 import type { MotRecord } from "@models/MotRecord";
@@ -44,4 +45,10 @@ export class VehiclesService extends BaseService<Vehicle> {
         return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
     }
 
+
+    public async patchAssignee(user: User) {
+        const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+        const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
+        return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
+    }
 }

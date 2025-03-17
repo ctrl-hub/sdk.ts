@@ -1435,6 +1435,17 @@ class JsonApiSerializer {
       console.warn(`No model class found for type: ${model.type}`);
       return { data: [] };
     }
+    if (!Array.isArray(relationships)) {
+      if (relationships?.id !== undefined) {
+        return {
+          data: {
+            type: model.type,
+            id: relationships.id
+          }
+        };
+      }
+      return { data: null };
+    }
     const data = relationships.filter((relationship) => relationship.id !== undefined).map((relationship) => ({
       type: model.type,
       id: relationship.id
@@ -1660,10 +1671,17 @@ class VehiclesService extends BaseService {
     resp.data = hydrator.hydrateResponse(resp.data, resp.included);
     return resp;
   }
+<<<<<<< HEAD
   async patchEquipment(equipmentItems) {
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildRelationshipPayload(new Equipment, equipmentItems);
     return await this.client.makePatchRequest(`${this.endpoint}/relationships/equipment`, payload);
+=======
+  async patchAssignee(user) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
+>>>>>>> main
   }
 }
 
