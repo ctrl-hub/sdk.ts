@@ -8,8 +8,8 @@ export class WorkOrder extends BaseModel {
     public name: string = '';
     public code: string = '';
     public description: string = '';
-    public start_date: string = '';
-    public end_date: string = '';
+    public anticipated_start_date: string = '';
+    public anticipated_end_date: string = '';
     public labels: Array<Label> = [];
 
     static relationships: RelationshipDefinition[] = [
@@ -25,14 +25,14 @@ export class WorkOrder extends BaseModel {
         this.name = data?.attributes?.name ?? data?.name ?? '';
         this.code = data?.attributes?.code ?? data?.code ?? '';
         this.description = data?.attributes?.description ?? data?.description ?? '';
-        this.start_date = data?.attributes?.start_date ?? data?.start_date ?? '';
-        this.end_date = data?.attributes?.end_date ?? data?.end_date ?? '';
+        this.anticipated_start_date = data?.attributes?.anticipated_start_date ?? data?.anticipated_start_date ?? '';
+        this.anticipated_end_date = data?.attributes?.anticipated_end_date ?? data?.anticipated_end_date ?? '';
         this.labels = data?.attributes?.labels ?? data?.labels ?? [];
     }
 
     jsonApiMapping() {
         return {
-            attributes: ['name', 'code', 'description', 'start_date', 'end_date', 'labels'],
+            attributes: ['name', 'code', 'description', 'anticipated_start_date', 'anticipated_end_date', 'labels'],
         };
     }
 }

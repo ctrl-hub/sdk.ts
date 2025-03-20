@@ -6,8 +6,8 @@ export declare class WorkOrder extends BaseModel {
     name: string;
     code: string;
     description: string;
-    start_date: string;
-    end_date: string;
+    anticipated_start_date: string;
+    anticipated_end_date: string;
     labels: Array<Label>;
     static relationships: RelationshipDefinition[];
     constructor(data?: any);
