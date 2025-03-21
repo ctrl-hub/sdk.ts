@@ -28,6 +28,11 @@ export class Operation extends BaseModel {
             type: 'array',
             modelType: 'users',
         },
+        {
+            name: 'teams',
+            type: 'array',
+            modelType: 'teams',
+        },
     ];
     constructor(data) {
         super(data);
