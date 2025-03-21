@@ -1132,6 +1132,11 @@ class Operation extends BaseModel {
       name: "assignees",
       type: "array",
       modelType: "users"
+    },
+    {
+      name: "teams",
+      type: "array",
+      modelType: "teams"
     }
   ];
   constructor(data) {
@@ -1870,6 +1875,11 @@ class OperationsService extends BaseService {
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildRelationshipPayload(new User, users);
     return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignees`, payload);
+  }
+  async patchTeams(teams) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Team, teams);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/teams`, payload);
   }
 }
 
