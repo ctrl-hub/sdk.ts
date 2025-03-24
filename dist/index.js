@@ -514,6 +514,11 @@ class Vehicle extends BaseModel {
       name: "equipment",
       type: "array",
       modelType: "equipment"
+    },
+    {
+      name: "team",
+      type: "single",
+      modelType: "teams"
     }
   ];
   constructor(data) {
@@ -1506,15 +1511,13 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -1695,6 +1698,11 @@ class VehiclesService extends BaseService {
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildRelationshipPayload(new User, user);
     return await this.client.makePatchRequest(`${this.endpoint}/relationships/assignee`, payload);
+  }
+  async patchTeam(team) {
+    const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
+    const payload = jsonApiSerializer.buildRelationshipPayload(new Team, team);
+    return await this.client.makePatchRequest(`${this.endpoint}/relationships/team`, payload);
   }
 }
 
@@ -2172,9 +2180,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }

@@ -31,7 +31,12 @@ export class Vehicle extends BaseModel {
             name: 'equipment',
             type: 'array',
             modelType: 'equipment',
-        }
+        },
+        {
+            name: 'team',
+            type: 'single',
+            modelType: 'teams',
+        },
     ];
     constructor(data) {
         super(data);
