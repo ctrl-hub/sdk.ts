@@ -1,6 +1,8 @@
+export type SortDirection = 'asc' | 'desc' | string;
+
 type Sort = {
     key: string;
-    direction?: 'asc' | 'desc';
+    direction?: SortDirection;
 };
 
 type Filter = {

@@ -6,10 +6,15 @@ export class RequestBuilder {
         return this;
     }
     withSort(sort) {
-        this.requestOptions.sort = sort.map(sortOption => ({
-            key: sortOption.key,
-            direction: sortOption.direction || 'asc'
-        }));
+        this.requestOptions.sort = sort.map(sortOption => {
+            if (sortOption.direction && sortOption.direction !== 'asc' && sortOption.direction !== 'desc') {
+                throw new Error(`Sort direction must be either 'asc' or 'desc', got: ${sortOption.direction}`);
+            }
+            return {
+                key: sortOption.key,
+                direction: sortOption.direction
+            };
+        });
         return this;
     }
     withFilters(filters) {

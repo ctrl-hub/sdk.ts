@@ -1,5 +1,5 @@
 import {RequestOptions} from "../utils/RequestOptions";
-import type {RequestOptionsType} from "../utils/RequestOptions";
+import type {RequestOptionsType, SortDirection} from "../utils/RequestOptions";
 
 export class RequestBuilder {
     protected requestOptions: RequestOptionsType = {};
@@ -9,11 +9,18 @@ export class RequestBuilder {
         return this;
     }
 
-    withSort(sort: Array<{ key: string, direction?: 'asc' | 'desc' }>): this {
-        this.requestOptions.sort = sort.map(sortOption => ({
-            key: sortOption.key,
-            direction: sortOption.direction || 'asc'
-        }));
+    withSort(sort: Array<{ key: string, direction?: SortDirection }>): this {
+        this.requestOptions.sort = sort.map(sortOption => {
+
+            if (sortOption.direction && sortOption.direction !== 'asc' && sortOption.direction !== 'desc') {
+                throw new Error(`Sort direction must be either 'asc' or 'desc', got: ${sortOption.direction}`);
+            }
+
+            return {
+                key: sortOption.key,
+                direction: sortOption.direction
+            };
+        });
         return this;
     }
 

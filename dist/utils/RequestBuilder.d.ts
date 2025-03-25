@@ -1,11 +1,11 @@
 import { RequestOptions } from "../utils/RequestOptions";
-import type { RequestOptionsType } from "../utils/RequestOptions";
+import type { RequestOptionsType, SortDirection } from "../utils/RequestOptions";
 export declare class RequestBuilder {
     protected requestOptions: RequestOptionsType;
     withIncludes(includes: string[]): this;
     withSort(sort: Array<{
         key: string;
-        direction?: 'asc' | 'desc';
+        direction?: SortDirection;
     }>): this;
     withFilters(filters: Array<{
         key: string;
