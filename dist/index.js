@@ -1718,18 +1718,13 @@ class EquipmentService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/assets/equipment");
   }
-  async getExposures(equipmentId) {
-    const exposuresEndpoint = `${this.endpoint}/${equipmentId}/exposures`;
-    const resp = await this.client.makeGetRequest(exposuresEndpoint);
-    resp.data = resp.data.map((equipmentExposure) => new EquipmentExposure(equipmentExposure));
-    return resp;
-  }
 }
 
 // src/services/EquipmentExposureService.ts
 class EquipmentExposureService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/equipment/exposures");
+  constructor(client, equipmentId) {
+    const endpoint = equipmentId ? `/v3/orgs/:orgId/assets/equipment/${equipmentId}/exposures` : `/v3/orgs/:orgId/assets/equipment/exposures`;
+    super(client, endpoint);
   }
 }
 
@@ -2050,8 +2045,8 @@ class Client {
   equipment() {
     return new EquipmentService(this);
   }
-  equipmentExposures() {
-    return new EquipmentExposureService(this);
+  equipmentExposures(equipmentId) {
+    return new EquipmentExposureService(this, equipmentId);
   }
   equipmentManufacturers() {
     return new EquipmentManufacturersService(this);

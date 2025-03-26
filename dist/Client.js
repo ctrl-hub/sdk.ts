@@ -135,8 +135,8 @@ export class Client {
     equipment() {
         return new EquipmentService(this);
     }
-    equipmentExposures() {
-        return new EquipmentExposureService(this);
+    equipmentExposures(equipmentId) {
+        return new EquipmentExposureService(this, equipmentId);
     }
     equipmentManufacturers() {
         return new EquipmentManufacturersService(this);
