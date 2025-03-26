@@ -260,6 +260,8 @@ export class Client {
         }
 
         try {
+            console.log('body', body);
+            console.log(JSON.stringify(body, null, 2));
             const fetchResponse = await fetch(url, {
                 method: 'POST',
                 headers: headers,
