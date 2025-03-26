@@ -4,10 +4,10 @@ import type { Label } from './Label';
 type Requirements = {
     forms: FormRequirement[];
 };
-declare class FormRequirement {
+type FormRequirement = {
     id: string;
     required: boolean;
-}
+};
 export declare class OperationTemplate extends BaseModel {
     type: string;
     name: string;

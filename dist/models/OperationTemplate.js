@@ -1,8 +1,4 @@
 import { BaseModel } from './BaseModel';
-class FormRequirement {
-    id = '';
-    required = false;
-}
 export class OperationTemplate extends BaseModel {
     type = 'operation-templates';
     name = '';

@@ -6,9 +6,9 @@ type Requirements = {
     forms: FormRequirement[]
 }
 
-class FormRequirement {
-    public id: string = '';
-    public required: boolean = false;
+type FormRequirement = {
+    id: string
+    required: boolean
 }
 
 export class OperationTemplate extends BaseModel {
