@@ -1142,6 +1142,11 @@ class Operation extends BaseModel {
       name: "teams",
       type: "array",
       modelType: "teams"
+    },
+    {
+      name: "template",
+      type: "single",
+      modelType: "operation-templates"
     }
   ];
   constructor(data) {
