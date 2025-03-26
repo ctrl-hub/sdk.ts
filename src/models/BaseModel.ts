@@ -36,7 +36,6 @@ export abstract class BaseModel implements Model {
 
     toJSON() {
         const obj: Record<string, any> = {};
-        console.log(this)
 
         if (this.id) obj.id = this.id;
         if (this.type) obj.type = this.type;

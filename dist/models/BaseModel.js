@@ -25,7 +25,6 @@ export class BaseModel {
     }
     toJSON() {
         const obj = {};
-        console.log(this);
         if (this.id)
             obj.id = this.id;
         if (this.type)

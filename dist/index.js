@@ -149,7 +149,6 @@ class BaseModel {
   }
   toJSON() {
     const obj = {};
-    console.log(this);
     if (this.id)
       obj.id = this.id;
     if (this.type)
@@ -2116,8 +2115,6 @@ class Client {
       headers["Authorization"] = `Bearer ${this.bearerToken}`;
     }
     try {
-      console.log("body", body);
-      console.log(JSON.stringify(body, null, 2));
       const fetchResponse = await fetch(url, {
         method: "POST",
         headers,
