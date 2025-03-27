@@ -1561,15 +1561,13 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -1767,8 +1765,9 @@ class EquipmentService extends BaseService {
 
 // src/services/EquipmentExposureService.ts
 class EquipmentExposureService extends BaseService {
-  constructor(client) {
-    super(client, "/v3/orgs/:orgId/assets/equipment/exposures");
+  constructor(client, equipmentId) {
+    const endpoint = equipmentId ? `/v3/orgs/:orgId/assets/equipment/${equipmentId}/exposures` : `/v3/orgs/:orgId/assets/equipment/exposures`;
+    super(client, endpoint);
   }
 }
 
@@ -2109,8 +2108,8 @@ class Client {
   equipment() {
     return new EquipmentService(this);
   }
-  equipmentExposures() {
-    return new EquipmentExposureService(this);
+  equipmentExposures(equipmentId) {
+    return new EquipmentExposureService(this, equipmentId);
   }
   equipmentManufacturers() {
     return new EquipmentManufacturersService(this);
@@ -2252,9 +2251,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }

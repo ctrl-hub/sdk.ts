@@ -50,7 +50,7 @@ export class EquipmentExposure extends BaseModel implements Partial<JsonApiMappi
 
     constructor(data?: any) {
         super(data);
-        this.start_time = data?.attributes?.start_time?.id ?? data?.start_time ?? '';
+        this.start_time = data?.attributes?.start_time ?? data?.start_time ?? '';
         this.end_time = data?.attributes?.end_time ?? data?.end_time ?? '';
 
         if (data?.attributes?.location) {
@@ -70,22 +70,11 @@ export class EquipmentExposure extends BaseModel implements Partial<JsonApiMappi
             }
         }
 
-        if (data?.attributes?.ppe) {
-            const ppeData = data.attributes?.ppe;
+        const ppe = data?.ppe ?? data?.attributes?.ppe
 
-            this.ppe = {
-                mask: ppeData.ppe?.mask ?? false,
-                ear_defenders: ppeData.ppe?.ear_defenders ?? false
-            }
-        }
-
-        if (data?.ppe) {
-            const ppeData = data.ppe;
-
-            this.ppe = {
-                mask: ppeData.mask ?? false,
-                ear_defenders: ppeData.ear_defenders ?? false
-            }
+        this.ppe = {
+            mask: ppe?.mask ?? false,
+            ear_defenders: ppe?.ear_defenders ?? false
         }
     }
 }
