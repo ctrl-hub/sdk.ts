@@ -1238,6 +1238,42 @@ class Appointment extends BaseModel {
   }
 }
 
+// src/models/WorkOrderTemplate.ts
+class WorkOrderTemplate extends BaseModel {
+  type = "work-order-templates";
+  name = "";
+  labels = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.labels = data?.attributes?.labels ?? data?.labels ?? [];
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "labels"]
+    };
+  }
+}
+
+// src/models/SchemeTemplate.ts
+class SchemeTemplate extends BaseModel {
+  type = "scheme-templates";
+  name = "";
+  labels = [];
+  static relationships = [];
+  constructor(data) {
+    super(data);
+    this.name = data?.attributes?.name ?? data?.name ?? "";
+    this.labels = data?.attributes?.labels ?? data?.labels ?? [];
+  }
+  jsonApiMapping() {
+    return {
+      attributes: ["name", "labels"]
+    };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -1260,6 +1296,7 @@ class Hydrator {
     properties: Property,
     roles: Role,
     schemes: Scheme,
+    "scheme-templates": SchemeTemplate,
     "service-accounts": ServiceAccount,
     "service-account-keys": ServiceAccountKey,
     streets: Street,
@@ -1274,7 +1311,8 @@ class Hydrator {
     "vehicle-inventory-checks": VehicleInventoryCheck,
     "vehicle-inspections": VehicleInspection,
     "vehicle-mot-records": MotRecord,
-    "work-orders": WorkOrder
+    "work-orders": WorkOrder,
+    "work-order-templates": WorkOrderTemplate
   };
   getModelMap = () => {
     return this.modelMap;
@@ -1947,6 +1985,20 @@ class OrganisationMembersService extends BaseService {
   }
 }
 
+// src/services/SchemeTemplatesService.ts
+class SchemeTemplatesService extends BaseService {
+  constructor(client) {
+    super(client, `/v3/orgs/:orgId/governance/scheme-templates`);
+  }
+}
+
+// src/services/WorkOrderTemplatesService.ts
+class WorkOrderTemplatesService extends BaseService {
+  constructor(client) {
+    super(client, `/v3/orgs/:orgId/governance/work-order-templates`);
+  }
+}
+
 // src/Client.ts
 class Client {
   config;
@@ -1991,8 +2043,14 @@ class Client {
   schemes() {
     return new SchemesService(this);
   }
+  schemeTemplates() {
+    return new SchemeTemplatesService(this);
+  }
   workOrders(schemeId) {
     return new WorkOrdersService(this, schemeId);
+  }
+  workOrdersTemplates() {
+    return new WorkOrderTemplatesService(this);
   }
   operations(schemeId, workOrderId, operationId) {
     return new OperationsService(this, schemeId, workOrderId, operationId);
@@ -2201,6 +2259,7 @@ class Organisation extends BaseModel {
   static relationships = [];
 }
 export {
+  WorkOrderTemplate,
   WorkOrder,
   VehicleSpecification,
   VehicleModel,
@@ -2213,6 +2272,7 @@ export {
   Submission,
   ServiceAccountKey,
   ServiceAccount,
+  SchemeTemplate,
   Scheme,
   Role,
   RequestOptions,

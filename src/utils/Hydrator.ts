@@ -35,6 +35,8 @@ import { Operation } from '@models/Operation';
 import { OperationTemplate } from '@models/OperationTemplate';
 import { Street } from '@models/Street';
 import { Appointment } from '@models/Appointment';
+import { WorkOrderTemplate } from '@models/WorkOrderTemplate';
+import { SchemeTemplate } from '@models/SchemeTemplate';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -57,6 +59,7 @@ export class Hydrator {
         properties: Property,
         roles: Role,
         schemes: Scheme,
+        "scheme-templates": SchemeTemplate,
         'service-accounts': ServiceAccount,
         'service-account-keys': ServiceAccountKey,
         streets: Street,
@@ -72,6 +75,7 @@ export class Hydrator {
         'vehicle-inspections': VehicleInspection,
         'vehicle-mot-records': MotRecord,
         'work-orders': WorkOrder,
+        'work-order-templates': WorkOrderTemplate,
     };
 
     public getModelMap = () => {

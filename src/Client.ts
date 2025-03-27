@@ -34,6 +34,8 @@ import { VehicleInventoryCheckService } from '@services/VehicleInventoryCheckSer
 import { AppointmentsService } from '@services/AppointmentsService';
 import { OrganisationsService } from '@services/OrganisationsService';
 import { OrganisationMembersService } from '@services/OrganisationMembersService';
+import { SchemeTemplatesService } from '@services/SchemeTemplatesService';
+import { WorkOrderTemplatesService } from '@services/WorkOrderTemplatesService';
 
 export class Client {
     readonly config: ClientConfigInterface;
@@ -89,8 +91,16 @@ export class Client {
         return new SchemesService(this);
     }
 
+    public schemeTemplates(): SchemeTemplatesService {
+        return new SchemeTemplatesService(this);
+    }
+
     public workOrders(schemeId: string): WorkOrdersService {
         return new WorkOrdersService(this, schemeId);
+    }
+
+    public workOrdersTemplates(): WorkOrderTemplatesService {
+        return new WorkOrderTemplatesService(this);
     }
 
     public operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService {
