@@ -33,6 +33,8 @@ import { VehicleInventoryCheckService } from './services/VehicleInventoryCheckSe
 import { AppointmentsService } from './services/AppointmentsService';
 import { OrganisationsService } from './services/OrganisationsService';
 import { OrganisationMembersService } from './services/OrganisationMembersService';
+import { SchemeTemplatesService } from './services/SchemeTemplatesService';
+import { WorkOrderTemplatesService } from './services/WorkOrderTemplatesService';
 export declare class Client {
     readonly config: ClientConfigInterface;
     organisation: string;
@@ -44,7 +46,9 @@ export declare class Client {
     ensureAuthenticated(): Promise<void>;
     roles(): RolesService;
     schemes(): SchemesService;
+    schemeTemplates(): SchemeTemplatesService;
     workOrders(schemeId: string): WorkOrdersService;
+    workOrderTemplates(): WorkOrderTemplatesService;
     operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService;
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
