@@ -135,8 +135,8 @@ export class Client {
     equipment() {
         return new EquipmentService(this);
     }
-    equipmentExposures() {
-        return new EquipmentExposureService(this);
+    equipmentExposures(equipmentId) {
+        return new EquipmentExposureService(this, equipmentId);
     }
     equipmentManufacturers() {
         return new EquipmentManufacturersService(this);
@@ -231,7 +231,7 @@ export class Client {
         try {
             // @todo switch on cookie, "X-Session-Token" or client_credentials
             const fetchResponse = await fetch(url, {
-                credentials: 'include', // @todo only required for cookie based auth,
+                credentials: 'include',
                 headers: headers,
             });
             let json = await fetchResponse.json();

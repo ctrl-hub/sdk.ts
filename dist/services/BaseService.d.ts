@@ -13,7 +13,7 @@ export declare class BaseService<T extends Model> extends RequestBuilder {
     constructor(client: Client, endpoint: string);
     convertToJsonApi(model: Model): {
         data: {
-            id?: string;
+            id?: string | undefined;
             type: string;
             attributes: Record<string, any>;
             relationships?: Record<string, {
@@ -21,7 +21,7 @@ export declare class BaseService<T extends Model> extends RequestBuilder {
                     type: string;
                     id: string;
                 };
-            }>;
+            }> | undefined;
         };
     };
     get(): Promise<InternalResponse<T[]>>;

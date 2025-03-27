@@ -169,8 +169,8 @@ export class Client {
         return new EquipmentService(this);
     }
 
-    public equipmentExposures(): EquipmentExposureService {
-        return new EquipmentExposureService(this);
+    public equipmentExposures(equipmentId?: string): EquipmentExposureService {
+        return new EquipmentExposureService(this, equipmentId);
     }
 
     public equipmentManufacturers(): EquipmentManufacturersService {

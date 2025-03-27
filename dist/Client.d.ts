@@ -64,7 +64,7 @@ export declare class Client {
     vehicleCategories(): VehicleCategoriesService;
     vehicleModels(): VehicleModelsService;
     equipment(): EquipmentService;
-    equipmentExposures(): EquipmentExposureService;
+    equipmentExposures(equipmentId?: string): EquipmentExposureService;
     equipmentManufacturers(): EquipmentManufacturersService;
     equipmentModels(): EquipmentModelsService;
     equipmentCategories(): EquipmentCategoriesService;
