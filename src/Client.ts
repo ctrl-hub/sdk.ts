@@ -99,7 +99,7 @@ export class Client {
         return new WorkOrdersService(this, schemeId);
     }
 
-    public workOrdersTemplates(): WorkOrderTemplatesService {
+    public workOrderTemplates(): WorkOrderTemplatesService {
         return new WorkOrderTemplatesService(this);
     }
 

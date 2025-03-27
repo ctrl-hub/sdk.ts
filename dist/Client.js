@@ -83,7 +83,7 @@ export class Client {
     workOrders(schemeId) {
         return new WorkOrdersService(this, schemeId);
     }
-    workOrdersTemplates() {
+    workOrderTemplates() {
         return new WorkOrderTemplatesService(this);
     }
     operations(schemeId, workOrderId, operationId) {

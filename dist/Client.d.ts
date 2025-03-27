@@ -48,7 +48,7 @@ export declare class Client {
     schemes(): SchemesService;
     schemeTemplates(): SchemeTemplatesService;
     workOrders(schemeId: string): WorkOrdersService;
-    workOrdersTemplates(): WorkOrderTemplatesService;
+    workOrderTemplates(): WorkOrderTemplatesService;
     operations(schemeId: string, workOrderId: string, operationId?: string): OperationsService;
     operationTemplates(): OperationTemplatesService;
     serviceAccountKeys(): ServiceAccountKeysService;
