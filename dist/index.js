@@ -1049,6 +1049,11 @@ class Scheme extends BaseModel {
       name: "work_orders",
       type: "array",
       modelType: "work-orders"
+    },
+    {
+      name: "template",
+      type: "single",
+      modelType: "scheme-templates"
     }
   ];
   constructor(data) {
@@ -1081,6 +1086,11 @@ class WorkOrder extends BaseModel {
       name: "operations",
       type: "array",
       modelType: "operations"
+    },
+    {
+      name: "template",
+      type: "single",
+      modelType: "work-order-templates"
     }
   ];
   constructor(data) {
@@ -1569,13 +1579,15 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {}
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {}
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -2271,6 +2283,9 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
+  constructor() {
+    super(...arguments);
+  }
   type = "organisations";
   static relationships = [];
 }
