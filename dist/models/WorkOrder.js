@@ -13,6 +13,11 @@ export class WorkOrder extends BaseModel {
             type: 'array',
             modelType: 'operations',
         },
+        {
+            name: 'template',
+            type: 'single',
+            modelType: 'work-order-templates',
+        }
     ];
     constructor(data) {
         super(data);
