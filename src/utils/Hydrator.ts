@@ -37,6 +37,7 @@ import { Street } from '@models/Street';
 import { Appointment } from '@models/Appointment';
 import { WorkOrderTemplate } from '@models/WorkOrderTemplate';
 import { SchemeTemplate } from '@models/SchemeTemplate';
+import { OrganisationMemberStats } from '@models/OrganisationMemberStats';
 
 export class Hydrator {
     private modelMap: Record<string, new (data?: any) => Model> = {
@@ -55,6 +56,7 @@ export class Hydrator {
         groups: Group,
         "operation-templates": OperationTemplate,
         operations: Operation,
+        "members-stats": OrganisationMemberStats,
         permissions: Permission,
         properties: Property,
         roles: Role,

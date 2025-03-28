@@ -56,4 +56,16 @@ export class BaseService<T extends Model> extends RequestBuilder {
         const payload = jsonApiSerializer.buildUpdatePayload(model);
         return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
     }
+
+    async stats<R = any>(options?: RequestOptionsType): Promise<InternalResponse<R>> {
+        const statsEndpoint = `${this.endpoint}/stats`;
+        const { requestOptions } = this.buildRequestParams('', options);
+        const resp = await this.client.makeGetRequest(statsEndpoint, requestOptions);
+
+        if (resp.data && typeof resp.data === 'object') {
+            resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+        }
+
+        return resp as InternalResponse<R>;
+    }
 }
