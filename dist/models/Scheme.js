@@ -13,6 +13,11 @@ export class Scheme extends BaseModel {
             type: 'array',
             modelType: 'work-orders',
         },
+        {
+            name: 'template',
+            type: 'single',
+            modelType: 'scheme-templates',
+        }
     ];
     constructor(data) {
         super(data);

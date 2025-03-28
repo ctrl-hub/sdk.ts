@@ -250,7 +250,7 @@ class EquipmentExposure extends BaseModel {
   ];
   constructor(data) {
     super(data);
-    this.start_time = data?.attributes?.start_time?.id ?? data?.start_time ?? "";
+    this.start_time = data?.attributes?.start_time ?? data?.start_time ?? "";
     this.end_time = data?.attributes?.end_time ?? data?.end_time ?? "";
     if (data?.attributes?.location) {
       const locationData = data.attributes.location;
@@ -266,20 +266,11 @@ class EquipmentExposure extends BaseModel {
         coordinates: locationData.coordinates ?? []
       };
     }
-    if (data?.attributes?.ppe) {
-      const ppeData = data.attributes?.ppe;
-      this.ppe = {
-        mask: ppeData.ppe?.mask ?? false,
-        ear_defenders: ppeData.ppe?.ear_defenders ?? false
-      };
-    }
-    if (data?.ppe) {
-      const ppeData = data.ppe;
-      this.ppe = {
-        mask: ppeData.mask ?? false,
-        ear_defenders: ppeData.ear_defenders ?? false
-      };
-    }
+    const ppe = data?.ppe ?? data?.attributes?.ppe;
+    this.ppe = {
+      mask: ppe?.mask ?? false,
+      ear_defenders: ppe?.ear_defenders ?? false
+    };
   }
 }
 
@@ -1058,6 +1049,11 @@ class Scheme extends BaseModel {
       name: "work_orders",
       type: "array",
       modelType: "work-orders"
+    },
+    {
+      name: "template",
+      type: "single",
+      modelType: "scheme-templates"
     }
   ];
   constructor(data) {
@@ -1090,6 +1086,11 @@ class WorkOrder extends BaseModel {
       name: "operations",
       type: "array",
       modelType: "operations"
+    },
+    {
+      name: "template",
+      type: "single",
+      modelType: "work-order-templates"
     }
   ];
   constructor(data) {
@@ -1561,13 +1562,15 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {}
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {}
+    if (params) {
+    }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
@@ -2251,6 +2254,9 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
+  constructor() {
+    super(...arguments);
+  }
   type = "organisations";
   static relationships = [];
 }

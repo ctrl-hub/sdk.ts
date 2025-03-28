@@ -34,7 +34,7 @@ export class EquipmentExposure extends BaseModel {
     ];
     constructor(data) {
         super(data);
-        this.start_time = data?.attributes?.start_time?.id ?? data?.start_time ?? '';
+        this.start_time = data?.attributes?.start_time ?? data?.start_time ?? '';
         this.end_time = data?.attributes?.end_time ?? data?.end_time ?? '';
         if (data?.attributes?.location) {
             const locationData = data.attributes.location;
@@ -50,19 +50,10 @@ export class EquipmentExposure extends BaseModel {
                 coordinates: locationData.coordinates ?? []
             };
         }
-        if (data?.attributes?.ppe) {
-            const ppeData = data.attributes?.ppe;
-            this.ppe = {
-                mask: ppeData.ppe?.mask ?? false,
-                ear_defenders: ppeData.ppe?.ear_defenders ?? false
-            };
-        }
-        if (data?.ppe) {
-            const ppeData = data.ppe;
-            this.ppe = {
-                mask: ppeData.mask ?? false,
-                ear_defenders: ppeData.ear_defenders ?? false
-            };
-        }
+        const ppe = data?.ppe ?? data?.attributes?.ppe;
+        this.ppe = {
+            mask: ppe?.mask ?? false,
+            ear_defenders: ppe?.ear_defenders ?? false
+        };
     }
 }
