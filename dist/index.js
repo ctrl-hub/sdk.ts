@@ -1275,6 +1275,22 @@ class SchemeTemplate extends BaseModel {
   }
 }
 
+// src/models/OrganisationMemberStats.ts
+class OrganisationMemberStats extends BaseModel {
+  type = "members-stats";
+  members = {
+    users: 0,
+    service_accounts: 0
+  };
+  constructor(data) {
+    super(data);
+    this.members = data?.attributes?.members || {
+      users: 0,
+      members: 0
+    };
+  }
+}
+
 // src/utils/Hydrator.ts
 class Hydrator {
   modelMap = {
@@ -1293,6 +1309,7 @@ class Hydrator {
     groups: Group,
     "operation-templates": OperationTemplate,
     operations: Operation,
+    "members-stats": OrganisationMemberStats,
     permissions: Permission,
     properties: Property,
     roles: Role,
@@ -1562,18 +1579,25 @@ class BaseService extends RequestBuilder {
     };
   }
   async create(model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
     return await this.client.makePostRequest(this.endpoint, payload);
   }
   async update(id, model, params) {
-    if (params) {
-    }
+    if (params) {}
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildUpdatePayload(model);
     return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
+  }
+  async stats(options) {
+    const statsEndpoint = `${this.endpoint}/stats`;
+    const { requestOptions } = this.buildRequestParams("", options);
+    const resp = await this.client.makeGetRequest(statsEndpoint, requestOptions);
+    if (resp.data && typeof resp.data === "object") {
+      resp.data = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    }
+    return resp;
   }
 }
 
@@ -1985,6 +2009,9 @@ class OrganisationMembersService extends BaseService {
   constructor(client) {
     super(client, "/v3/orgs/:orgId/iam/members");
   }
+  stats(options) {
+    return super.stats(options);
+  }
 }
 
 // src/services/SchemeTemplatesService.ts
@@ -2254,9 +2281,6 @@ class ClientConfig {
 }
 // src/models/Organisation.ts
 class Organisation extends BaseModel {
-  constructor() {
-    super(...arguments);
-  }
   type = "organisations";
   static relationships = [];
 }
