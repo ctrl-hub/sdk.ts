@@ -190,6 +190,11 @@ class Equipment extends BaseModel {
       name: "model",
       type: "single",
       modelType: "equipment-models"
+    },
+    {
+      name: "vehicle",
+      type: "single",
+      modelType: "vehicles"
     }
   ];
   constructor(data) {
