@@ -1588,7 +1588,12 @@ class BaseService extends RequestBuilder {
     }
     const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
     const payload = jsonApiSerializer.buildCreatePayload(model);
-    return await this.client.makePostRequest(this.endpoint, payload);
+    let resp = await this.client.makePostRequest(this.endpoint, payload);
+    const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+    return {
+      ...resp,
+      data: hydratedData
+    };
   }
   async update(id, model, params) {
     if (params) {
