@@ -38,7 +38,12 @@ export class BaseService extends RequestBuilder {
         }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildUpdatePayload(model);
-        return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
+        let resp = await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
+        const hydratedData = this.hydrator.hydrateResponse(resp.data, resp.included || []);
+        return {
+            ...resp,
+            data: hydratedData,
+        };
     }
     async stats(options) {
         const statsEndpoint = `${this.endpoint}/stats`;
