@@ -46,7 +46,14 @@ export class BaseService<T extends Model> extends RequestBuilder {
         }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildCreatePayload(model);
-        return await this.client.makePostRequest(this.endpoint, payload);
+        let resp = await this.client.makePostRequest(this.endpoint, payload);
+        
+        const hydratedData = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
+
+        return {
+            ...resp,
+            data: hydratedData,
+        } as InternalResponse<T>;
     }
 
     async update(id: string, model: Model, params?: unknown): Promise<InternalResponse<T>> {
@@ -54,7 +61,14 @@ export class BaseService<T extends Model> extends RequestBuilder {
         }
         const jsonApiSerializer = new JsonApiSerializer(this.hydrator.getModelMap());
         const payload = jsonApiSerializer.buildUpdatePayload(model);
-        return await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
+        let resp = await this.client.makePatchRequest(`${this.endpoint}/${id}`, payload);
+        
+        const hydratedData = this.hydrator.hydrateResponse<T>(resp.data as JsonData | JsonData[], resp.included || []);
+
+        return {
+            ...resp,
+            data: hydratedData,
+        } as InternalResponse<T>;
     }
 
     async stats<R = any>(options?: RequestOptionsType): Promise<InternalResponse<R>> {
