@@ -1,5 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import { ServiceAccount } from "@models/ServiceAccount";
+import { JsonApiSerializer } from '../../src/utils/JsonSerializer';
+import { Hydrator } from '../../src/utils/Hydrator';
 
 describe('ServiceAccount', () => {
 
@@ -43,4 +45,53 @@ describe('ServiceAccount', () => {
         expect(serviceAccount.meta).toEqual(undefined);
     });
 
+    it('should return correct jsonApiMapping', () => {
+        const serviceAccount = new ServiceAccount();
+        const mapping = serviceAccount.jsonApiMapping();
+        
+        expect(mapping.attributes).toEqual(['name', 'description']);
+    });
+    
+    it('should generate correct create and update payloads', () => {
+        const data = {
+            id: "f3ca64d7-73b1-4bfc-877a-62f7e1f9e3cb",
+            attributes: {
+                name: "Test Account",
+                description: "This is a service account",
+                email: "test@example.com",
+                enabled: true
+            }
+        };
+        
+        const serviceAccount = new ServiceAccount(data);
+        const hydrator = new Hydrator();
+        const serializer = new JsonApiSerializer(hydrator.getModelMap());
+        
+        // Test create payload
+        const createPayload = serializer.buildCreatePayload(serviceAccount);
+        expect(createPayload).toEqual({
+            data: {
+                type: "service-accounts",
+                attributes: {
+                    name: "Test Account",
+                    description: "This is a service account"
+                },
+                relationships: {}
+            }
+        });
+        
+        // Test update payload
+        const updatePayload = serializer.buildUpdatePayload(serviceAccount);
+        expect(updatePayload).toEqual({
+            data: {
+                id: "f3ca64d7-73b1-4bfc-877a-62f7e1f9e3cb",
+                type: "service-accounts",
+                attributes: {
+                    name: "Test Account",
+                    description: "This is a service account"
+                },
+                relationships: {}
+            }
+        });
+    });
 });
